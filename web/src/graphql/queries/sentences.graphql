@@ -1,0 +1,22 @@
+query Sentences($limit: Int!, $cursor: String) {
+  sentences(limit: $limit, cursor: $cursor) {    
+    sentences {
+      id      
+      text
+      subjects
+      teacher {
+        firstName
+        lastName
+      }
+      children {        
+        text
+      }
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+    }    
+    hasMore
+  }
+}

@@ -1,0 +1,17 @@
+mutation UpdateQuestion($id: Int!, $questionInput: QuestionInput!) {
+  updateQuestion(id: $id, questionInput: $questionInput) {
+    id
+    createdAt
+    updatedAt
+    question
+    choices
+    answer
+    teacher {
+      firstName
+      lastName
+    }
+    upVoteCount
+    downVoteCount
+    viewCount
+  }
+}

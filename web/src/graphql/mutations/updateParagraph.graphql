@@ -1,0 +1,15 @@
+mutation UpdateParagraph($id: Int!, $paragraphInput: ParagraphInput!) {
+  updateParagraph(id: $id, paragraphInput: $paragraphInput) {
+    id
+    text
+    teacher {
+      firstName
+      lastName
+    }
+    children {
+      id
+      text
+    }
+    subjects
+  }
+}

@@ -1,0 +1,7 @@
+mutation AddVote($questionId: Int!, $voteType: VoteType!) {
+  addVote(questionId: $questionId, voteType: $voteType) {
+    upVoteCount
+    downVoteCount
+    userVoteType
+  }
+}

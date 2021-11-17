@@ -1,0 +1,20 @@
+query Question($id: Int!) {
+  question(id: $id) {
+    id
+    question
+    questionType
+    choices
+    answer
+    teacher {
+      firstName
+      lastName
+    }
+    subjects
+    upVoteCount
+    downVoteCount
+    userVoteType
+    viewCount
+    createdAt
+    updatedAt
+  }
+}

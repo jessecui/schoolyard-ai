@@ -1,0 +1,125 @@
+query Sentence($id: Int!) {
+  sentence(id: $id) {
+    id
+    text
+    subjects
+    upVoteCount
+    downVoteCount
+    userVoteType
+    viewCount
+    createdAt
+    updatedAt
+    teacherId
+    teacher {
+      firstName
+      lastName
+    }
+    children {
+      id
+      text
+      teacher {
+        firstName
+        lastName
+      }
+      upVoteCount
+      downVoteCount
+      children {
+        id
+        text
+      }
+      orderNumber
+    }
+    parent {
+      id
+      text
+      teacher {
+        firstName
+        lastName
+      }
+      subjects
+      upVoteCount
+      downVoteCount
+      viewCount
+      createdAt
+      children {
+        id
+        text
+      }
+    }
+    origin {
+      id
+      orderNumber
+      parent {
+        id
+        text
+        teacher {
+          firstName
+          lastName
+        }
+        subjects
+        upVoteCount
+        downVoteCount
+        viewCount
+        createdAt
+        children {
+          id
+          text
+        }
+      }
+    }
+    orderNumber
+    allClones {
+      id
+      text
+      parent {
+        id
+        text
+        teacher {
+          firstName
+          lastName
+        }
+        children {
+          text
+          orderNumber
+        }
+      }
+      subjects
+      teacherId
+      teacher {
+        id
+        firstName
+        lastName
+      }
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+      children {
+        id
+        text
+        teacher {
+          firstName
+          lastName
+        }
+        children {
+          id
+          text
+        }
+        allClones {
+          id
+          text
+          teacher {
+            firstName
+            lastName
+          }
+          children {
+            id
+            text
+          }
+        }
+      }
+      orderNumber
+    }
+  }
+}

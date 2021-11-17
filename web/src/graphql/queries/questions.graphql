@@ -1,0 +1,22 @@
+query Questions($limit: Int!, $cursor: String) {
+  questions(limit: $limit, cursor: $cursor) {
+    hasMore
+    questions {
+      id      
+      question
+      questionType
+      choices
+      answer
+      teacher {
+        firstName
+        lastName
+      }
+      subjects
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+    }    
+  }
+}
