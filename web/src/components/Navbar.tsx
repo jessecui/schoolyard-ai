@@ -1,0 +1,257 @@
+import { useApolloClient } from "@apollo/client";
+import { Button } from "@chakra-ui/button";
+import {
+  Box,
+  Center,
+  Flex,
+  Grid,
+  Heading,
+  HStack,
+  Link,
+  Spacer,
+} from "@chakra-ui/layout";
+import {
+  Container,
+  Icon,
+  Image,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
+import NextLink from "next/link";
+import React, { useEffect, useState } from "react";
+import {
+  IoCreate,
+  IoListCircle,
+  IoLogOut,
+  IoMail,
+  IoPersonCircle,
+  IoSettings,
+} from "react-icons/io5";
+import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
+import LogoImage from "../../public/images/schoolyard_logo.png";
+import { useRouter } from "next/router";
+
+interface NavbarProps {}
+
+export const Navbar: React.FC<NavbarProps> = ({}) => {
+  const apolloClient = useApolloClient();
+  const router = useRouter();
+
+  const { data, loading } = useMeQuery();
+  const [logout] = useLogoutMutation();
+
+  // Create our own states that set user data only when component mounts
+  // Avoids errors where the server renders differently than the client
+  const [userData, setUserData] = useState<MeQuery | undefined>();
+  const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
+  useEffect(() => {
+    setUserData(data);
+    setUserDataLoading(loading);
+  });
+
+  // Profile links give the user the option to log in, log out, see settings, etc.
+  let profileLinks;
+  if (userDataLoading) {
+    // Determining user status
+    profileLinks = null;
+  } else if (!userData?.me) {
+    // User is not logged in
+    profileLinks = (
+      <Box>
+        <NextLink href="/log-in">
+          <Button
+            color="white"
+            bg="iris"
+            _hover={{
+              bg: "irisDark",
+            }}
+            variant="solid"
+            mr={2}
+          >
+            log in
+          </Button>
+        </NextLink>
+        <NextLink href="/sign-up">
+          <Button
+            color="iris"
+            border="2px"
+            borderColor="iris"
+            variant="outline"
+            _hover={{
+              color: "irisDark",
+              borderColor: "irisDark",
+            }}
+          >
+            sign up
+          </Button>
+        </NextLink>
+      </Box>
+    );
+  } else {
+    // User is logged in
+    profileLinks = (
+      <Flex align="center">
+        <Menu>
+          <MenuButton
+            as={Button}
+            leftIcon={<Icon color="white" as={IoPersonCircle} w={8} h={8} />}
+            aria-label="View Profile Options"
+            borderRadius="full"
+            size="lg"
+            bg="iris"
+            _hover={{
+              bg: "irisDark",
+            }}
+          >
+            <Box fontWeight="bold" color="white">
+              {userData.me.firstName + " " + userData.me.lastName}
+            </Box>
+          </MenuButton>
+          <MenuList borderColor="grayLight">            
+            <MenuItem
+              icon={<Icon color="grayMain" as={IoListCircle} w={6} h={6} />}
+            >
+              History Log
+            </MenuItem>
+            <NextLink href="/account-settings">
+              <Link _hover={{ textDecoration: "none" }}>
+                <MenuItem
+                  icon={<Icon color="grayMain" as={IoSettings} w={6} h={6} />}
+                >
+                  Account Settings
+                </MenuItem>
+              </Link>
+            </NextLink>
+            <MenuItem icon={<Icon color="grayMain" as={IoMail} w={6} h={6} />}>
+              Contact
+            </MenuItem>
+            <MenuItem
+              icon={<Icon color="grayMain" as={IoLogOut} w={6} h={6} />}
+              onClick={async () => {
+                await logout();
+                await apolloClient.resetStore();
+                router.push("/");
+              }}
+            >
+              Log Out
+            </MenuItem>
+            <MenuDivider color="grayLight" />
+            <Flex px={4} color="iris" fontSize="sm">
+              <NextLink href="/terms-of-use">Terms of Use</NextLink>
+              <Spacer />
+              {" | "}
+              <Spacer />
+              <NextLink href="/terms-of-use">Privacy Policy</NextLink>
+            </Flex>
+          </MenuList>
+        </Menu>
+      </Flex>
+    );
+  }
+  return (
+    <Flex
+      h="84px"
+      bg="white"
+      p={4}
+      borderBottom="4px solid #ccc"
+      align="center"
+    >
+      <Container maxW="container.xl">
+        <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+          <Flex align="center">
+            <NextLink href="/">
+              <Link>
+                <Image
+                  alt="Schoolyard Logo"
+                  htmlWidth={180}
+                  src={LogoImage.src}
+                />
+              </Link>
+            </NextLink>
+          </Flex>
+
+          <Center>
+            <HStack spacing="36px">
+              <NextLink href="/">
+                <Link style={{ textDecoration: "none" }}>
+                  <Heading
+                    color={
+                      router.asPath === "/" ||
+                      router.asPath.startsWith("/learn")
+                        ? "mint"
+                        : "grayMain"
+                    }
+                    textUnderlineOffset="16px"
+                    textDecoration={
+                      router.asPath === "/" ||
+                      router.asPath.startsWith("/learn")
+                        ? "underline"
+                        : "none"
+                    }
+                    _hover={{
+                      color: "mint",
+                      textDecoration: "underline",
+                    }}
+                    size="md"
+                  >
+                    learn
+                  </Heading>
+                </Link>
+              </NextLink>
+              <NextLink href="/master">
+                <Link style={{ textDecoration: "none" }}>
+                  <Heading
+                    color="grayMain"
+                    _hover={{
+                      color: "mint",
+                      textDecoration: "underline",
+                      textUnderlineOffset: "16px",
+                    }}
+                    size="md"
+                  >
+                    master
+                  </Heading>
+                </Link>
+              </NextLink>
+              <NextLink href="/create">
+                <Link style={{ textDecoration: "none" }}>
+                  <Heading
+                    color={
+                      router.asPath.startsWith("/create") ||
+                      router.asPath.startsWith("/edit")
+                        ? "mint"
+                        : "grayMain"
+                    }
+                    textUnderlineOffset="16px"
+                    textDecoration={
+                      router.asPath.startsWith("/create") ||
+                      router.asPath.startsWith("/edit")
+                        ? "underline"
+                        : "none"
+                    }
+                    _hover={{
+                      color: "mint",
+                      textDecoration: "underline",
+                    }}
+                    size="md"
+                  >
+                    create
+                  </Heading>
+                </Link>
+              </NextLink>
+            </HStack>
+          </Center>
+
+          <Flex align="center">
+            <Box align="center" ml={"auto"}>
+              {profileLinks}
+            </Box>
+          </Flex>
+        </Grid>
+      </Container>
+    </Flex>
+  );
+};

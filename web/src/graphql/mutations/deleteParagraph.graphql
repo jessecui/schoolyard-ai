@@ -1,0 +1,3 @@
+mutation DeleteParagraph($id: Int!) {
+  deleteParagraph(id: $id)
+}

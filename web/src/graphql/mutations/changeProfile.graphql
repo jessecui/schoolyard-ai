@@ -1,0 +1,9 @@
+mutation ChangeProfile(
+  $email: String!
+  $firstName: String!
+  $lastName: String!
+) {
+  changeProfile(email: $email, firstName: $firstName, lastName: $lastName) {
+    ...UserResponse
+  }
+}
