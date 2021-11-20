@@ -6,18 +6,17 @@ import {
   FormErrorMessage,
   Icon,
   IconButton,
-  Input, Radio,
-  RadioGroup,
-  Select, Text,
+  Input,
+  Radio,
+  RadioGroup, Text,
   Textarea
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { IoPeople, IoPersonCircle } from "react-icons/io5";
+import { IoPersonCircle } from "react-icons/io5";
 import {
-  RiAddLine,
-  RiCalendarEventFill, RiSubtractLine, RiThumbDownLine, RiThumbUpLine
+  RiAddLine, RiSubtractLine
 } from "react-icons/ri";
 import {
   MeQuery,
@@ -39,7 +38,7 @@ export const Create: React.FC<{}> = ({}) => {
     setUserData(meData);
     setUserDataLoading(meLoading);
   });
-  const { data: sentenceData, loading } = useSentenceQuery({
+  const { data: parentData, loading } = useSentenceQuery({
     variables: {
       id: Number(router.query.parent) ? Number(router.query.parent) : -1,
     },
@@ -73,94 +72,6 @@ export const Create: React.FC<{}> = ({}) => {
           Create Content Form
         </Text>
       </Box>
-      {sentenceData && sentenceData.sentence ? (
-        <Box
-          border="2px"
-          borderColor="grayLight"
-          borderRadius="md"
-          bg="White"
-          p={4}
-          my={2}
-        >
-          <Text fontWeight="bold" color="grayMain">
-            Content Being Extended
-          </Text>
-          <Divider borderColor="grayLight" border="1px" mb={2} />
-          <Box p={1}>
-            <Flex>
-              <Flex align="center">
-                <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
-                <Box>
-                  <Text fontWeight="bold" fontSize="lg">
-                    {sentenceData.sentence.teacher.firstName}{" "}
-                    {sentenceData.sentence.teacher.lastName}
-                  </Text>
-                  <HStack spacing="6px">
-                    {sentenceData.sentence.subjects.map((subject) => (
-                      <Flex align="center" key={subject}>
-                        <Circle
-                          mr="4px"
-                          size={4}
-                          bg="grayMain" // TODO make these the colors from before using router params
-                        />
-                        <Text size="sm">{"#" + subject.toLowerCase()}</Text>
-                      </Flex>
-                    ))}
-                  </HStack>
-                </Box>
-              </Flex>
-            </Flex>
-            <Text my={2} fontWeight="bold" fontSize="xl">
-              {sentenceData.sentence.text}
-            </Text>
-            <Text my={2} fontSize="lg">
-              {sentenceData.sentence.children &&
-              sentenceData.sentence.children.length > 0
-                ? sentenceData.sentence.children
-                    .map((child) => child.text)
-                    .join(" ")
-                : null}
-            </Text>
-            <HStack spacing={2}>
-              <>
-                <Text color="grayMain">
-                  <Icon
-                    mx="4px"
-                    height="24px"
-                    as={RiThumbUpLine}
-                    h="18px"
-                    w="18px"
-                  />
-                  {sentenceData.sentence.upVoteCount}
-                </Text>
-                <Text color="grayMain">
-                  <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
-                  {sentenceData.sentence.downVoteCount}
-                </Text>
-              </>
-
-              <Text color="grayMain">
-                <Icon as={IoPeople} mr={1} w={5} h={5} />
-                {sentenceData.sentence.viewCount +
-                  (sentenceData.sentence.viewCount == 1
-                    ? " view"
-                    : " views")}
-              </Text>
-              <Text color="grayMain">
-                <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
-                {new Date(sentenceData.sentence.createdAt).toLocaleString(
-                  "default",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  }
-                )}
-              </Text>
-            </HStack>
-          </Box>
-        </Box>
-      ) : null}
       <Box
         border="2px"
         borderColor="grayLight"
@@ -191,19 +102,12 @@ export const Create: React.FC<{}> = ({}) => {
       </Box>
       <Formik
         initialValues={{
-          summarySentence: sentenceData?.sentence?.text,
+          summarySentence: parentData?.sentence?.text,
           explanationSentences: ["", "", ""],
           subjects:
-            sentenceData && sentenceData?.sentence
-              ? sentenceData.sentence.subjects.join(", ")
+            parentData && parentData?.sentence
+              ? parentData.sentence.subjects.join(", ")
               : "",
-          linkedSentence:
-            sentenceData && sentenceData.sentence
-              ? JSON.stringify([
-                  sentenceData?.sentence.id.toString(),
-                  sentenceData.sentence.text,
-                ])
-              : JSON.stringify(["", ""]),
           checkIfSameAsParent: true,
         }}
         enableReinitialize={true}
@@ -218,13 +122,9 @@ export const Create: React.FC<{}> = ({}) => {
                 childrenText: values.explanationSentences.map(
                   (sentence: string) => sentence.trim()
                 ),
-                subjects: subjectsArray,
-                cloningOriginText: JSON.parse(values.linkedSentence)[1],
-                cloningOriginId: Number(JSON.parse(values.linkedSentence)[0]),
-                cloningOriginTeacherId: sentenceData
-                  ? sentenceData.sentence?.teacherId
-                  : null,
+                subjects: subjectsArray,                
               },
+              cloningOriginId: parentData?.sentence?.id,
             },
           });
           if (response.errors) {
@@ -246,61 +146,13 @@ export const Create: React.FC<{}> = ({}) => {
                 my={2}
               >
                 <Stack spacing={4}>
-                  {sentenceData?.sentence && (
+                  {parentData?.sentence && (
                     <Box>
                       <Text fontWeight="bold" color="grayMain">
                         Sentence Being Linked
                       </Text>
                       <Divider borderColor="grayLight" border="1px" mb={2} />
-
-                      <Field name="linkedSentence" validate={checkIfEmpty}>
-                        {({ field, form }: any) => (
-                          <FormControl
-                            isInvalid={
-                              form.errors.linkedSentence &&
-                              form.touched.linkedSentence
-                            }
-                          >
-                            <Select
-                              {...field}
-                              onChange={(e) => {
-                                props.handleChange(e);
-                                if (props.values.checkIfSameAsParent) {
-                                  props.setFieldValue(
-                                    "summarySentence",
-                                    JSON.parse(e.target.value)[1]
-                                  );
-                                }
-                              }}
-                            >
-                              <option
-                                value={JSON.stringify([
-                                  String(sentenceData?.sentence?.id),
-                                  sentenceData?.sentence?.text!,
-                                ])}
-                              >
-                                {sentenceData.sentence?.text}
-                              </option>
-                              {sentenceData.sentence?.children?.map(
-                                (child, index) => (
-                                  <option
-                                    key={"select" + index}
-                                    value={JSON.stringify([
-                                      child.id.toString(),
-                                      child.text,
-                                    ])}
-                                  >
-                                    {child.text}
-                                  </option>
-                                )
-                              )}
-                            </Select>
-                            <FormErrorMessage>
-                              {form.errors.linkedSentence}
-                            </FormErrorMessage>
-                          </FormControl>
-                        )}
-                      </Field>
+                      <Text>{parentData.sentence?.text}</Text>
                     </Box>
                   )}
                   <Box>
@@ -308,7 +160,7 @@ export const Create: React.FC<{}> = ({}) => {
                       Summary Sentence
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
-                    {sentenceData?.sentence ? (
+                    {parentData?.sentence ? (
                       <Field
                         id="checkIfSameAsParent"
                         name="checkIfSameAsParent"
@@ -327,7 +179,7 @@ export const Create: React.FC<{}> = ({}) => {
                               if (e.target.checked) {
                                 props.setFieldValue(
                                   "summarySentence",
-                                  JSON.parse(props.values.linkedSentence)[1]
+                                  parentData?.sentence?.text
                                 );
                               }
                             }}

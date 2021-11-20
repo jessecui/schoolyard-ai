@@ -86,6 +86,7 @@ export type MutationChangeProfileArgs = {
 
 
 export type MutationCreateParagraphArgs = {
+  cloningOriginId?: Maybe<Scalars['Int']>;
   paragraphInput: ParagraphInput;
 };
 
@@ -146,9 +147,6 @@ export type PaginatedSentences = {
 
 export type ParagraphInput = {
   childrenText?: Maybe<Array<Scalars['String']>>;
-  cloningOriginId?: Maybe<Scalars['Float']>;
-  cloningOriginTeacherId?: Maybe<Scalars['Float']>;
-  cloningOriginText?: Maybe<Scalars['String']>;
   subjects?: Maybe<Array<Scalars['String']>>;
   text?: Maybe<Scalars['String']>;
 };
@@ -228,7 +226,6 @@ export type RegisterUserInputs = {
 
 export type Sentence = {
   __typename?: 'Sentence';
-  allClones: Array<Sentence>;
   children?: Maybe<Array<Sentence>>;
   cloneQuality?: Maybe<Scalars['Float']>;
   clones?: Maybe<Array<Sentence>>;
@@ -236,9 +233,7 @@ export type Sentence = {
   downVoteCount: Scalars['Float'];
   id: Scalars['Float'];
   orderNumber?: Maybe<Scalars['Float']>;
-  origin?: Maybe<Sentence>;
   parent?: Maybe<Sentence>;
-  rootOrigin: Sentence;
   subjects: Array<Scalars['String']>;
   teacher: User;
   teacherId: Scalars['Float'];
@@ -333,6 +328,7 @@ export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { 
 
 export type CreateParagraphMutationVariables = Exact<{
   paragraphInput: ParagraphInput;
+  cloningOriginId?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -427,7 +423,7 @@ export type SentenceQueryVariables = Exact<{
 }>;
 
 
-export type SentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacherId: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, upVoteCount: number, downVoteCount: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined, origin?: { __typename?: 'Sentence', id: number, orderNumber?: number | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined } | null | undefined, allClones: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, orderNumber?: number | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', text: string, orderNumber?: number | null | undefined }> | null | undefined } | null | undefined, teacher: { __typename?: 'User', id: number, firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined, allClones: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> }> | null | undefined }> } | null | undefined };
+export type SentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacherId: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, upVoteCount: number, downVoteCount: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, orderNumber?: number | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', text: string, orderNumber?: number | null | undefined }> | null | undefined } | null | undefined, teacher: { __typename?: 'User', id: number, firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined }> | null | undefined }> | null | undefined } | null | undefined };
 
 export type SentencesQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -704,8 +700,11 @@ export type ChangeProfileMutationHookResult = ReturnType<typeof useChangeProfile
 export type ChangeProfileMutationResult = Apollo.MutationResult<ChangeProfileMutation>;
 export type ChangeProfileMutationOptions = Apollo.BaseMutationOptions<ChangeProfileMutation, ChangeProfileMutationVariables>;
 export const CreateParagraphDocument = gql`
-    mutation createParagraph($paragraphInput: ParagraphInput!) {
-  createParagraph(paragraphInput: $paragraphInput) {
+    mutation createParagraph($paragraphInput: ParagraphInput!, $cloningOriginId: Int) {
+  createParagraph(
+    paragraphInput: $paragraphInput
+    cloningOriginId: $cloningOriginId
+  ) {
     id
     text
     teacher {
@@ -736,6 +735,7 @@ export type CreateParagraphMutationFn = Apollo.MutationFunction<CreateParagraphM
  * const [createParagraphMutation, { data, loading, error }] = useCreateParagraphMutation({
  *   variables: {
  *      paragraphInput: // value for 'paragraphInput'
+ *      cloningOriginId: // value for 'cloningOriginId'
  *   },
  * });
  */
@@ -1257,29 +1257,8 @@ export const SentenceDocument = gql`
         text
       }
     }
-    origin {
-      id
-      orderNumber
-      parent {
-        id
-        text
-        teacher {
-          firstName
-          lastName
-        }
-        subjects
-        upVoteCount
-        downVoteCount
-        viewCount
-        createdAt
-        children {
-          id
-          text
-        }
-      }
-    }
     orderNumber
-    allClones {
+    clones {
       id
       text
       parent {
@@ -1317,7 +1296,7 @@ export const SentenceDocument = gql`
           id
           text
         }
-        allClones {
+        clones {
           id
           text
           teacher {

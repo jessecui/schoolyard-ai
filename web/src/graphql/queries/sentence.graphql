@@ -46,29 +46,8 @@ query Sentence($id: Int!) {
         text
       }
     }
-    origin {
-      id
-      orderNumber
-      parent {
-        id
-        text
-        teacher {
-          firstName
-          lastName
-        }
-        subjects
-        upVoteCount
-        downVoteCount
-        viewCount
-        createdAt
-        children {
-          id
-          text
-        }
-      }
-    }
     orderNumber
-    allClones {
+    clones {
       id
       text
       parent {
@@ -106,7 +85,7 @@ query Sentence($id: Int!) {
           id
           text
         }
-        allClones {
+        clones {
           id
           text
           teacher {
