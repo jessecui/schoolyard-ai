@@ -49,18 +49,12 @@ const Index: React.FC<{}> = ({}) => {
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
 
-  function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   useEffect(() => {
     setSentenceData(data);
     setSentenceDataLoading(loading);
     setUserData(meData);
     setUserDataLoading(meLoading);
   });
-
-  let activeSentenceData = sentenceData;
 
   const [addVote] = useAddVoteToSentenceMutation();
 

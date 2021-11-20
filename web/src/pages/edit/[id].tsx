@@ -533,6 +533,13 @@ export const Edit: React.FC<{}> = ({}) => {
                                         variables: {
                                           id: sentenceData.sentence.id,
                                         },
+                                        update: (cache) => {
+                                          cache.evict({
+                                            id:
+                                              "Sentence:" +
+                                              sentenceData.sentence?.id,
+                                          });
+                                        },
                                       });
                                     }
                                     router.push("/");

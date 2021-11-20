@@ -218,15 +218,17 @@ export class SentenceResolver {
 
     const newSummarySentence = summarySentenceQuery.raw[0];
 
-    await getConnection()
-      .createQueryBuilder()
-      .insert()
-      .into(Cloning)
-      .values({
-        olderCloneId: cloningOriginId,
-        youngerCloneId: newSummarySentence.id,
-      })
-      .execute();
+    if (cloningOriginId) {
+      await getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(Cloning)
+        .values({
+          olderCloneId: cloningOriginId,
+          youngerCloneId: newSummarySentence.id,
+        })
+        .execute();
+    }
 
     /* If there are other sentences with the same text as our summary sentence,
     we can set them as as clones. */
@@ -278,7 +280,7 @@ export class SentenceResolver {
             .into(ParentChild)
             .values({
               parentId: newSummarySentence.id,
-              childId: newChild!.id,
+              childId: newChild.id,
               orderNumber: index,
             })
             .execute();
@@ -293,15 +295,17 @@ export class SentenceResolver {
           if (existingChildren) {
             await Promise.all(
               existingChildren.map(async (existingChild) => {
-                await manager
-                  .createQueryBuilder()
-                  .insert()
-                  .into(Cloning)
-                  .values({
-                    olderCloneId: existingChild.id,
-                    youngerCloneId: newChild.id,
-                  })
-                  .execute();
+                if (existingChild) {
+                  await manager
+                    .createQueryBuilder()
+                    .insert()
+                    .into(Cloning)
+                    .values({
+                      olderCloneId: existingChild.id,
+                      youngerCloneId: newChild.id,
+                    })
+                    .execute();
+                }
               })
             );
           }
