@@ -13,27 +13,20 @@ import {
   Icon,
   Input,
   Radio,
-  RadioGroup,
-  Select,
-  Text,
-  Textarea,
+  RadioGroup, Text,
+  Textarea
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import { IoPeople, IoPersonCircle } from "react-icons/io5";
-import {
-  RiCalendarEventFill,
-  RiThumbDownLine,
-  RiThumbUpLine,
-} from "react-icons/ri";
+import { IoPersonCircle } from "react-icons/io5";
 import {
   MeQuery,
   Sentence,
   useDeleteParagraphMutation,
   useMeQuery,
   useSentenceQuery,
-  useUpdateParagraphMutation,
+  useUpdateParagraphMutation
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -542,7 +535,7 @@ export const Edit: React.FC<{}> = ({}) => {
                                         },
                                       });
                                     }
-                                    router.push("/");
+                                    router.push("/?deleteSuccess=true");
                                   }}
                                   ml={3}
                                 >
