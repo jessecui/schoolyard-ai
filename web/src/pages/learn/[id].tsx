@@ -82,11 +82,11 @@ const Learn: React.FC<{}> = ({}) => {
       let newViewedIds = [...viewedIds];
       newViewedIds.push(sentenceData?.sentence?.id);
       setViewedIds(newViewedIds);
-    } else if (sentenceData?.sentence?.allClones && router.query.clone) {
+    } else if (sentenceData?.sentence?.clones && router.query.clone) {
       addView({
         variables: {
           sentenceId:
-            sentenceData?.sentence?.allClones[
+            sentenceData?.sentence?.clones[
               parseInt(router.query.clone as string)
             ].id,
         },
@@ -94,9 +94,8 @@ const Learn: React.FC<{}> = ({}) => {
 
       let newViewedIds = [...viewedIds];
       newViewedIds.push(
-        sentenceData?.sentence?.allClones[
-          parseInt(router.query.clone as string)
-        ].id
+        sentenceData?.sentence?.clones[parseInt(router.query.clone as string)]
+          .id
       );
       setViewedIds(newViewedIds);
     }
@@ -141,8 +140,8 @@ const Learn: React.FC<{}> = ({}) => {
 
   if (sentenceData?.sentence) {
     sentenceList = [
-      ...(sentenceData.sentence.allClones
-        ? (sentenceData.sentence.allClones as any[])
+      ...(sentenceData.sentence.clones
+        ? (sentenceData.sentence.clones as any[])
         : [null]),
     ].filter(function (element) {
       return element != null && element.children;
@@ -169,8 +168,8 @@ const Learn: React.FC<{}> = ({}) => {
     return filteredClones;
   };
 
-  let allParents = sentenceData?.sentence?.allClones
-    ? sentenceData?.sentence?.allClones
+  let allParents = sentenceData?.sentence?.clones
+    ? sentenceData?.sentence?.clones
         .map((clone) => {
           return { parent: clone.parent, orderNumber: clone.orderNumber };
         })
@@ -478,13 +477,13 @@ const Learn: React.FC<{}> = ({}) => {
                   <Text>
                     {child.text}
                     &nbsp;
-                    {child.allClones &&
-                      clonesWithChildren(child.allClones)[
+                    {child.clones &&
+                      clonesWithChildren(child.clones)[
                         activeChildrenCloneIndices[index]
                       ] &&
                       (
-                        child.allClones &&
-                        clonesWithChildren(child.allClones)[
+                        child.clones &&
+                        clonesWithChildren(child.clones)[
                           activeChildrenCloneIndices[index]
                         ]
                       ).children?.map((grandchild) => (
@@ -505,24 +504,24 @@ const Learn: React.FC<{}> = ({}) => {
                       mr={"6px"}
                     />
                     <Text fontWeight="bold" color="grayMain" fontSize={"14px"}>
-                      {child.allClones &&
-                        clonesWithChildren(child.allClones)[
+                      {child.clones &&
+                        clonesWithChildren(child.clones)[
                           activeChildrenCloneIndices[index]
                         ] &&
                         (
-                          child.allClones &&
-                          clonesWithChildren(child.allClones)[
+                          child.clones &&
+                          clonesWithChildren(child.clones)[
                             activeChildrenCloneIndices[index]
                           ]
                         ).teacher.firstName[0]}
                       {". "}
-                      {child.allClones &&
-                        clonesWithChildren(child.allClones)[
+                      {child.clones &&
+                        clonesWithChildren(child.clones)[
                           activeChildrenCloneIndices[index]
                         ] &&
                         (
-                          child.allClones &&
-                          clonesWithChildren(child.allClones)[
+                          child.clones &&
+                          clonesWithChildren(child.clones)[
                             activeChildrenCloneIndices[index]
                           ]
                         ).teacher.lastName}
@@ -539,9 +538,9 @@ const Learn: React.FC<{}> = ({}) => {
                         icon={<RiArrowLeftSLine />}
                         isDisabled={
                           activeSentence?.children &&
-                          activeSentence.children[index].allClones
+                          activeSentence.children[index].clones
                             ? clonesWithChildren(
-                                activeSentence.children[index].allClones
+                                activeSentence.children[index].clones!
                               ).length == 1
                             : true
                         }
@@ -555,7 +554,7 @@ const Learn: React.FC<{}> = ({}) => {
                               ? newActiveChildrenCloneIndices[index] - 1
                               : activeSentence?.children
                               ? clonesWithChildren(
-                                  activeSentence.children[index].allClones
+                                  activeSentence.children[index].clones!
                                 ).length - 1
                               : 0;
                           setActiveChildrenCloneIndices(
@@ -581,11 +580,11 @@ const Learn: React.FC<{}> = ({}) => {
                       <NextLink
                         href={
                           "/learn/" +
-                          (child.allClones &&
-                            clonesWithChildren(child.allClones)[
+                          (child.clones &&
+                            clonesWithChildren(child.clones)[
                               activeChildrenCloneIndices[index]
                             ] &&
-                            clonesWithChildren(child.allClones)[
+                            clonesWithChildren(child.clones)[
                               activeChildrenCloneIndices[index]
                             ].id)
                         }
@@ -609,9 +608,9 @@ const Learn: React.FC<{}> = ({}) => {
                         icon={<RiArrowRightSLine />}
                         isDisabled={
                           activeSentence?.children &&
-                          activeSentence.children[index].allClones
+                          activeSentence.children[index].clones
                             ? clonesWithChildren(
-                                activeSentence.children[index].allClones
+                                activeSentence.children[index].clones!
                               ).length == 1
                             : true
                         }
@@ -624,7 +623,7 @@ const Learn: React.FC<{}> = ({}) => {
                             newActiveChildrenCloneIndices[index] <
                             (activeSentence?.children
                               ? clonesWithChildren(
-                                  activeSentence.children[index].allClones
+                                  activeSentence.children[index].clones!
                                 ).length - 1
                               : 0)
                               ? newActiveChildrenCloneIndices[index] + 1
@@ -669,46 +668,48 @@ const Learn: React.FC<{}> = ({}) => {
           <Text color="grayMain" fontWeight="bold" mb={2}>
             Usage{allParents.length > 1 ? "s" : ""}
           </Text>
-          {allParents.map((p) => (
-            <Box key={p.parent!.id}>
-              <Flex align="center" flexWrap="wrap">
-                <Icon
-                  as={IoPersonCircle}
-                  color="grayMain"
-                  w={"24px"}
-                  h={"24px"}
-                  mr={"6px"}
-                />
-                <Text fontWeight="bold" color="grayMain" fontSize={"14px"}>
-                  {p.parent?.teacher.firstName[0]}
-                  {". "}
-                  {p.parent?.teacher.lastName}
-                </Text>
-              </Flex>
-              <Text as="span">{p?.parent!.text} </Text>
-              {p?.parent!.children?.map((c) => (
-                <Text
-                  key={c.orderNumber}
-                  fontWeight={
-                    c.orderNumber == p.orderNumber ? "bold" : "normal"
-                  }
-                  as="span"
-                >
-                  {c.text}{" "}
-                </Text>
-              ))}
-              <Box>
-                <NextLink href={"/learn/" + p.parent?.id}>
-                  <Link color="iris" _hover={{ color: "irisDark" }}>
-                    <Icon as={IoExpand} w="20px" height="20px" />
-                    <Text ml={1} display="inline">
-                      expand
-                    </Text>
-                  </Link>
-                </NextLink>
+          <Stack spacing={2}>
+            {allParents.map((p) => (
+              <Box key={p.parent!.id}>
+                <Flex align="center" flexWrap="wrap">
+                  <Icon
+                    as={IoPersonCircle}
+                    color="grayMain"
+                    w={"24px"}
+                    h={"24px"}
+                    mr={"6px"}
+                  />
+                  <Text fontWeight="bold" color="grayMain" fontSize={"14px"}>
+                    {p.parent?.teacher.firstName[0]}
+                    {". "}
+                    {p.parent?.teacher.lastName}
+                  </Text>
+                </Flex>
+                <Text as="span">{p?.parent!.text} </Text>
+                {p?.parent!.children?.map((c) => (
+                  <Text
+                    key={c.orderNumber}
+                    fontWeight={
+                      c.orderNumber == p.orderNumber ? "bold" : "normal"
+                    }
+                    as="span"
+                  >
+                    {c.text}{" "}
+                  </Text>
+                ))}
+                <Box>
+                  <NextLink href={"/learn/" + p.parent?.id}>
+                    <Link color="iris" _hover={{ color: "irisDark" }}>
+                      <Icon as={IoExpand} w="20px" height="20px" />
+                      <Text ml={1} display="inline">
+                        expand
+                      </Text>
+                    </Link>
+                  </NextLink>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
+          </Stack>
         </Box>
       )}
     </>

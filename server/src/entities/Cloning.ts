@@ -1,36 +1,25 @@
 import { Field, ObjectType } from "type-graphql";
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToOne,
-  OneToOne,
-  PrimaryColumn,
-} from "typeorm";
+import { BaseEntity, Entity, ManyToMany, PrimaryColumn } from "typeorm";
 import { Sentence } from "./Sentence";
 
 @ObjectType()
 @Entity()
 export class Cloning extends BaseEntity {
-  @OneToOne(() => Sentence, (sentence) => sentence.originRelation, {
+  @ManyToMany(() => Sentence, (sentence) => sentence.olderCloneRelation, {
     onDelete: "CASCADE",
   })
-  origin: Sentence;
+  olderClone: Sentence;
 
   @Field()
   @PrimaryColumn()
-  originId: number;
+  olderCloneId: number;
 
-  @ManyToOne(() => Sentence, (sentence) => sentence.cloneRelation, {
+  @ManyToMany(() => Sentence, (sentence) => sentence.youngerCloneRelation, {
     onDelete: "CASCADE",
   })
-  clone: Sentence;
+  youngerClone: Sentence;
 
   @Field()
   @PrimaryColumn()
-  cloneId: number;
-
-  @Field({ nullable: true })
-  @Column({ type: "float", nullable: true })
-  cloneQuality: number;
+  youngerCloneId: number;
 }

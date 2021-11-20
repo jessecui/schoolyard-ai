@@ -1,5 +1,11 @@
-mutation createParagraph($paragraphInput: ParagraphInput!) {
-  createParagraph(paragraphInput: $paragraphInput) {
+mutation createParagraph(
+  $paragraphInput: ParagraphInput!
+  $cloningOriginId: Int
+) {
+  createParagraph(
+    paragraphInput: $paragraphInput
+    cloningOriginId: $cloningOriginId
+  ) {
     id
     text
     teacher {

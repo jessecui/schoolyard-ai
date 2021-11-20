@@ -29,6 +29,7 @@ import {
 } from "react-icons/ri";
 import {
   MeQuery,
+  Sentence,
   useDeleteParagraphMutation,
   useMeQuery,
   useSentenceQuery,
@@ -44,6 +45,7 @@ export const Edit: React.FC<{}> = ({}) => {
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
   useEffect(() => {
     if (!meData?.me) {
+      console.log("USER NOT FOUND");
       router.push("/");
     }
     setUserData(meData);
@@ -65,14 +67,23 @@ export const Edit: React.FC<{}> = ({}) => {
     return error;
   };
 
-  const getSentenceParent = (sentence: any) => {
+  const getSentenceParent = (sentence: Sentence) => {
     if (!sentence) {
       return null;
     }
+
+    let sentenceClonesWithChildrenAndOrder = sentence.clones
+      ? sentence.clones.filter(
+          (clone: Sentence) =>
+            clone.children && clone.id != sentence.id && clone.orderNumber
+        )
+      : null;
+
     return sentence.parent
       ? sentence.parent
-      : sentence.origin?.parent
-      ? sentence.origin.parent
+      : sentenceClonesWithChildrenAndOrder &&
+        sentenceClonesWithChildrenAndOrder.length > 0
+      ? sentenceClonesWithChildrenAndOrder[0].parent
       : null;
   };
 
@@ -80,10 +91,17 @@ export const Edit: React.FC<{}> = ({}) => {
     if (!sentence) {
       return null;
     }
+    let sentenceClonesWithChildrenAndOrder = sentence.clones
+      ? sentence.clones.filter(
+          (clone: Sentence) =>
+            clone.children && clone.id != sentence.id && clone.orderNumber
+        )
+      : null;
     let returnVal = sentence.parent
       ? sentence.orderNumber
-      : sentence.origin?.parent
-      ? sentence.origin.orderNumber
+      : sentenceClonesWithChildrenAndOrder &&
+        sentenceClonesWithChildrenAndOrder.length > 0
+      ? sentenceClonesWithChildrenAndOrder[0].orderNumber
       : null;
     return returnVal;
   };
@@ -92,6 +110,11 @@ export const Edit: React.FC<{}> = ({}) => {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef();
+
+  console.log(
+    "SENTENCE DATA ORDER NUM: ",
+    sentenceData?.sentence?.orderNumber == null
+  );
 
   return sentenceData?.sentence ? (
     <Box>
@@ -112,99 +135,6 @@ export const Edit: React.FC<{}> = ({}) => {
           Update Content Form
         </Text>
       </Box>
-      {getSentenceParent(sentenceData?.sentence) && (
-        <Box
-          border="2px"
-          borderColor="grayLight"
-          borderRadius="md"
-          bg="White"
-          p={4}
-          my={2}
-        >
-          <Text fontWeight="bold" color="grayMain">
-            Content Being Extended
-          </Text>
-          <Divider borderColor="grayLight" border="1px" mb={2} />
-
-          <Box p={1}>
-            <Flex>
-              <Flex align="center">
-                <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
-                <Box>
-                  <Text fontWeight="bold" fontSize="lg">
-                    {
-                      getSentenceParent(sentenceData?.sentence).teacher
-                        .firstName
-                    }{" "}
-                    {getSentenceParent(sentenceData?.sentence).teacher.lastName}
-                  </Text>
-                  <HStack spacing="6px">
-                    {getSentenceParent(sentenceData?.sentence).subjects.map(
-                      (subject: any) => (
-                        <Flex align="center" key={subject}>
-                          <Circle
-                            mr="4px"
-                            size={4}
-                            bg="grayMain" // TODO make these the colors from before using router params
-                          />
-                          <Text size="sm">{"#" + subject.toLowerCase()}</Text>
-                        </Flex>
-                      )
-                    )}
-                  </HStack>
-                </Box>
-              </Flex>
-            </Flex>
-            <Text my={2} fontWeight="bold" fontSize="xl">
-              {getSentenceParent(sentenceData?.sentence).text}
-            </Text>
-            <Text my={2} fontSize="lg">
-              {getSentenceParent(sentenceData?.sentence).children &&
-              getSentenceParent(sentenceData?.sentence).children.length > 0
-                ? getSentenceParent(sentenceData?.sentence)
-                    .children.map((child: any) => child.text)
-                    .join(" ")
-                : null}
-            </Text>
-            <HStack spacing={2}>
-              <>
-                <Text color="grayMain">
-                  <Icon
-                    mx="4px"
-                    height="24px"
-                    as={RiThumbUpLine}
-                    h="18px"
-                    w="18px"
-                  />
-                  {getSentenceParent(sentenceData?.sentence).upVoteCount}
-                </Text>
-                <Text color="grayMain">
-                  <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
-                  {getSentenceParent(sentenceData?.sentence).downVoteCount}
-                </Text>
-              </>
-
-              <Text color="grayMain">
-                <Icon as={IoPeople} mr={1} w={5} h={5} />
-                {getSentenceParent(sentenceData?.sentence).viewCount +
-                  (getSentenceParent(sentenceData?.sentence).viewCount == 1
-                    ? " view"
-                    : " views")}
-              </Text>
-              <Text color="grayMain">
-                <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
-                {new Date(
-                  getSentenceParent(sentenceData?.sentence).createdAt
-                ).toLocaleString("default", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </Text>
-            </HStack>
-          </Box>
-        </Box>
-      )}
       <Box
         border="2px"
         borderColor="grayLight"
@@ -240,16 +170,10 @@ export const Edit: React.FC<{}> = ({}) => {
             (child) => child.text
           ),
           subjects: sentenceData.sentence.subjects.join(","),
-          linkedSentence: sentenceData.sentence
-            ? JSON.stringify([
-                sentenceData?.sentence.id.toString(),
-                sentenceData.sentence.text,
-              ])
-            : JSON.stringify(["", ""]),
           checkIfSameAsParent:
-            getSentenceParent(sentenceData.sentence) &&
+            getSentenceParent(sentenceData.sentence as Sentence) &&
             sentenceData.sentence.text ==
-              getSentenceParent(sentenceData.sentence).children[
+              getSentenceParent(sentenceData.sentence as Sentence)!.children![
                 getSentenceOrderNumber(sentenceData.sentence) as number
               ].text,
         }}
@@ -272,7 +196,7 @@ export const Edit: React.FC<{}> = ({}) => {
           if (response.errors) {
             console.log("Update paragraph error response: ", response.errors);
           } else {
-            router.push("/learn/" + router.query.id);
+            router.push("/learn/" + response.data?.updateParagraph?.id);
           }
         }}
       >
@@ -288,101 +212,64 @@ export const Edit: React.FC<{}> = ({}) => {
                 my={2}
               >
                 <Stack spacing={4}>
-                  {getSentenceParent(sentenceData.sentence) && (
-                    <Box>
-                      <Text fontWeight="bold" color="grayMain">
-                        Sentence Being Linked
-                      </Text>
-                      <Divider borderColor="grayLight" border="1px" mb={2} />
-                      <Field name="linkedSentence" validate={checkIfEmpty}>
-                        {({ field, form }: any) => (
-                          <FormControl
-                            isInvalid={
-                              form.errors.linkedSentence &&
-                              form.touched.linkedSentence
-                            }
-                          >
-                            <Select
-                              {...field}
-                              onChange={(e) => {
-                                props.handleChange(e);
-                                if (props.values.checkIfSameAsParent) {
-                                  props.setFieldValue(
-                                    "summarySentence",
-                                    JSON.parse(e.target.value)[1]
-                                  );
-                                }
-                              }}
-                            >
-                              <option
-                                value={JSON.stringify([
-                                  String(
-                                    getSentenceParent(sentenceData.sentence).id
-                                  ),
-                                  getSentenceParent(sentenceData.sentence).text,
-                                ])}
-                              >
-                                {getSentenceParent(sentenceData.sentence).text}
-                              </option>
-                              {getSentenceParent(
+                  {getSentenceParent(sentenceData.sentence as Sentence) &&
+                    sentenceData.sentence?.children && (
+                      <Box>
+                        <Text fontWeight="bold" color="grayMain">
+                          Sentence Being Linked
+                        </Text>
+                        <Divider borderColor="grayLight" border="1px" mb={2} />
+                        <Text>
+                          {
+                            getSentenceParent(
+                              sentenceData.sentence as Sentence
+                            )!.children![
+                              getSentenceOrderNumber(
                                 sentenceData.sentence
-                              ).children?.map((child: any, index: number) => (
-                                <option
-                                  key={"select" + index}
-                                  value={JSON.stringify([
-                                    child.id.toString(),
-                                    child.text,
-                                  ])}
-                                >
-                                  {child.text}
-                                </option>
-                              ))}
-                            </Select>
-                            <FormErrorMessage>
-                              {form.errors.linkedSentence}
-                            </FormErrorMessage>
-                          </FormControl>
-                        )}
-                      </Field>
-                    </Box>
-                  )}
+                              ) as number
+                            ].text
+                          }
+                        </Text>
+                      </Box>
+                    )}
                   <Box>
                     <Text fontWeight="bold" color="grayMain">
                       Summary Sentence
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
-                    {getSentenceParent(sentenceData.sentence) && (
-                      <Field
-                        id="checkIfSameAsParent"
-                        name="checkIfSameAsParent"
-                        type="checkbox"
-                        validate={true}
-                      >
-                        {({ field }: any) => (
-                          <Checkbox
-                            isChecked={props.values.checkIfSameAsParent}
-                            {...field}
-                            onChange={(e) => {
-                              props.setFieldValue(
-                                "checkIfSameAsParent",
-                                e.target.checked
-                              );
-                              if (e.target.checked) {
+                    {getSentenceParent(sentenceData.sentence as Sentence) &&
+                      sentenceData.sentence?.children && (
+                        <Field
+                          id="checkIfSameAsParent"
+                          name="checkIfSameAsParent"
+                          type="checkbox"
+                          validate={true}
+                        >
+                          {({ field }: any) => (
+                            <Checkbox
+                              isChecked={props.values.checkIfSameAsParent}
+                              {...field}
+                              onChange={(e) => {
                                 props.setFieldValue(
-                                  "summarySentence",
-                                  JSON.parse(props.values.linkedSentence)[1]
+                                  "checkIfSameAsParent",
+                                  e.target.checked
                                 );
-                              }
-                            }}
-                          >
-                            <Text fontSize="sm">
-                              {" "}
-                              Keep original summary sentence
-                            </Text>
-                          </Checkbox>
-                        )}
-                      </Field>
-                    )}
+                                if (e.target.checked) {
+                                  props.setFieldValue(
+                                    "summarySentence",
+                                    sentenceData.sentence?.text
+                                  );
+                                }
+                              }}
+                            >
+                              <Text fontSize="sm">
+                                {" "}
+                                Keep original summary sentence
+                              </Text>
+                            </Checkbox>
+                          )}
+                        </Field>
+                      )}
                     <Field name="summarySentence" validate={checkIfEmpty}>
                       {({ field, form }: any) => (
                         <FormControl
@@ -579,6 +466,24 @@ export const Edit: React.FC<{}> = ({}) => {
                   >
                     Update
                   </Button>
+                  <Button
+                    size="sm"
+                    bg="none"
+                    color="grayMain"
+                    _hover={{
+                      bg: "none",
+                      color: "gray.800",
+                      textDecorationLine: "underline",
+                    }}
+                    onClick={() =>
+                      router.push("/learn/" + sentenceData.sentence?.id)
+                    }
+                    _focus={{
+                      boxShadow: "none",
+                    }}
+                  >
+                    Cancel
+                  </Button>
                   <Box>
                     <Button
                       size="sm"
@@ -608,40 +513,71 @@ export const Edit: React.FC<{}> = ({}) => {
                             Delete
                           </AlertDialogHeader>
 
-                          <AlertDialogBody>
-                            Are you sure? You cannot undo this action
-                            afterwards.
-                            <Text fontWeight="bold">
-                              Other explanation sentences may lose their summary
-                              sentence if their summary sentence is one of the
-                              sentences you are deleting.
-                            </Text>
-                          </AlertDialogBody>
-
-                          <AlertDialogFooter>
-                            <Button
-                              color="white"
-                              bg="mint"
-                              ref={cancelRef.current}
-                              onClick={onClose}
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              colorScheme="red"
-                              onClick={() => {
-                                if (sentenceData.sentence) {
-                                  deleteParagraph({
-                                    variables: { id: sentenceData.sentence.id },
-                                  });
-                                }
-                                router.push("/");
-                              }}
-                              ml={3}
-                            >
-                              Delete
-                            </Button>
-                          </AlertDialogFooter>
+                          {!sentenceData.sentence?.parent?.id ? (
+                            <AlertDialogBody>
+                              Are you sure? You cannot undo this action
+                              afterwards.
+                              <Text fontWeight="bold">
+                                Other explanation sentences may lose their
+                                summary sentence if their summary sentence is
+                                one of the sentences you are deleting.
+                              </Text>
+                              <AlertDialogFooter>
+                                <Button
+                                  color="white"
+                                  bg="mint"
+                                  ref={cancelRef.current}
+                                  onClick={onClose}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="red"
+                                  onClick={() => {
+                                    if (sentenceData.sentence) {
+                                      deleteParagraph({
+                                        variables: {
+                                          id: sentenceData.sentence.id,
+                                        },
+                                      });
+                                    }
+                                    router.push("/");
+                                  }}
+                                  ml={3}
+                                >
+                                  Delete
+                                </Button>
+                              </AlertDialogFooter>
+                            </AlertDialogBody>
+                          ) : (
+                            <AlertDialogBody>
+                              This sentence is part of a paragraph and can only
+                              be deleted by deleting the entire paragraph.
+                              <Box mt={2}>
+                                <Button
+                                  color="white"
+                                  bg="mint"
+                                  ref={cancelRef.current}
+                                  onClick={onClose}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="blue"
+                                  onClick={() => {
+                                    onClose();
+                                    router.push(
+                                      "/edit/" +
+                                        sentenceData.sentence?.parent?.id
+                                    );
+                                  }}
+                                  ml={3}
+                                >
+                                  Edit Paragraph
+                                </Button>
+                              </Box>
+                            </AlertDialogBody>
+                          )}
                         </AlertDialogContent>
                       </AlertDialogOverlay>
                     </AlertDialog>
