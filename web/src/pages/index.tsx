@@ -1,13 +1,15 @@
 import { ApolloCache, gql } from "@apollo/client";
+import { Box, Circle, Flex, HStack, Link, Stack } from "@chakra-ui/layout";
 import {
-  Box,
-  Circle,
-  Flex,
-  HStack,
-  Link, Stack
-} from "@chakra-ui/layout";
-import { Icon, IconButton, Text } from "@chakra-ui/react";
+  Alert,
+  AlertIcon,
+  CloseButton,
+  Icon,
+  IconButton,
+  Text,
+} from "@chakra-ui/react";
 import NextLink from "next/link";
+import router from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
@@ -16,7 +18,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine
+  RiThumbUpLine,
 } from "react-icons/ri";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
@@ -26,7 +28,7 @@ import {
   useAddVoteToSentenceMutation,
   useMeQuery,
   useSentencesQuery,
-  VoteType
+  VoteType,
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -48,6 +50,8 @@ const Index: React.FC<{}> = ({}) => {
   >();
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
+
+  const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
     setSentenceData(data);
@@ -84,8 +88,20 @@ const Index: React.FC<{}> = ({}) => {
     }
   };
 
-  return (
-    sentenceData?.sentences.sentences ? (
+  return sentenceData?.sentences.sentences ? (
+    <Box>
+      {router.query.deleteSuccess && (
+        <Alert status="success" mb={2}>
+          <AlertIcon />
+          Sentence successfully deleted
+          <CloseButton
+            position="absolute"
+            right="8px"
+            top="8px"
+            onClick={() => router.push("/", undefined, { shallow: true })}
+          />
+        </Alert>
+      )}
       <InfiniteScroll
         dataLength={sentenceData.sentences.sentences.length}
         next={() => {
@@ -284,8 +300,8 @@ const Index: React.FC<{}> = ({}) => {
           ))}{" "}
         </Stack>
       </InfiniteScroll>
-    ) : null
-  );
+    </Box>
+  ) : null;
 };
 
 export default withApollo({ ssr: true })(Index);
