@@ -5,19 +5,19 @@ import { Sentence } from "./Sentence";
 @ObjectType()
 @Entity()
 export class Cloning extends BaseEntity {
-  @ManyToMany(() => Sentence, (sentence) => sentence.olderCloneRelation, {
+  @ManyToMany(() => Sentence, (sentence) => sentence.asOlderClone, {
     onDelete: "CASCADE",
   })
-  olderClone: Sentence;
+  olderClones: Sentence[];
 
   @Field()
   @PrimaryColumn()
   olderCloneId: number;
 
-  @ManyToMany(() => Sentence, (sentence) => sentence.youngerCloneRelation, {
+  @ManyToMany(() => Sentence, (sentence) => sentence.asYoungerClone, {
     onDelete: "CASCADE",
   })
-  youngerClone: Sentence;
+  youngerClones: Sentence[];
 
   @Field()
   @PrimaryColumn()

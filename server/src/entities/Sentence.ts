@@ -39,11 +39,11 @@ export class Sentence extends BaseEntity {
   teacher: User;
 
   // Parent Child Lineage
-  @OneToOne(() => ParentChild, (parentChild) => parentChild.parent)
-  parentRelation: ParentChild;
+  @OneToMany(() => ParentChild, (parentChild) => parentChild.parent)
+  asParent: ParentChild[];
 
-  @ManyToOne(() => ParentChild, (parentChild) => parentChild.child)
-  childRelation: ParentChild;
+  @OneToOne(() => ParentChild, (parentChild) => parentChild.child)
+  asChild: ParentChild;
 
   @Field(() => Sentence, { nullable: true })
   parent: Sentence;
@@ -55,11 +55,11 @@ export class Sentence extends BaseEntity {
   orderNumber: number
 
   // Clone Lineage
-  @ManyToMany(() => Cloning, (cloning) => cloning.olderClone)
-  olderCloneRelation: Cloning;
+  @ManyToMany(() => Cloning, (cloning) => cloning.olderClones)
+  asOlderClone: Cloning[];
 
-  @ManyToMany(() => Cloning, (cloning) => cloning.youngerClone)
-  youngerCloneRelation: Cloning;
+  @ManyToMany(() => Cloning, (cloning) => cloning.youngerClones)
+  asYoungerClone: Cloning[];
 
   @Field(() => [Sentence], {nullable: true})
   clones: Sentence[];

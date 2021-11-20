@@ -4,15 +4,15 @@ import {
   BaseEntity,
   PrimaryColumn,
   OneToOne,
-  OneToMany,
   Column,
+  ManyToOne,
 } from "typeorm";
 import { Sentence } from "./Sentence";
 
 @ObjectType()
 @Entity()
 export class ParentChild extends BaseEntity {
-  @OneToOne(() => Sentence, (sentence) => sentence.parentRelation, {
+  @ManyToOne(() => Sentence, (sentence) => sentence.asParent, {
     onDelete: "CASCADE",
   })
   parent: Sentence;
@@ -21,7 +21,7 @@ export class ParentChild extends BaseEntity {
   @PrimaryColumn()
   parentId: number;
 
-  @OneToMany(() => Sentence, (sentence) => sentence.childRelation, {
+  @OneToOne(() => Sentence, (sentence) => sentence.asChild, {
     onDelete: "CASCADE",
   })
   child: Sentence;
