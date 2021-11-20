@@ -44,8 +44,7 @@ export const Edit: React.FC<{}> = ({}) => {
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
   useEffect(() => {
-    if (!meData?.me) {
-      console.log("USER NOT FOUND");
+    if (!meLoading && !meData?.me) {
       router.push("/");
     }
     setUserData(meData);
@@ -110,11 +109,6 @@ export const Edit: React.FC<{}> = ({}) => {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef();
-
-  console.log(
-    "SENTENCE DATA ORDER NUM: ",
-    sentenceData?.sentence?.orderNumber == null
-  );
 
   return sentenceData?.sentence ? (
     <Box>

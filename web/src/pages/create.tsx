@@ -32,7 +32,7 @@ export const Create: React.FC<{}> = ({}) => {
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
   useEffect(() => {
-    if (!meData?.me) {
+    if (!meLoading && !meData?.me) {
       router.push("/");
     }
     setUserData(meData);
