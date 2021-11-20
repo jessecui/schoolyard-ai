@@ -8,21 +8,20 @@ import {
   IconButton,
   Input,
   Radio,
-  RadioGroup, Text,
-  Textarea
+  RadioGroup,
+  Text,
+  Textarea,
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoPersonCircle } from "react-icons/io5";
-import {
-  RiAddLine, RiSubtractLine
-} from "react-icons/ri";
+import { RiAddLine, RiSubtractLine } from "react-icons/ri";
 import {
   MeQuery,
   useCreateParagraphMutation,
   useMeQuery,
-  useSentenceQuery
+  useSentenceQuery,
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -122,9 +121,12 @@ export const Create: React.FC<{}> = ({}) => {
                 childrenText: values.explanationSentences.map(
                   (sentence: string) => sentence.trim()
                 ),
-                subjects: subjectsArray,                
+                subjects: subjectsArray,
               },
               cloningOriginId: parentData?.sentence?.id,
+            },
+            update: (cache) => {
+              cache.evict({ fieldName: "sentences" });
             },
           });
           if (response.errors) {
