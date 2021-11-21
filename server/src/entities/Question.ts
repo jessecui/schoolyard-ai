@@ -17,7 +17,7 @@ import { User } from "./User";
 export enum QuestionType {
   TEXT = "text", // Written answer
   SINGLE = "single", // Multiple choice single answer
-  MULTIPLE = "multiplpe", // Multiple choice multiple answer
+  MULTIPLE = "multiple", // Multiple choice multiple answer
 }
 registerEnumType(QuestionType, {
   name: "QuestionType",
