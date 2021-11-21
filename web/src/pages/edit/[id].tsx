@@ -11,9 +11,7 @@ import {
   FormControl,
   FormErrorMessage,
   Icon,
-  Input,
-  Radio,
-  RadioGroup, Text,
+  Input, Text,
   Textarea
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik } from "formik";
@@ -121,34 +119,6 @@ export const Edit: React.FC<{}> = ({}) => {
         >
           Update Content Form
         </Text>
-      </Box>
-      <Box
-        border="2px"
-        borderColor="grayLight"
-        borderRadius="md"
-        bg="White"
-        p={4}
-        my={2}
-      >
-        <Text fontWeight="bold" color="grayMain">
-          Content Type
-        </Text>
-        <Divider borderColor="grayLight" border="1px" mb={2} />
-        <RadioGroup
-          size="lg"
-          borderColor="grayMain"
-          colorScheme="gray"
-          defaultValue="learning"
-        >
-          <HStack spacing={4}>
-            <Radio value="learning">
-              <Text fontSize="md">Learning</Text>
-            </Radio>
-            <Radio value="question">
-              <Text fontSize="md">Question</Text>
-            </Radio>
-          </HStack>
-        </RadioGroup>
       </Box>
       <Formik
         initialValues={{

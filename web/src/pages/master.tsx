@@ -244,7 +244,7 @@ const Master: React.FC<{}> = ({}) => {
                     }
                   >
                     <RadioGroup {...field}>
-                      <Stack>
+                      <Flex direction="column">
                         {question.choices!.map((choice) => (
                           <Radio
                             {...field}
@@ -253,13 +253,14 @@ const Master: React.FC<{}> = ({}) => {
                             colorScheme="gray"
                             key={String(question.id) + choice}
                             value={choice}
+                            my="4px"
                           >
                             <Text ml={2} fontSize="16px">
                               {choice}
                             </Text>
                           </Radio>
                         ))}
-                      </Stack>
+                      </Flex>
                     </RadioGroup>
                     <FormErrorMessage>
                       {form.errors.radioGroup}
