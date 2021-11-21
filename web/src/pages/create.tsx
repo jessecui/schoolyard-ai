@@ -120,6 +120,7 @@ export const Create: React.FC<{}> = ({}) => {
         }}
         enableReinitialize={true}
         onSubmit={async (values) => {
+          console.log("values: ", values);
           const subjectsArray = values.subjects
             .split(",")
             .map((s: string) => s.trim());
@@ -181,6 +182,8 @@ export const Create: React.FC<{}> = ({}) => {
                           <Checkbox
                             isChecked={props.values.checkIfSameAsParent}
                             {...field}
+                            borderColor="grayMain"
+                            colorScheme="gray"
                             onChange={(e) => {
                               props.setFieldValue(
                                 "checkIfSameAsParent",
@@ -418,7 +421,9 @@ export const Create: React.FC<{}> = ({}) => {
           questionType: "multipleChoice",
           question: "",
           answerOptions: ["", "", "", ""],
-          correctAnswerIndex: "",
+          correctAnswerIndex: "", // For single multiple choice
+          correctAnswerIndices: [], // For multiple answers
+          correctAnswer: "", // For written answer
           subjects:
             parentData && parentData?.sentence
               ? parentData.sentence.subjects.join(", ")
@@ -443,9 +448,20 @@ export const Create: React.FC<{}> = ({}) => {
                     ? QuestionType.Text
                     : null,
                 choices: values.answerOptions,
-                answer: [
-                  values.answerOptions[parseInt(values.correctAnswerIndex)],
-                ],
+                answer:
+                  values.questionType == "multipleChoice"
+                    ? [
+                        values.answerOptions[
+                          parseInt(values.correctAnswerIndex)
+                        ],
+                      ]
+                    : values.questionType == "multipleAnswers"
+                    ? values.correctAnswerIndices.map(
+                        (index) => values.answerOptions[parseInt(index)]
+                      )
+                    : values.questionType == "writtenAnswer"
+                    ? ["TODO"]
+                    : null,
               },
             },
           });
@@ -666,7 +682,156 @@ export const Create: React.FC<{}> = ({}) => {
                   </Stack>
                 )}
                 {props.values.questionType == "multipleAnswers" && (
-                  <Text>Multiple Answers</Text>
+                  <Stack spacing={4} mt={4}>
+                    <Box>
+                      <Text fontWeight="bold" color="grayMain">
+                        Answer Options
+                      </Text>
+                      <Divider borderColor="grayLight" border="1px" mb={2} />
+                      <FieldArray
+                        name="answerOptions"
+                        render={(arrayHelpers) => (
+                          <>
+                            <Field
+                              name="correctAnswerIndices"
+                              validate={(e: string[]) =>
+                                !e || e.length == 0
+                                  ? "Please select at least one of the answers as a correct answer."
+                                  : null
+                              }
+                            >
+                              {({
+                                field: correctAnswerIndiciesField,
+                                form,
+                              }: any) => (
+                                <Box>
+                                  <FormControl
+                                    isInvalid={
+                                      form.errors.correctAnswerIndices &&
+                                      form.touched.correctAnswerIndices
+                                    }
+                                  >
+                                    <FormErrorMessage>
+                                      {form.errors.correctAnswerIndices}
+                                    </FormErrorMessage>
+                                  </FormControl>
+                                  <Stack spacing={2} mb={2}>
+                                    {props.values.answerOptions.map(
+                                      (_, index) => (
+                                        <Box key={index}>
+                                          <Flex align="center">
+                                            <Checkbox
+                                              {...correctAnswerIndiciesField}
+                                              isChecked={(
+                                                props.values
+                                                  .correctAnswerIndices as string[]
+                                              ).includes(index.toString())}
+                                              colorScheme="gray"
+                                              mr={2}
+                                              value={index.toString()}
+                                            />
+                                            <Text fontSize="md" as="span">
+                                              Correct Answer
+                                            </Text>
+                                          </Flex>
+                                          <Field
+                                            key={"explanation" + index}
+                                            name={`answerOptions.${index}`}
+                                            validate={checkIfEmpty}
+                                          >
+                                            {({ field }: any) => (
+                                              <FormControl
+                                                isInvalid={
+                                                  form.errors.answerOptions &&
+                                                  form.errors.answerOptions[
+                                                    index
+                                                  ] &&
+                                                  form.touched.answerOptions &&
+                                                  form.touched.answerOptions[
+                                                    index
+                                                  ]
+                                                }
+                                              >
+                                                <Textarea
+                                                  {...field}
+                                                  border="2px"
+                                                  borderColor="grayLight"
+                                                />
+                                                <FormErrorMessage>
+                                                  {form.errors.answerOptions &&
+                                                    form.errors.answerOptions[
+                                                      index
+                                                    ]}
+                                                </FormErrorMessage>
+                                              </FormControl>
+                                            )}
+                                          </Field>
+                                        </Box>
+                                      )
+                                    )}
+                                  </Stack>
+                                </Box>
+                              )}
+                            </Field>
+                            <HStack>
+                              <IconButton
+                                aria-label="Add Answer Choice"
+                                icon={<RiAddLine />}
+                                size="xs"
+                                fontSize="24px"
+                                bg="green.400"
+                                color="white"
+                                onClick={() => {
+                                  arrayHelpers.push("");
+                                }}
+                              />
+                              <IconButton
+                                aria-label="Remove Answer Choice"
+                                icon={<RiSubtractLine />}
+                                size="xs"
+                                fontSize="24px"
+                                bg="red.400"
+                                color="white"
+                                onClick={() => {
+                                  console.log(
+                                    props.values.correctAnswerIndices
+                                  );
+                                  if (
+                                    (
+                                      props.values
+                                        .correctAnswerIndices as string[]
+                                    ).includes(
+                                      (
+                                        props.values.answerOptions.length - 1
+                                      ).toString()
+                                    )
+                                  ) {
+                                    let newCorrectAnswerIndicies = [
+                                      ...props.values.correctAnswerIndices,
+                                    ];
+                                    newCorrectAnswerIndicies =
+                                      newCorrectAnswerIndicies.filter(
+                                        (i) =>
+                                          i !==
+                                          (
+                                            props.values.answerOptions.length -
+                                            1
+                                          ).toString()
+                                      );
+                                    props.setFieldValue(
+                                      "correctAnswerIndices",
+                                      newCorrectAnswerIndicies as string[]
+                                    );
+                                  }
+                                  arrayHelpers.pop();
+                                }}
+                              />
+                            </HStack>
+                          </>
+                        )}
+                      />
+                    </Box>
+                  </Stack>
                 )}
                 {props.values.questionType == "writtenAnswer" && (
                   <Text>Written Answer</Text>
@@ -739,28 +904,25 @@ export const Create: React.FC<{}> = ({}) => {
                   {props.values.question}
                 </Text>
                 <Text color="grayMain" fontSize="sm" mb={2}>
-                  Select the correct answer
+                  Select all that apply
                 </Text>
-                <RadioGroup>
-                  <Flex direction="column">
-                    {props.values.answerOptions.map((option, index) => (
-                      <Radio
-                        size="lg"
-                        borderColor="grayMain"
-                        colorScheme="gray"
-                        key={index}
-                        my="4px"
-                        isChecked={
-                          index.toString() == props.values.correctAnswerIndex
-                        }
-                      >
-                        <Text ml={2} fontSize="16px">
-                          {option}
-                        </Text>
-                      </Radio>
-                    ))}
-                  </Flex>
-                </RadioGroup>
+                <Stack>
+                  {props.values.answerOptions.map((option, index) => (
+                    <Checkbox
+                      size="lg"
+                      borderColor="grayMain"
+                      colorScheme="gray"
+                      key={index}
+                      isChecked={(
+                        props.values.correctAnswerIndices as string[]
+                      ).includes(index.toString())}
+                    >
+                      <Text ml={2} fontSize="16px">
+                        {option}
+                      </Text>
+                    </Checkbox>
+                  ))}
+                </Stack>
                 <Divider borderColor="grayLight" border="1px" mt={4} mb={2} />
                 <Button
                   my="4px"
