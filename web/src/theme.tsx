@@ -1,22 +1,26 @@
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
 
-const config : ThemeConfig = {
+const config: ThemeConfig = {
   initialColorMode: "light",
   useSystemColorMode: false,
-}
+};
 
 const fonts = {
   heading: "Red Hat Display",
   body: "Nunito Sans",
-}
+};
 
 const styles = {
   global: {
-    'html, body': {
-      background: '#F4F4F4',
+    "html, body": {
+      background: "#F4F4F4",
+    },
+    html: {
+      overflow: "-moz-scrollbars-vertical",
+      overflowY: "scroll",
     },
   },
-}
+};
 
 const colors = {
   grayMain: "#707F95",
@@ -24,9 +28,9 @@ const colors = {
   iris: "#5565F6",
   irisDark: "#2A327B",
   mint: "#3AD69E",
-  blueSky: "#1B91FF"
-}
+  blueSky: "#1B91FF",
+};
 
-const theme = extendTheme({config, fonts, styles, colors});
+const theme = extendTheme({ config, fonts, styles, colors });
 
 export default theme;
