@@ -59,7 +59,7 @@ const LogIn: React.FC<loginProps> = ({}) => {
             p={8}
           >
             <Text fontWeight="bold" align="center" mb={4}>
-              Log In Form
+              Log In
             </Text>
             <Form>
               <VStack spacing={2}>

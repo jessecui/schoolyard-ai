@@ -1,28 +1,37 @@
+import { ApolloCache } from "@apollo/client/cache";
 import {
   Box,
   Circle,
   Divider,
-  Flex,
-  Heading,
-  HStack,
-  Stack,
+  Flex, HStack,
+  Stack
 } from "@chakra-ui/layout";
 import {
+  Alert,
+  AlertIcon,
   Button,
-  Checkbox,
-  CheckboxGroup,
-  FormControl,
+  Checkbox, CloseButton, FormControl,
   FormErrorMessage,
   Icon,
   IconButton,
   Input,
   Radio,
   RadioGroup,
-  Text,
+  Text
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Field, Form, Formik } from "formik";
+import gql from "graphql-tag";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
-  AddViewMutation,
+  RiCalendarEventFill,
+  RiThumbDownFill,
+  RiThumbDownLine,
+  RiThumbUpFill,
+  RiThumbUpLine
+} from "react-icons/ri";
+import {
   AddVoteMutation,
   MeQuery,
   Question,
@@ -31,23 +40,13 @@ import {
   useAddVoteMutation,
   useMeQuery,
   useQuestionsQuery,
-  VoteType,
+  VoteType
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
-import { IoPersonCircle, IoPeople } from "react-icons/io5";
-import {
-  RiCalendarEventFill,
-  RiThumbDownFill,
-  RiThumbDownLine,
-  RiThumbUpFill,
-  RiThumbUpLine,
-} from "react-icons/ri";
-import { Field, FieldArray, Form, Formik } from "formik";
-import { useEffect } from "react";
-import { ApolloCache } from "@apollo/client/cache";
-import gql from "graphql-tag";
 
 const Master: React.FC<{}> = ({}) => {
+  const router = useRouter();
+
   const { data, loading } = useQuestionsQuery({
     variables: {
       limit: 10,
@@ -435,6 +434,18 @@ const Master: React.FC<{}> = ({}) => {
 
   return (
     <Box>
+      {router.query.deleteSuccess && (
+        <Alert status="success" mb={2}>
+          <AlertIcon />
+          Question successfully deleted
+          <CloseButton
+            position="absolute"
+            right="8px"
+            top="8px"
+            onClick={() => router.push("/master", undefined, { shallow: true })}
+          />
+        </Alert>
+      )}
       {!questionData ? null : (
         <Stack mb="16px">
           {questionData!.questions.questions.map((q) =>

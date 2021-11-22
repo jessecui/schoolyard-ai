@@ -5,9 +5,14 @@ query Question($id: Int!) {
     questionType
     choices
     answer
-    teacher {
+    teacherId
+    teacher {      
       firstName
       lastName
+    }
+    sentence {
+      id
+      text
     }
     subjects
     upVoteCount

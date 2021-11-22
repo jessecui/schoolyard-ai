@@ -221,7 +221,7 @@ const Learn: React.FC<{}> = ({}) => {
           <Spacer />
           <HStack spacing={2}>
             {userData?.me?.id == activeSentence.teacherId && (
-              <NextLink href={"/edit/" + activeSentence.id}>
+              <NextLink href={"/edit/paragraph/" + activeSentence.id}>
                 <Link>
                   <Icon
                     as={RiEditBoxFill}
