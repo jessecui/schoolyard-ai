@@ -79,244 +79,239 @@ export const Create: React.FC<{}> = ({}) => {
       correctAnswers: never[];
       subjects: string;
     }>
-  ) =>
-    (props.values.questionType == QuestionType.Single ||
-      props.values.questionType == QuestionType.Multiple) && (
-      <Stack spacing={4} mt={4}>
-        <Box>
-          <Text fontWeight="bold" color="grayMain">
-            Answer Options
-          </Text>
-          <Divider borderColor="grayLight" border="1px" mb={2} />
-          <FieldArray
-            name="answerOptions"
-            render={(arrayHelpers) => (
-              <>
-                <Field
-                  name="correctAnswers"
-                  validate={(e: string[]) => {
-                    if (e.length == 0) {
-                      return props.values.questionType == QuestionType.Single
-                        ? "Please select a correct answer."
-                        : props.values.questionType == QuestionType.Multiple
-                        ? "Please select at least one of the answers as correct."
-                        : null;
-                    }
-                    return null;
-                  }}
-                >
-                  {({ field: correctAnswersField, form }: any) => (
-                    <Box>
-                      <FormControl
-                        isInvalid={
-                          form.errors.correctAnswers &&
-                          form.touched.correctAnswers
-                        }
-                      >
-                        <FormErrorMessage>
-                          {form.errors.correctAnswers}
-                        </FormErrorMessage>
-                      </FormControl>
-                      {/* RadioGroup Wrapper for Multiple Choice */}
+  ) => (
+    <Stack spacing={4} mt={4}>
+      <Box>
+        <Text fontWeight="bold" color="grayMain">
+          Answer Options
+        </Text>
+        <Divider borderColor="grayLight" border="1px" mb={2} />
+        <FieldArray
+          name="answerOptions"
+          render={(arrayHelpers) => (
+            <>
+              <Field
+                name="correctAnswers"
+                validate={(e: string[]) => {
+                  if (e.length == 0) {
+                    return props.values.questionType == QuestionType.Single
+                      ? "Please select a correct answer."
+                      : props.values.questionType == QuestionType.Multiple
+                      ? "Please select at least one of the answers as correct."
+                      : null;
+                  }
+                  return null;
+                }}
+              >
+                {({ field: correctAnswersField, form }: any) => (
+                  <Box>
+                    <FormControl
+                      isInvalid={
+                        form.errors.correctAnswers &&
+                        form.touched.correctAnswers
+                      }
+                    >
+                      <FormErrorMessage>
+                        {form.errors.correctAnswers}
+                      </FormErrorMessage>
+                    </FormControl>
+                    {/* RadioGroup Wrapper for Multiple Choice */}
+                    <ConditionalWrapper
+                      condition={
+                        props.values.questionType == QuestionType.Single
+                      }
+                      wrapper={(children: any) => (
+                        <RadioGroup
+                          {...correctAnswersField}
+                          value={
+                            correctAnswersField.value.length > 0
+                              ? correctAnswersField.value[0]
+                              : null
+                          }
+                          onChange={(e) => {
+                            if (e) {
+                              props.setFieldValue("correctAnswers", [e]);
+                            }
+                          }}
+                        >
+                          {children}
+                        </RadioGroup>
+                      )}
+                    >
+                      {/* CheckboxGroup Wrapper for Multiple Answer */}
                       <ConditionalWrapper
                         condition={
-                          props.values.questionType == QuestionType.Single
+                          props.values.questionType == QuestionType.Multiple
                         }
                         wrapper={(children: any) => (
-                          <RadioGroup
+                          <CheckboxGroup
                             {...correctAnswersField}
-                            value={
-                              correctAnswersField.value.length > 0
-                                ? correctAnswersField.value[0]
-                                : null
-                            }
-                            onChange={(e) => {
-                              if (e) {
-                                props.setFieldValue("correctAnswers", [e]);
-                              }
-                            }}
+                            value={correctAnswersField.value}
+                            onChange={() => {}}
                           >
                             {children}
-                          </RadioGroup>
+                          </CheckboxGroup>
                         )}
                       >
-                        {/* CheckboxGroup Wrapper for Multiple Answer */}
-                        <ConditionalWrapper
-                          condition={
-                            props.values.questionType == QuestionType.Multiple
-                          }
-                          wrapper={(children: any) => (
-                            <CheckboxGroup
-                              {...correctAnswersField}
-                              value={correctAnswersField.value}
-                              onChange={() => {}}
-                            >
-                              {children}
-                            </CheckboxGroup>
-                          )}
-                        >
-                          <Stack spacing={2} mb={2}>
-                            {props.values.answerOptions.map((option, index) => (
-                              <Box key={index}>
-                                <Flex align="center">
-                                  {props.values.questionType ==
-                                    QuestionType.Single && (
-                                    <Radio
-                                      value={option}
-                                      colorScheme="gray"
+                        <Stack spacing={2} mb={2}>
+                          {props.values.answerOptions.map((option, index) => (
+                            <Box key={index}>
+                              <Flex align="center">
+                                {props.values.questionType ==
+                                  QuestionType.Single && (
+                                  <Radio
+                                    value={option}
+                                    colorScheme="gray"
+                                    isChecked={
+                                      !!option &&
+                                      props.values.correctAnswers[0] === option
+                                    }
+                                  >
+                                    <Text fontSize="md">Correct Answer</Text>
+                                  </Radio>
+                                )}
+                                {props.values.questionType ==
+                                  QuestionType.Multiple && (
+                                  <>
+                                    <Checkbox
+                                      {...correctAnswersField}
                                       isChecked={
                                         !!option &&
-                                        props.values.correctAnswers[0] ===
-                                          option
+                                        (
+                                          props.values
+                                            .correctAnswers as string[]
+                                        ).includes(option)
                                       }
-                                    >
-                                      <Text fontSize="md">Correct Answer</Text>
-                                    </Radio>
-                                  )}
-                                  {props.values.questionType ==
-                                    QuestionType.Multiple && (
-                                    <>
-                                      <Checkbox
-                                        {...correctAnswersField}
-                                        isChecked={
-                                          !!option &&
-                                          (
-                                            props.values
-                                              .correctAnswers as string[]
-                                          ).includes(option)
-                                        }
-                                        colorScheme="gray"
-                                        mr={2}
-                                        value={option}
-                                      />
-                                      <Text fontSize="md" as="span">
-                                        Correct Answer
-                                      </Text>
-                                    </>
-                                  )}
-                                </Flex>
-                                <Field
-                                  key={"answerOptions" + index}
-                                  name={`answerOptions.${index}`}
-                                  validate={(value: string) => {
-                                    if (!value) {
-                                      return "Please provide an answer.";
-                                    } else {
-                                      const duplicates = findDuplicates(
-                                        props.values.answerOptions
-                                      );
-                                      if (duplicates.includes(value)) {
-                                        return "Please change duplicate answer.";
-                                      }
+                                      colorScheme="gray"
+                                      mr={2}
+                                      value={option}
+                                    />
+                                    <Text fontSize="md" as="span">
+                                      Correct Answer
+                                    </Text>
+                                  </>
+                                )}
+                              </Flex>
+                              <Field
+                                key={"answerOptions" + index}
+                                name={`answerOptions.${index}`}
+                                validate={(value: string) => {
+                                  if (!value) {
+                                    return "Please provide an answer.";
+                                  } else {
+                                    const duplicates = findDuplicates(
+                                      props.values.answerOptions
+                                    );
+                                    if (duplicates.includes(value)) {
+                                      return "Please change duplicate answer.";
                                     }
-                                    return null;
-                                  }}
-                                >
-                                  {({ field: answerOptionsField }: any) => (
-                                    <FormControl
-                                      isInvalid={
-                                        form.errors.answerOptions &&
-                                        form.errors.answerOptions[index] &&
-                                        form.touched.answerOptions &&
-                                        form.touched.answerOptions[index]
-                                      }
-                                    >
-                                      <Textarea
-                                        {...answerOptionsField}
-                                        border="2px"
-                                        borderColor="grayLight"
-                                        onChange={(e) => {
-                                          /* When text box changes, remove the 
+                                  }
+                                  return null;
+                                }}
+                              >
+                                {({ field: answerOptionsField }: any) => (
+                                  <FormControl
+                                    isInvalid={
+                                      form.errors.answerOptions &&
+                                      form.errors.answerOptions[index] &&
+                                      form.touched.answerOptions &&
+                                      form.touched.answerOptions[index]
+                                    }
+                                  >
+                                    <Textarea
+                                      {...answerOptionsField}
+                                      border="2px"
+                                      borderColor="grayLight"
+                                      onChange={(e) => {
+                                        /* When text box changes, remove the 
                                           answer from props if necessary */
-                                          let answerOptions =
-                                            props.values.answerOptions;
-                                          const answerOptionBefore =
-                                            answerOptions[index];
-                                          answerOptions[index] = e.target.value;
-                                          if (
-                                            !answerOptions.includes(
-                                              answerOptionBefore
-                                            )
-                                          ) {
-                                            let correctAnswers = [
-                                              ...props.values.correctAnswers,
-                                            ];
-                                            correctAnswers =
-                                              correctAnswers.filter(
-                                                (answer: string) =>
-                                                  answer !== answerOptionBefore
-                                              );
-                                            props.setFieldValue(
-                                              "correctAnswers",
-                                              correctAnswers
+                                        let answerOptions =
+                                          props.values.answerOptions;
+                                        const answerOptionBefore =
+                                          answerOptions[index];
+                                        answerOptions[index] = e.target.value;
+                                        if (
+                                          !answerOptions.includes(
+                                            answerOptionBefore
+                                          )
+                                        ) {
+                                          let correctAnswers = [
+                                            ...props.values.correctAnswers,
+                                          ];
+                                          correctAnswers =
+                                            correctAnswers.filter(
+                                              (answer: string) =>
+                                                answer !== answerOptionBefore
                                             );
-                                          }
-                                          props.handleChange(e);
-                                        }}
-                                      />
-                                      <FormErrorMessage>
-                                        {form.errors.answerOptions &&
-                                          form.errors.answerOptions[index]}
-                                      </FormErrorMessage>
-                                    </FormControl>
-                                  )}
-                                </Field>
-                              </Box>
-                            ))}
-                          </Stack>
-                        </ConditionalWrapper>
+                                          props.setFieldValue(
+                                            "correctAnswers",
+                                            correctAnswers
+                                          );
+                                        }
+                                        props.handleChange(e);
+                                      }}
+                                    />
+                                    <FormErrorMessage>
+                                      {form.errors.answerOptions &&
+                                        form.errors.answerOptions[index]}
+                                    </FormErrorMessage>
+                                  </FormControl>
+                                )}
+                              </Field>
+                            </Box>
+                          ))}
+                        </Stack>
                       </ConditionalWrapper>
-                    </Box>
-                  )}
-                </Field>
-                <HStack>
-                  <IconButton
-                    aria-label="Add Answer Choice"
-                    icon={<RiAddLine />}
-                    size="xs"
-                    fontSize="24px"
-                    bg="green.400"
-                    color="white"
-                    onClick={() => {
-                      arrayHelpers.push("");
-                    }}
-                  />
-                  <IconButton
-                    aria-label="Remove Answer Choice"
-                    icon={<RiSubtractLine />}
-                    size="xs"
-                    fontSize="24px"
-                    bg="red.400"
-                    color="white"
-                    onClick={() => {
-                      const lastAnswer = props.values.answerOptions.at(-1);
-                      if (
-                        lastAnswer &&
-                        (props.values.correctAnswers as string[]).includes(
-                          lastAnswer
-                        )
-                      ) {
-                        let newCorrectAnswers = [
-                          ...props.values.correctAnswers,
-                        ];
-                        newCorrectAnswers = newCorrectAnswers.filter(
-                          (answer) => answer !== lastAnswer
-                        );
-                        props.setFieldValue(
-                          "correctAnswers",
-                          newCorrectAnswers as string[]
-                        );
-                      }
-                      arrayHelpers.pop();
-                    }}
-                  />
-                </HStack>
-              </>
-            )}
-          />
-        </Box>
-      </Stack>
-    );
+                    </ConditionalWrapper>
+                  </Box>
+                )}
+              </Field>
+              <HStack>
+                <IconButton
+                  aria-label="Add Answer Choice"
+                  icon={<RiAddLine />}
+                  size="xs"
+                  fontSize="24px"
+                  bg="green.400"
+                  color="white"
+                  onClick={() => {
+                    arrayHelpers.push("");
+                  }}
+                />
+                <IconButton
+                  aria-label="Remove Answer Choice"
+                  icon={<RiSubtractLine />}
+                  size="xs"
+                  fontSize="24px"
+                  bg="red.400"
+                  color="white"
+                  onClick={() => {
+                    const lastAnswer = props.values.answerOptions.at(-1);
+                    if (
+                      lastAnswer &&
+                      (props.values.correctAnswers as string[]).includes(
+                        lastAnswer
+                      )
+                    ) {
+                      let newCorrectAnswers = [...props.values.correctAnswers];
+                      newCorrectAnswers = newCorrectAnswers.filter(
+                        (answer) => answer !== lastAnswer
+                      );
+                      props.setFieldValue(
+                        "correctAnswers",
+                        newCorrectAnswers as string[]
+                      );
+                    }
+                    arrayHelpers.pop();
+                  }}
+                />
+              </HStack>
+            </>
+          )}
+        />
+      </Box>
+    </Stack>
+  );
 
   return (
     <Box>
@@ -798,9 +793,49 @@ export const Create: React.FC<{}> = ({}) => {
                     )}
                   </Field>
                 </Box>
-                {answerBoxes(props)}
+                {(props.values.questionType == QuestionType.Single ||
+                  props.values.questionType == QuestionType.Multiple) &&
+                  answerBoxes(props)}
                 {props.values.questionType == QuestionType.Text && (
-                  <Text>Written Answer</Text>
+                  <Box>
+                    <Text fontWeight="bold" color="grayMain" mt={4}>
+                      Answer
+                    </Text>
+                    <Divider borderColor="grayLight" border="1px" mb={2} />
+                    <Field
+                      name="correctAnswers"
+                      validate={(value: string[]) =>
+                        !value || value.length == 0 || !value[0]
+                          ? "Please provide an answer."
+                          : null
+                      }
+                    >
+                      {({ field, form }: any) => (
+                        <FormControl
+                          isInvalid={
+                            form.errors.correctAnswers &&
+                            form.touched.correctAnswers
+                          }
+                        >
+                          <Input
+                            {...field}
+                            border="2px"
+                            borderColor="grayLight"
+                            value={field[0]}
+                            onChange={(e) =>
+                              props.setFieldValue(
+                                "correctAnswers",
+                                [e.target.value]
+                              )
+                            }
+                          />
+                          <FormErrorMessage>
+                            {form.errors.correctAnswers}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </Box>
                 )}
                 <Box mt={4}>
                   <Text fontWeight="bold" color="grayMain">
@@ -870,43 +905,59 @@ export const Create: React.FC<{}> = ({}) => {
                   {props.values.question}
                 </Text>
                 <Text color="grayMain" fontSize="sm" mb={2}>
-                  Select all that apply
+                  {props.values.questionType == QuestionType.Single &&
+                    "Select the correct answer"}
+                  {props.values.questionType == QuestionType.Multiple &&
+                    "Select all that apply"}
+                  {props.values.questionType == QuestionType.Text &&
+                    "Type the correct answer"}
                 </Text>
-                <Stack>
-                  {props.values.answerOptions.map((option, index) => (
-                    <Box key={index}>
-                      {props.values.questionType == QuestionType.Single && (
-                        <Radio
-                          size="lg"
-                          my="4px"
-                          borderColor="grayMain"
-                          colorScheme="gray"
-                          isChecked={(
-                            props.values.correctAnswers as string[]
-                          ).includes(option)}
-                        >
-                          <Text fontSize="md">{option}</Text>
-                        </Radio>
-                      )}
+                {(props.values.questionType == QuestionType.Single ||
+                  props.values.questionType == QuestionType.Multiple) && (
+                  <Stack>
+                    {props.values.answerOptions.map((option, index) => (
+                      <Box key={index}>
+                        {props.values.questionType == QuestionType.Single && (
+                          <Radio
+                            size="lg"
+                            my="4px"
+                            borderColor="grayMain"
+                            colorScheme="gray"
+                            isChecked={(
+                              props.values.correctAnswers as string[]
+                            ).includes(option)}
+                          >
+                            <Text fontSize="md">{option}</Text>
+                          </Radio>
+                        )}
 
-                      {props.values.questionType == QuestionType.Multiple && (
-                        <Checkbox
-                          size="lg"
-                          my="4px"
-                          borderColor="grayMain"
-                          colorScheme="gray"
-                          isChecked={(
-                            props.values.correctAnswers as string[]
-                          ).includes(option)}
-                        >
-                          <Text ml={2} fontSize="16px">
-                            {option}
-                          </Text>
-                        </Checkbox>
-                      )}
-                    </Box>
-                  ))}
-                </Stack>
+                        {props.values.questionType == QuestionType.Multiple && (
+                          <Checkbox
+                            size="lg"
+                            my="4px"
+                            borderColor="grayMain"
+                            colorScheme="gray"
+                            isChecked={(
+                              props.values.correctAnswers as string[]
+                            ).includes(option)}
+                          >
+                            <Text ml={2} fontSize="16px">
+                              {option}
+                            </Text>
+                          </Checkbox>
+                        )}
+                      </Box>
+                    ))}
+                  </Stack>
+                )}
+                {props.values.questionType == QuestionType.Text &&
+                <Input
+                size="sm"
+                border="2px"
+                borderColor="grayLight"
+                value={props.values.correctAnswers[0] ? props.values.correctAnswers[0] : ""}
+                readOnly={true}
+              />}
                 <Divider borderColor="grayLight" border="1px" mt={4} mb={2} />
                 <Button
                   my="4px"
