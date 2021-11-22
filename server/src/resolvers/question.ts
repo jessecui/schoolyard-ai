@@ -30,7 +30,7 @@ class QuestionInput {
   @Field(() => QuestionType, { nullable: true })
   questionType: QuestionType;
   @Field(() => [String], { nullable: true })
-  choices: string[];
+  choices: string[] | undefined;
   @Field(() => [String], { nullable: true })
   answer: string[];
   @Field({ nullable: true })
@@ -80,11 +80,14 @@ export class QuestionResolver {
     @Ctx() { req }: MyContext,
     @Arg("questionInput") questionInput: QuestionInput
   ): Promise<Question> {
-    if (
-      questionInput.choices &&
-      !questionInput.answer.every((val) => questionInput.choices.includes(val))
+    if (      
+      (questionInput.questionType == QuestionType.SINGLE || questionInput.questionType == QuestionType.MULTIPLE) &&
+      !questionInput.answer.every((val) => questionInput.choices!.includes(val))
     ) {
       throw new Error("Answer must be one of the provided choices");
+    }
+    if (questionInput.questionType == QuestionType.TEXT) {
+      questionInput.choices = undefined;
     }
     const rawResult = await getConnection()
       .createQueryBuilder()
