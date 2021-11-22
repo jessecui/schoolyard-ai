@@ -2,6 +2,7 @@ import { Box, Circle, Divider, Flex, HStack, Stack } from "@chakra-ui/layout";
 import {
   Button,
   Checkbox,
+  CheckboxGroup,
   FormControl,
   FormErrorMessage,
   Icon,
@@ -12,7 +13,8 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { Field, FieldArray, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik, FormikProps } from "formik";
+import { valueScaleCorrection } from "framer-motion/types/render/dom/projection/scale-correction";
 import { formatWithValidation } from "next/dist/shared/lib/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -56,6 +58,267 @@ export const Create: React.FC<{}> = ({}) => {
     }
     return error;
   };
+
+  const findDuplicates = (arr: any[]) => {
+    let sorted_arr = arr.slice().sort();
+    let results: any[] = [];
+    for (let i = 0; i < sorted_arr.length - 1; i++) {
+      if (sorted_arr[i + 1] == sorted_arr[i]) {
+        results.push(sorted_arr[i]);
+      }
+    }
+    return results;
+  };
+
+  const ConditionalWrapper = ({ condition, wrapper, children }: any) =>
+    condition ? wrapper(children) : children;
+
+  const answerBoxes = (
+    props: FormikProps<{
+      questionType: string;
+      question: string;
+      answerOptions: string[];
+      correctAnswers: never[];
+      subjects: string;
+    }>
+  ) =>
+    (props.values.questionType == "multipleChoice" ||
+      props.values.questionType == "multipleAnswers") && (
+      <Stack spacing={4} mt={4}>
+        <Box>
+          <Text fontWeight="bold" color="grayMain">
+            Answer Options
+          </Text>
+          <Divider borderColor="grayLight" border="1px" mb={2} />
+          <FieldArray
+            name="answerOptions"
+            render={(arrayHelpers) => (
+              <>
+                <Field
+                  name="correctAnswers"
+                  validate={(e: string[]) => {
+                    if (e.length == 0) {
+                      return props.values.questionType == "multipleChoice"
+                        ? "Please select a correct answer."
+                        : props.values.questionType == "multipleAnswers"
+                        ? "Please select at least one of the answers as a correct answer."
+                        : null;
+                    }
+                    return null;
+                  }}
+                >
+                  {({ field: correctAnswersField, form }: any) => (
+                    <Box>
+                      <FormControl
+                        isInvalid={
+                          form.errors.correctAnswers &&
+                          form.touched.correctAnswers
+                        }
+                      >
+                        <FormErrorMessage>
+                          {form.errors.correctAnswers}
+                        </FormErrorMessage>
+                      </FormControl>
+                      {/* RadioGroup Wrapper for Multiple Choice */}
+                      <ConditionalWrapper
+                        condition={
+                          props.values.questionType == "multipleChoice"
+                        }
+                        wrapper={(children: any) => (
+                          <RadioGroup
+                            {...correctAnswersField}
+                            value={
+                              correctAnswersField.value.length > 0
+                                ? correctAnswersField.value[0]
+                                : null
+                            }
+                            onChange={(e) => {
+                              if (e) {
+                                props.setFieldValue("correctAnswers", [e]);
+                              }
+                            }}
+                          >
+                            {children}
+                          </RadioGroup>
+                        )}
+                      >
+                        {/* CheckboxGroup Wrapper for Multiple Answer */}
+                        <ConditionalWrapper
+                          condition={
+                            props.values.questionType == "multipleAnswers"
+                          }
+                          wrapper={(children: any) => (
+                            <CheckboxGroup
+                              {...correctAnswersField}
+                              value={correctAnswersField.value}
+                              onChange={() => {}}
+                            >
+                              {children}
+                            </CheckboxGroup>
+                          )}
+                        >
+                          <Stack spacing={2} mb={2}>
+                            {props.values.answerOptions.map((option, index) => (
+                              <Box key={index}>
+                                <Flex align="center">
+                                  {props.values.questionType ==
+                                    "multipleChoice" && (
+                                    <Radio
+                                      value={option}
+                                      colorScheme="gray"
+                                      isChecked={
+                                        !!option &&
+                                        props.values.correctAnswers[0] ===
+                                          option
+                                      }
+                                    >
+                                      <Text fontSize="md">Correct Answer</Text>
+                                    </Radio>
+                                  )}
+                                  {props.values.questionType ==
+                                    "multipleAnswers" && (
+                                    <>
+                                      <Checkbox
+                                        {...correctAnswersField}
+                                        isChecked={
+                                          !!option &&
+                                          (
+                                            props.values
+                                              .correctAnswers as string[]
+                                          ).includes(option)
+                                        }
+                                        colorScheme="gray"
+                                        mr={2}
+                                        value={option}
+                                      />
+                                      <Text fontSize="md" as="span">
+                                        Correct Answer
+                                      </Text>
+                                    </>
+                                  )}
+                                </Flex>
+                                <Field
+                                  key={"answerOptions" + index}
+                                  name={`answerOptions.${index}`}
+                                  validate={(value: string) => {
+                                    if (!value) {
+                                      return "Please provide an answer";
+                                    } else {
+                                      const duplicates = findDuplicates(
+                                        props.values.answerOptions
+                                      );
+                                      if (duplicates.includes(value)) {
+                                        return "Please change duplicate answer.";
+                                      }
+                                    }
+                                    return null;
+                                  }}
+                                >
+                                  {({ field: answerOptionsField }: any) => (
+                                    <FormControl
+                                      isInvalid={
+                                        form.errors.answerOptions &&
+                                        form.errors.answerOptions[index] &&
+                                        form.touched.answerOptions &&
+                                        form.touched.answerOptions[index]
+                                      }
+                                    >
+                                      <Textarea
+                                        {...answerOptionsField}
+                                        border="2px"
+                                        borderColor="grayLight"
+                                        onChange={(e) => {
+                                          /* When text box changes, remove the 
+                                          answer from props if necessary */
+                                          let answerOptions =
+                                            props.values.answerOptions;
+                                          const answerOptionBefore =
+                                            answerOptions[index];
+                                          answerOptions[index] = e.target.value;
+                                          if (
+                                            !answerOptions.includes(
+                                              answerOptionBefore
+                                            )
+                                          ) {
+                                            let correctAnswers = [
+                                              ...props.values.correctAnswers,
+                                            ];
+                                            correctAnswers =
+                                              correctAnswers.filter(
+                                                (answer: string) =>
+                                                  answer !== answerOptionBefore
+                                              );
+                                            props.setFieldValue(
+                                              "correctAnswers",
+                                              correctAnswers
+                                            );
+                                          }
+                                          props.handleChange(e);
+                                        }}
+                                      />
+                                      <FormErrorMessage>
+                                        {form.errors.answerOptions &&
+                                          form.errors.answerOptions[index]}
+                                      </FormErrorMessage>
+                                    </FormControl>
+                                  )}
+                                </Field>
+                              </Box>
+                            ))}
+                          </Stack>
+                        </ConditionalWrapper>
+                      </ConditionalWrapper>
+                    </Box>
+                  )}
+                </Field>
+                <HStack>
+                  <IconButton
+                    aria-label="Add Answer Choice"
+                    icon={<RiAddLine />}
+                    size="xs"
+                    fontSize="24px"
+                    bg="green.400"
+                    color="white"
+                    onClick={() => {
+                      arrayHelpers.push("");
+                    }}
+                  />
+                  <IconButton
+                    aria-label="Remove Answer Choice"
+                    icon={<RiSubtractLine />}
+                    size="xs"
+                    fontSize="24px"
+                    bg="red.400"
+                    color="white"
+                    onClick={() => {
+                      const lastAnswer = props.values.answerOptions.at(-1);
+                      if (
+                        lastAnswer &&
+                        (props.values.correctAnswers as string[]).includes(
+                          lastAnswer
+                        )
+                      ) {
+                        let newCorrectAnswers = [
+                          ...props.values.correctAnswers,
+                        ];
+                        newCorrectAnswers = newCorrectAnswers.filter(
+                          (answer) => answer !== lastAnswer
+                        );
+                        props.setFieldValue(
+                          "correctAnswers",
+                          newCorrectAnswers as string[]
+                        );
+                      }
+                      arrayHelpers.pop();
+                    }}
+                  />
+                </HStack>
+              </>
+            )}
+          />
+        </Box>
+      </Stack>
+    );
 
   return (
     <Box>
@@ -118,9 +381,10 @@ export const Create: React.FC<{}> = ({}) => {
               : "",
           checkIfSameAsParent: true,
         }}
+        validateOnChange={false}
+        validateOnBlur={false}
         enableReinitialize={true}
         onSubmit={async (values) => {
-          console.log("values: ", values);
           const subjectsArray = values.subjects
             .split(",")
             .map((s: string) => s.trim());
@@ -421,14 +685,14 @@ export const Create: React.FC<{}> = ({}) => {
           questionType: "multipleChoice",
           question: "",
           answerOptions: ["", "", "", ""],
-          correctAnswerIndex: "", // For single multiple choice
-          correctAnswerIndices: [], // For multiple answers
-          correctAnswer: "", // For written answer
+          correctAnswers: [],
           subjects:
             parentData && parentData?.sentence
               ? parentData.sentence.subjects.join(", ")
               : "",
         }}
+        validateOnChange={false}
+        validateOnBlur={false}
         onSubmit={async (values) => {
           const subjectsArray = values.subjects
             .split(",")
@@ -448,20 +712,7 @@ export const Create: React.FC<{}> = ({}) => {
                     ? QuestionType.Text
                     : null,
                 choices: values.answerOptions,
-                answer:
-                  values.questionType == "multipleChoice"
-                    ? [
-                        values.answerOptions[
-                          parseInt(values.correctAnswerIndex)
-                        ],
-                      ]
-                    : values.questionType == "multipleAnswers"
-                    ? values.correctAnswerIndices.map(
-                        (index) => values.answerOptions[parseInt(index)]
-                      )
-                    : values.questionType == "writtenAnswer"
-                    ? ["TODO"]
-                    : null,
+                answer: values.correctAnswers,
               },
             },
           });
@@ -529,7 +780,10 @@ export const Create: React.FC<{}> = ({}) => {
                         size="lg"
                         borderColor="grayMain"
                         colorScheme="gray"
-                        onChange={(e) => props.setFieldValue("questionType", e)}
+                        onChange={(e) => {
+                          props.setFieldValue("questionType", e);
+                          props.setFieldValue("correctAnswers", []);
+                        }}
                       >
                         <HStack spacing={4}>
                           <Radio value="multipleChoice">
@@ -546,293 +800,7 @@ export const Create: React.FC<{}> = ({}) => {
                     )}
                   </Field>
                 </Box>
-                {props.values.questionType == "multipleChoice" && (
-                  <Stack spacing={4} mt={4}>
-                    <Box>
-                      <Text fontWeight="bold" color="grayMain">
-                        Answer Options
-                      </Text>
-                      <Divider borderColor="grayLight" border="1px" mb={2} />
-                      <FormControl
-                        isInvalid={
-                          !!props.errors.correctAnswerIndex &&
-                          props.touched.correctAnswerIndex
-                        }
-                      >
-                        <FormErrorMessage>
-                          Please select a correct answer.
-                        </FormErrorMessage>
-                      </FormControl>
-                      <FieldArray
-                        name="answerOptions"
-                        render={(arrayHelpers) => (
-                          <>
-                            <Field
-                              name="correctAnswerIndex"
-                              validate={checkIfEmpty}
-                            >
-                              {({
-                                field: correctAnswerIndexField,
-                                form,
-                              }: any) => (
-                                <Box>
-                                  <RadioGroup
-                                    {...correctAnswerIndexField}
-                                    onChange={(e) =>
-                                      props.setFieldValue(
-                                        "correctAnswerIndex",
-                                        e
-                                      )
-                                    }
-                                  >
-                                    <Stack spacing={2} mb={2}>
-                                      {props.values.answerOptions.map(
-                                        (_, index) => (
-                                          <Box key={index}>
-                                            <Radio
-                                              value={index.toString()}
-                                              width={"100%"}
-                                              colorScheme="gray"
-                                            >
-                                              <Text fontSize="md">
-                                                Correct Answer
-                                              </Text>
-                                            </Radio>
-                                            <Field
-                                              key={"explanation" + index}
-                                              name={`answerOptions.${index}`}
-                                              validate={checkIfEmpty}
-                                            >
-                                              {({ field }: any) => (
-                                                <FormControl
-                                                  isInvalid={
-                                                    form.errors.answerOptions &&
-                                                    form.errors.answerOptions[
-                                                      index
-                                                    ] &&
-                                                    form.touched
-                                                      .answerOptions &&
-                                                    form.touched.answerOptions[
-                                                      index
-                                                    ]
-                                                  }
-                                                >
-                                                  <Textarea
-                                                    {...field}
-                                                    border="2px"
-                                                    borderColor="grayLight"
-                                                  />
-                                                  <FormErrorMessage>
-                                                    {form.errors
-                                                      .answerOptions &&
-                                                      form.errors.answerOptions[
-                                                        index
-                                                      ]}
-                                                  </FormErrorMessage>
-                                                </FormControl>
-                                              )}
-                                            </Field>
-                                          </Box>
-                                        )
-                                      )}
-                                    </Stack>
-                                  </RadioGroup>
-                                </Box>
-                              )}
-                            </Field>
-                            <HStack>
-                              <IconButton
-                                aria-label="Add Answer Choice"
-                                icon={<RiAddLine />}
-                                size="xs"
-                                fontSize="24px"
-                                bg="green.400"
-                                color="white"
-                                onClick={() => {
-                                  arrayHelpers.push("");
-                                }}
-                              />
-                              <IconButton
-                                aria-label="Remove Answer Choice"
-                                icon={<RiSubtractLine />}
-                                size="xs"
-                                fontSize="24px"
-                                bg="red.400"
-                                color="white"
-                                onClick={() => {
-                                  if (
-                                    (
-                                      props.values.answerOptions.length - 1
-                                    ).toString() ==
-                                    props.values.correctAnswerIndex
-                                  ) {
-                                    props.setFieldValue(
-                                      "correctAnswerIndex",
-                                      ""
-                                    );
-                                  }
-                                  arrayHelpers.pop();
-                                }}
-                              />
-                            </HStack>
-                          </>
-                        )}
-                      />
-                    </Box>
-                  </Stack>
-                )}
-                {props.values.questionType == "multipleAnswers" && (
-                  <Stack spacing={4} mt={4}>
-                    <Box>
-                      <Text fontWeight="bold" color="grayMain">
-                        Answer Options
-                      </Text>
-                      <Divider borderColor="grayLight" border="1px" mb={2} />
-                      <FieldArray
-                        name="answerOptions"
-                        render={(arrayHelpers) => (
-                          <>
-                            <Field
-                              name="correctAnswerIndices"
-                              validate={(e: string[]) =>
-                                !e || e.length == 0
-                                  ? "Please select at least one of the answers as a correct answer."
-                                  : null
-                              }
-                            >
-                              {({
-                                field: correctAnswerIndiciesField,
-                                form,
-                              }: any) => (
-                                <Box>
-                                  <FormControl
-                                    isInvalid={
-                                      form.errors.correctAnswerIndices &&
-                                      form.touched.correctAnswerIndices
-                                    }
-                                  >
-                                    <FormErrorMessage>
-                                      {form.errors.correctAnswerIndices}
-                                    </FormErrorMessage>
-                                  </FormControl>
-                                  <Stack spacing={2} mb={2}>
-                                    {props.values.answerOptions.map(
-                                      (_, index) => (
-                                        <Box key={index}>
-                                          <Flex align="center">
-                                            <Checkbox
-                                              {...correctAnswerIndiciesField}
-                                              isChecked={(
-                                                props.values
-                                                  .correctAnswerIndices as string[]
-                                              ).includes(index.toString())}
-                                              colorScheme="gray"
-                                              mr={2}
-                                              value={index.toString()}
-                                            />
-                                            <Text fontSize="md" as="span">
-                                              Correct Answer
-                                            </Text>
-                                          </Flex>
-                                          <Field
-                                            key={"explanation" + index}
-                                            name={`answerOptions.${index}`}
-                                            validate={checkIfEmpty}
-                                          >
-                                            {({ field }: any) => (
-                                              <FormControl
-                                                isInvalid={
-                                                  form.errors.answerOptions &&
-                                                  form.errors.answerOptions[
-                                                    index
-                                                  ] &&
-                                                  form.touched.answerOptions &&
-                                                  form.touched.answerOptions[
-                                                    index
-                                                  ]
-                                                }
-                                              >
-                                                <Textarea
-                                                  {...field}
-                                                  border="2px"
-                                                  borderColor="grayLight"
-                                                />
-                                                <FormErrorMessage>
-                                                  {form.errors.answerOptions &&
-                                                    form.errors.answerOptions[
-                                                      index
-                                                    ]}
-                                                </FormErrorMessage>
-                                              </FormControl>
-                                            )}
-                                          </Field>
-                                        </Box>
-                                      )
-                                    )}
-                                  </Stack>
-                                </Box>
-                              )}
-                            </Field>
-                            <HStack>
-                              <IconButton
-                                aria-label="Add Answer Choice"
-                                icon={<RiAddLine />}
-                                size="xs"
-                                fontSize="24px"
-                                bg="green.400"
-                                color="white"
-                                onClick={() => {
-                                  arrayHelpers.push("");
-                                }}
-                              />
-                              <IconButton
-                                aria-label="Remove Answer Choice"
-                                icon={<RiSubtractLine />}
-                                size="xs"
-                                fontSize="24px"
-                                bg="red.400"
-                                color="white"
-                                onClick={() => {
-                                  console.log(
-                                    props.values.correctAnswerIndices
-                                  );
-                                  if (
-                                    (
-                                      props.values
-                                        .correctAnswerIndices as string[]
-                                    ).includes(
-                                      (
-                                        props.values.answerOptions.length - 1
-                                      ).toString()
-                                    )
-                                  ) {
-                                    let newCorrectAnswerIndicies = [
-                                      ...props.values.correctAnswerIndices,
-                                    ];
-                                    newCorrectAnswerIndicies =
-                                      newCorrectAnswerIndicies.filter(
-                                        (i) =>
-                                          i !==
-                                          (
-                                            props.values.answerOptions.length -
-                                            1
-                                          ).toString()
-                                      );
-                                    props.setFieldValue(
-                                      "correctAnswerIndices",
-                                      newCorrectAnswerIndicies as string[]
-                                    );
-                                  }
-                                  arrayHelpers.pop();
-                                }}
-                              />
-                            </HStack>
-                          </>
-                        )}
-                      />
-                    </Box>
-                  </Stack>
-                )}
+                {answerBoxes(props)}
                 {props.values.questionType == "writtenAnswer" && (
                   <Text>Written Answer</Text>
                 )}
@@ -908,19 +876,37 @@ export const Create: React.FC<{}> = ({}) => {
                 </Text>
                 <Stack>
                   {props.values.answerOptions.map((option, index) => (
-                    <Checkbox
-                      size="lg"
-                      borderColor="grayMain"
-                      colorScheme="gray"
-                      key={index}
-                      isChecked={(
-                        props.values.correctAnswerIndices as string[]
-                      ).includes(index.toString())}
-                    >
-                      <Text ml={2} fontSize="16px">
-                        {option}
-                      </Text>
-                    </Checkbox>
+                    <Box key={index}>
+                      {props.values.questionType == "multipleChoice" && (
+                        <Radio
+                          size="lg"
+                          my="4px"
+                          borderColor="grayMain"
+                          colorScheme="gray"
+                          isChecked={(
+                            props.values.correctAnswers as string[]
+                          ).includes(option)}
+                        >
+                          <Text fontSize="md">{option}</Text>
+                        </Radio>
+                      )}
+
+                      {props.values.questionType == "multipleAnswers" && (
+                        <Checkbox
+                          size="lg"
+                          my="4px"
+                          borderColor="grayMain"
+                          colorScheme="gray"
+                          isChecked={(
+                            props.values.correctAnswers as string[]
+                          ).includes(option)}
+                        >
+                          <Text ml={2} fontSize="16px">
+                            {option}
+                          </Text>
+                        </Checkbox>
+                      )}
+                    </Box>
                   ))}
                 </Stack>
                 <Divider borderColor="grayLight" border="1px" mt={4} mb={2} />

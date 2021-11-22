@@ -84,7 +84,7 @@ export class QuestionResolver {
       questionInput.choices &&
       !questionInput.answer.every((val) => questionInput.choices.includes(val))
     ) {
-      throw new Error("Answer must be one of the provided choies");
+      throw new Error("Answer must be one of the provided choices");
     }
     const rawResult = await getConnection()
       .createQueryBuilder()
