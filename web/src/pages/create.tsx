@@ -76,7 +76,7 @@ export const Create: React.FC<{}> = ({}) => {
       questionType: QuestionType;
       question: string;
       answerOptions: string[];
-      correctAnswers: never[];
+      correctAnswers: string[];
       subjects: string;
     }>
   ) => (
@@ -177,10 +177,9 @@ export const Create: React.FC<{}> = ({}) => {
                                       {...correctAnswersField}
                                       isChecked={
                                         !!option &&
-                                        (
-                                          props.values
-                                            .correctAnswers as string[]
-                                        ).includes(option)
+                                        props.values.correctAnswers.includes(
+                                          option
+                                        )
                                       }
                                       colorScheme="gray"
                                       mr={2}
@@ -289,18 +288,13 @@ export const Create: React.FC<{}> = ({}) => {
                     const lastAnswer = props.values.answerOptions.at(-1);
                     if (
                       lastAnswer &&
-                      (props.values.correctAnswers as string[]).includes(
-                        lastAnswer
-                      )
+                      props.values.correctAnswers.includes(lastAnswer)
                     ) {
                       let newCorrectAnswers = [...props.values.correctAnswers];
                       newCorrectAnswers = newCorrectAnswers.filter(
                         (answer) => answer !== lastAnswer
                       );
-                      props.setFieldValue(
-                        "correctAnswers",
-                        newCorrectAnswers as string[]
-                      );
+                      props.setFieldValue("correctAnswers", newCorrectAnswers);
                     }
                     arrayHelpers.pop();
                   }}
@@ -329,7 +323,7 @@ export const Create: React.FC<{}> = ({}) => {
           textAlign="center"
           color="grayMain"
         >
-          Create Content Form
+          Create Content
         </Text>
       </Box>
       {parentData?.sentence && (
@@ -678,7 +672,7 @@ export const Create: React.FC<{}> = ({}) => {
           questionType: QuestionType.Single,
           question: "",
           answerOptions: ["", "", "", ""],
-          correctAnswers: [],
+          correctAnswers: [] as string[],
           subjects:
             parentData && parentData?.sentence
               ? parentData.sentence.subjects.join(", ")
@@ -823,10 +817,9 @@ export const Create: React.FC<{}> = ({}) => {
                             borderColor="grayLight"
                             value={field[0]}
                             onChange={(e) =>
-                              props.setFieldValue(
-                                "correctAnswers",
-                                [e.target.value]
-                              )
+                              props.setFieldValue("correctAnswers", [
+                                e.target.value,
+                              ])
                             }
                           />
                           <FormErrorMessage>
@@ -923,9 +916,9 @@ export const Create: React.FC<{}> = ({}) => {
                             my="4px"
                             borderColor="grayMain"
                             colorScheme="gray"
-                            isChecked={(
-                              props.values.correctAnswers as string[]
-                            ).includes(option)}
+                            isChecked={props.values.correctAnswers.includes(
+                              option
+                            )}
                           >
                             <Text fontSize="md">{option}</Text>
                           </Radio>
@@ -937,9 +930,9 @@ export const Create: React.FC<{}> = ({}) => {
                             my="4px"
                             borderColor="grayMain"
                             colorScheme="gray"
-                            isChecked={(
-                              props.values.correctAnswers as string[]
-                            ).includes(option)}
+                            isChecked={props.values.correctAnswers.includes(
+                              option
+                            )}
                           >
                             <Text ml={2} fontSize="16px">
                               {option}
@@ -950,14 +943,19 @@ export const Create: React.FC<{}> = ({}) => {
                     ))}
                   </Stack>
                 )}
-                {props.values.questionType == QuestionType.Text &&
-                <Input
-                size="sm"
-                border="2px"
-                borderColor="grayLight"
-                value={props.values.correctAnswers[0] ? props.values.correctAnswers[0] : ""}
-                readOnly={true}
-              />}
+                {props.values.questionType == QuestionType.Text && (
+                  <Input
+                    size="sm"
+                    border="2px"
+                    borderColor="grayLight"
+                    value={
+                      props.values.correctAnswers[0]
+                        ? props.values.correctAnswers[0]
+                        : ""
+                    }
+                    readOnly={true}
+                  />
+                )}
                 <Divider borderColor="grayLight" border="1px" mt={4} mb={2} />
                 <Button
                   my="4px"

@@ -80,8 +80,9 @@ export class QuestionResolver {
     @Ctx() { req }: MyContext,
     @Arg("questionInput") questionInput: QuestionInput
   ): Promise<Question> {
-    if (      
-      (questionInput.questionType == QuestionType.SINGLE || questionInput.questionType == QuestionType.MULTIPLE) &&
+    if (
+      (questionInput.questionType == QuestionType.SINGLE ||
+        questionInput.questionType == QuestionType.MULTIPLE) &&
       !questionInput.answer.every((val) => questionInput.choices!.includes(val))
     ) {
       throw new Error("Answer must be one of the provided choices");
@@ -145,6 +146,16 @@ export class QuestionResolver {
     @Arg("questionInput", () => QuestionInput) questionInput: QuestionInput,
     @Ctx() { req }: MyContext
   ): Promise<Question | null> {
+    if (
+      (questionInput.questionType == QuestionType.SINGLE ||
+        questionInput.questionType == QuestionType.MULTIPLE) &&
+      !questionInput.answer.every((val) => questionInput.choices!.includes(val))
+    ) {
+      throw new Error("Answer must be one of the provided choices");
+    }
+    if (questionInput.questionType == QuestionType.TEXT) {
+      questionInput.choices = undefined;
+    }
     const result = await getConnection()
       .createQueryBuilder()
       .update(Question)

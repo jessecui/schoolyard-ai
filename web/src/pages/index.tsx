@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import router from "next/router";
+import {useRouter} from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
@@ -33,6 +33,7 @@ import {
 import { withApollo } from "../utils/withApollo";
 
 const Index: React.FC<{}> = ({}) => {
+  const router = useRouter();
   const { data, loading, fetchMore, variables } = useSentencesQuery({
     variables: {
       limit: 10,
@@ -50,8 +51,6 @@ const Index: React.FC<{}> = ({}) => {
   >();
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
-
-  const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
     setSentenceData(data);

@@ -91,7 +91,7 @@ const SignUp: React.FC<registerProps> = ({}) => {
             p={8}
           >
             <Text fontWeight="bold" align="center" mb={4}>
-              Sign Up Form
+              Sign Up
             </Text>
             <Form>
               <VStack spacing={2}>

@@ -11,8 +11,9 @@ import {
   FormControl,
   FormErrorMessage,
   Icon,
-  Input, Text,
-  Textarea
+  Input,
+  Text,
+  Textarea,
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
@@ -24,18 +25,23 @@ import {
   useDeleteParagraphMutation,
   useMeQuery,
   useSentenceQuery,
-  useUpdateParagraphMutation
-} from "../../generated/graphql";
-import { withApollo } from "../../utils/withApollo";
+  useUpdateParagraphMutation,
+} from "../../../generated/graphql";
+import { withApollo } from "../../../utils/withApollo";
 
-export const Edit: React.FC<{}> = ({}) => {
+export const EditParagraph: React.FC<{}> = ({}) => {
   const router = useRouter();
 
   const { data: meData, loading: meLoading } = useMeQuery();
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
   useEffect(() => {
-    if (!meLoading && !meData?.me) {
+    if (
+      !meLoading &&
+      (!meData?.me ||
+        (sentenceData?.sentence?.teacherId &&
+          meData.me.id != sentenceData.sentence.teacherId))
+    ) {
       router.push("/");
     }
     setUserData(meData);
@@ -117,7 +123,7 @@ export const Edit: React.FC<{}> = ({}) => {
           textAlign="center"
           color="grayMain"
         >
-          Update Content Form
+          Update Paragraph
         </Text>
       </Box>
       <Formik
@@ -531,7 +537,7 @@ export const Edit: React.FC<{}> = ({}) => {
                                   onClick={() => {
                                     onClose();
                                     router.push(
-                                      "/edit/" +
+                                      "/edit/paragraph/" +
                                         sentenceData.sentence?.parent?.id
                                     );
                                   }}
@@ -556,4 +562,4 @@ export const Edit: React.FC<{}> = ({}) => {
   ) : null;
 };
 
-export default withApollo({ ssr: false })(Edit);
+export default withApollo({ ssr: false })(EditParagraph);

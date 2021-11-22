@@ -408,7 +408,7 @@ export type QuestionQueryVariables = Exact<{
 }>;
 
 
-export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string } } | null | undefined };
+export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, sentence: { __typename?: 'Sentence', id: number, text: string } } | null | undefined };
 
 export type QuestionsQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -1113,9 +1113,14 @@ export const QuestionDocument = gql`
     questionType
     choices
     answer
+    teacherId
     teacher {
       firstName
       lastName
+    }
+    sentence {
+      id
+      text
     }
     subjects
     upVoteCount
