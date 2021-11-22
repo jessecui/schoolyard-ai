@@ -14,8 +14,6 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik, FormikProps } from "formik";
-import { valueScaleCorrection } from "framer-motion/types/render/dom/projection/scale-correction";
-import { formatWithValidation } from "next/dist/shared/lib/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoPersonCircle } from "react-icons/io5";
@@ -75,15 +73,15 @@ export const Create: React.FC<{}> = ({}) => {
 
   const answerBoxes = (
     props: FormikProps<{
-      questionType: string;
+      questionType: QuestionType;
       question: string;
       answerOptions: string[];
       correctAnswers: never[];
       subjects: string;
     }>
   ) =>
-    (props.values.questionType == "multipleChoice" ||
-      props.values.questionType == "multipleAnswers") && (
+    (props.values.questionType == QuestionType.Single ||
+      props.values.questionType == QuestionType.Multiple) && (
       <Stack spacing={4} mt={4}>
         <Box>
           <Text fontWeight="bold" color="grayMain">
@@ -98,10 +96,10 @@ export const Create: React.FC<{}> = ({}) => {
                   name="correctAnswers"
                   validate={(e: string[]) => {
                     if (e.length == 0) {
-                      return props.values.questionType == "multipleChoice"
+                      return props.values.questionType == QuestionType.Single
                         ? "Please select a correct answer."
-                        : props.values.questionType == "multipleAnswers"
-                        ? "Please select at least one of the answers as a correct answer."
+                        : props.values.questionType == QuestionType.Multiple
+                        ? "Please select at least one of the answers as correct."
                         : null;
                     }
                     return null;
@@ -122,7 +120,7 @@ export const Create: React.FC<{}> = ({}) => {
                       {/* RadioGroup Wrapper for Multiple Choice */}
                       <ConditionalWrapper
                         condition={
-                          props.values.questionType == "multipleChoice"
+                          props.values.questionType == QuestionType.Single
                         }
                         wrapper={(children: any) => (
                           <RadioGroup
@@ -145,7 +143,7 @@ export const Create: React.FC<{}> = ({}) => {
                         {/* CheckboxGroup Wrapper for Multiple Answer */}
                         <ConditionalWrapper
                           condition={
-                            props.values.questionType == "multipleAnswers"
+                            props.values.questionType == QuestionType.Multiple
                           }
                           wrapper={(children: any) => (
                             <CheckboxGroup
@@ -162,7 +160,7 @@ export const Create: React.FC<{}> = ({}) => {
                               <Box key={index}>
                                 <Flex align="center">
                                   {props.values.questionType ==
-                                    "multipleChoice" && (
+                                    QuestionType.Single && (
                                     <Radio
                                       value={option}
                                       colorScheme="gray"
@@ -176,7 +174,7 @@ export const Create: React.FC<{}> = ({}) => {
                                     </Radio>
                                   )}
                                   {props.values.questionType ==
-                                    "multipleAnswers" && (
+                                    QuestionType.Multiple && (
                                     <>
                                       <Checkbox
                                         {...correctAnswersField}
@@ -202,7 +200,7 @@ export const Create: React.FC<{}> = ({}) => {
                                   name={`answerOptions.${index}`}
                                   validate={(value: string) => {
                                     if (!value) {
-                                      return "Please provide an answer";
+                                      return "Please provide an answer.";
                                     } else {
                                       const duplicates = findDuplicates(
                                         props.values.answerOptions
@@ -682,7 +680,7 @@ export const Create: React.FC<{}> = ({}) => {
       {/* Create Question Form */}
       <Formik
         initialValues={{
-          questionType: "multipleChoice",
+          questionType: QuestionType.Single,
           question: "",
           answerOptions: ["", "", "", ""],
           correctAnswers: [],
@@ -704,11 +702,11 @@ export const Create: React.FC<{}> = ({}) => {
                 question: values.question,
                 subjects: subjectsArray,
                 questionType:
-                  values.questionType == "multipleChoice"
+                  values.questionType == QuestionType.Single
                     ? QuestionType.Single
-                    : values.questionType == "multipleAnswers"
+                    : values.questionType == QuestionType.Multiple
                     ? QuestionType.Multiple
-                    : values.questionType == "writtenAnswer"
+                    : values.questionType == QuestionType.Text
                     ? QuestionType.Text
                     : null,
                 choices: values.answerOptions,
@@ -786,13 +784,13 @@ export const Create: React.FC<{}> = ({}) => {
                         }}
                       >
                         <HStack spacing={4}>
-                          <Radio value="multipleChoice">
+                          <Radio value={QuestionType.Single}>
                             <Text fontSize="md">Multiple Choice</Text>
                           </Radio>
-                          <Radio value="multipleAnswers">
+                          <Radio value={QuestionType.Multiple}>
                             <Text fontSize="md">Multiple Answers</Text>
                           </Radio>
-                          <Radio value="writtenAnswer">
+                          <Radio value={QuestionType.Text}>
                             <Text fontSize="md">Written Answer</Text>
                           </Radio>
                         </HStack>
@@ -801,7 +799,7 @@ export const Create: React.FC<{}> = ({}) => {
                   </Field>
                 </Box>
                 {answerBoxes(props)}
-                {props.values.questionType == "writtenAnswer" && (
+                {props.values.questionType == QuestionType.Text && (
                   <Text>Written Answer</Text>
                 )}
                 <Box mt={4}>
@@ -877,7 +875,7 @@ export const Create: React.FC<{}> = ({}) => {
                 <Stack>
                   {props.values.answerOptions.map((option, index) => (
                     <Box key={index}>
-                      {props.values.questionType == "multipleChoice" && (
+                      {props.values.questionType == QuestionType.Single && (
                         <Radio
                           size="lg"
                           my="4px"
@@ -891,7 +889,7 @@ export const Create: React.FC<{}> = ({}) => {
                         </Radio>
                       )}
 
-                      {props.values.questionType == "multipleAnswers" && (
+                      {props.values.questionType == QuestionType.Multiple && (
                         <Checkbox
                           size="lg"
                           my="4px"
