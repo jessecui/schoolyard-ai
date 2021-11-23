@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 import NextLink from "next/link";
 import React, { useEffect, useState } from "react";
 import { IoExpand, IoPeople, IoPersonCircle } from "react-icons/io5";
-import { BiTargetLock } from "react-icons/bi";
+import { BiZoomIn } from "react-icons/bi";
 import {
   RiThumbUpFill,
   RiThumbUpLine,
@@ -591,7 +591,7 @@ const Learn: React.FC<{}> = ({}) => {
                       >
                         <Link>
                           <Icon
-                            as={BiTargetLock}
+                            as={BiZoomIn}
                             w="36px"
                             height="36px"
                             color="iris"

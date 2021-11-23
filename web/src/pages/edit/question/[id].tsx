@@ -1,3 +1,4 @@
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -14,6 +15,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  Grid,
   HStack,
   Icon,
   IconButton,
@@ -327,7 +329,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
   // Delete button
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
-  const cancelRef = useRef();
+  const deleteRef = useRef();
 
   return questionData?.question ? (
     <Box>
@@ -339,6 +341,24 @@ export const EditQuestion: React.FC<{}> = ({}) => {
         p={4}
         my={2}
       >
+        <Grid templateColumns="repeat(3, 1fr)">
+          <IconButton
+            aria-label="Go Back"
+            width="24px"
+            minWidth="24px"
+            height="24px"
+            isRound={true}
+            size="lg"
+            bg="none"
+            _focus={{
+              boxShadow: "none",
+            }}
+            _hover={{
+              bg: "grayLight",
+            }}
+            icon={<ArrowBackIcon />}
+            onClick={() => router.push("/master/")}
+          />
         <Text
           fontSize="g"
           fontWeight="bold"
@@ -346,7 +366,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
           color="grayMain"
         >
           Update Question
-        </Text>
+        </Text></Grid>
       </Box>
       <Formik
         initialValues={{
@@ -645,24 +665,6 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                 >
                   Update
                 </Button>
-                <Button
-                  size="sm"
-                  bg="none"
-                  color="grayMain"
-                  _hover={{
-                    bg: "none",
-                    color: "gray.800",
-                    textDecorationLine: "underline",
-                  }}
-                  onClick={
-                    () => router.push("/master") // TODO Link to Question Page
-                  }
-                  _focus={{
-                    boxShadow: "none",
-                  }}
-                >
-                  Cancel
-                </Button>
                 <Box>
                   <Button
                     size="sm"
@@ -683,7 +685,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
 
                   <AlertDialog
                     isOpen={isOpen}
-                    leastDestructiveRef={cancelRef.current}
+                    leastDestructiveRef={deleteRef.current}
                     onClose={onClose}
                   >
                     <AlertDialogOverlay>
@@ -697,7 +699,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                             <Button
                               color="white"
                               bg="mint"
-                              ref={cancelRef.current}
+                              ref={deleteRef.current}
                               onClick={onClose}
                             >
                               Cancel

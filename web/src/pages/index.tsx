@@ -11,7 +11,7 @@ import {
 import NextLink from "next/link";
 import {useRouter} from "next/router";
 import React, { useEffect, useState } from "react";
-import { BiTargetLock } from "react-icons/bi";
+import { BiZoomIn } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
   RiCalendarEventFill,
@@ -288,9 +288,9 @@ const Index: React.FC<{}> = ({}) => {
               <Box mt={3}>
                 <NextLink href={"/learn/" + sentence.id}>
                   <Link color="iris" _hover={{ color: "irisDark" }}>
-                    <Icon as={BiTargetLock} w="36px" height="36px" />
+                    <Icon as={BiZoomIn} w="36px" height="36px" />
                     <Text ml={1} as="span" fontWeight="bold" fontSize="lg">
-                      dive in
+                      zoom in
                     </Text>
                   </Link>
                 </NextLink>
