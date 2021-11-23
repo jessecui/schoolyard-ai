@@ -1,28 +1,53 @@
 import { Box, SimpleGrid, VStack } from "@chakra-ui/layout";
-import { Button, Text } from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
+  Text,
+} from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import router from "next/router";
+import React, { useEffect, useRef, useState } from "react";
 import { InputField } from "../components/InputField";
 import {
   MeDocument,
   MeQuery,
   useChangePasswordMutation,
   useChangeProfileMutation,
+  useDeleteUserMutation,
   useMeQuery,
 } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";
+import { useApolloClient } from "@apollo/client";
 
 const AccountSettings: React.FC<{}> = ({}) => {
+  const apolloClient = useApolloClient();
   const { data, loading: meLoading } = useMeQuery({
     skip: isServer(),
   });
   const [changeProfile] = useChangeProfileMutation();
   const [changePassword] = useChangePasswordMutation();
+  const [deleteUser] = useDeleteUserMutation();
 
   const [profileChangeSuccess, setProfileChangeSuccess] = useState(false);
   const [passwordChangeSuccess, setPasswordChangeSuccess] = useState(false);
+
+  // Delete button
+  const [isOpen, setIsOpen] = useState(false);
+  const onClose = () => setIsOpen(false);
+  const deleteRef = useRef();
+
+  useEffect(() => {
+    if (!meLoading && !data?.me) {
+      router.push("/");
+    }
+  });
 
   return (
     <Box>
@@ -30,13 +55,13 @@ const AccountSettings: React.FC<{}> = ({}) => {
       <Formik
         enableReinitialize
         initialValues={
-          meLoading
-            ? { firstName: "", lastName: "", email: "" }
-            : {
+          data?.me
+            ? {
                 firstName: data?.me?.firstName!,
                 lastName: data?.me?.lastName!,
                 email: data?.me?.email!,
               }
+            : { firstName: "", lastName: "", email: "" }
         }
         onSubmit={async (values, { setErrors, resetForm }) => {
           const response = await changeProfile({
@@ -173,6 +198,70 @@ const AccountSettings: React.FC<{}> = ({}) => {
           </Box>
         )}
       </Formik>
+      <Box
+        border="2px"
+        borderColor="grayLight"
+        borderRadius="md"
+        bg="White"
+        mt={4}
+        px={8}
+        py={2}
+      >
+        <Button
+          size="sm"
+          bg="none"
+          color="red"
+          _hover={{
+            bg: "none",
+            color: "red.800",
+            textDecorationLine: "underline",
+          }}
+          onClick={() => setIsOpen(true)}
+          _focus={{
+            boxShadow: "none",
+          }}
+        >
+          Delete Account
+        </Button>
+
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={deleteRef.current}
+          onClose={onClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Delete Account
+              </AlertDialogHeader>
+              <AlertDialogBody>
+                Are you sure? You cannot undo this action afterwards.
+                <AlertDialogFooter>
+                  <Button
+                    color="white"
+                    bg="mint"
+                    ref={deleteRef.current}
+                    onClick={onClose}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={async () => {
+                      await deleteUser();
+                      await apolloClient.resetStore();
+                      router.push("/");
+                    }}
+                    ml={3}
+                  >
+                    Delete
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogBody>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      </Box>
     </Box>
   );
 };

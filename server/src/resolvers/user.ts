@@ -54,7 +54,7 @@ export class UserResolver {
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const errors = validateRegister(options);
-    if (errors) {
+    if (errors && errors.length > 0) {
       return { errors };
     }
 
@@ -297,9 +297,11 @@ export class UserResolver {
         message: "Invalid email format",
       });
     } else {
-      const currentUser = await User.findOne({ where: { id: req.session.userId } });
+      const currentUser = await User.findOne({
+        where: { id: req.session.userId },
+      });
       const userWithEmail = await User.findOne({ where: { email: email } });
-      if (userWithEmail && userWithEmail.email != currentUser!.email ) {
+      if (userWithEmail && userWithEmail.email != currentUser!.email) {
         errors.push({
           field: "email",
           message: "Another user with that email already exists.",
@@ -318,7 +320,7 @@ export class UserResolver {
         message: "Length must be greater than 1",
       });
     }
-  
+
     if (errors.length) {
       return { errors };
     }
@@ -334,5 +336,12 @@ export class UserResolver {
 
     const user = await User.findOne({ where: { id: req.session.userId } });
     return { user };
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async deleteUser(@Ctx() { req }: MyContext): Promise<boolean> {
+    await User.delete(req.session.userId);
+    return true;
   }
 }

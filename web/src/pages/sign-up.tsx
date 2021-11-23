@@ -73,7 +73,7 @@ const SignUp: React.FC<registerProps> = ({}) => {
               });
             },
           });
-          if (response.data?.register.errors) {
+          if (response.data?.register.errors && response.data?.register.errors.length > 0) {
             setErrors(toErrorMap(response.data.register.errors));
           } else if (response.data?.register.user) {
             router.push("/");

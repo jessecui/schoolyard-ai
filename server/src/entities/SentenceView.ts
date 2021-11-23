@@ -15,7 +15,9 @@ export class SentenceView extends BaseEntity {
   @PrimaryColumn()
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.sentenceViews)
+  @ManyToOne(() => User, (user) => user.sentenceViews, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @PrimaryColumn()

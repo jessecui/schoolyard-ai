@@ -17,7 +17,9 @@ export class QuestionVote extends BaseEntity {
   @PrimaryColumn()
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.questionVotes)
+  @ManyToOne(() => User, (user) => user.questionVotes, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @PrimaryColumn()
