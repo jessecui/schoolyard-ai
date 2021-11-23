@@ -35,7 +35,9 @@ export class Sentence extends BaseEntity {
   teacherId: number;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.sentences)
+  @ManyToOne(() => User, (user) => user.sentences, {
+    onDelete: "CASCADE",
+  })
   teacher: User;
 
   // Parent Child Lineage
@@ -72,7 +74,7 @@ export class Sentence extends BaseEntity {
   @Column("varchar", { array: true })
   subjects: string[];
 
-  @OneToMany(() => Question, (question) => question.sentence)
+  @ManyToMany(() => Question, (question) => question.sentence)
   questions: Question[];
 
   @OneToMany(() => SentenceVote, (vote) => vote.sentence)
