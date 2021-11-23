@@ -1,4 +1,13 @@
-import { Box, Circle, Divider, Flex, HStack, Stack } from "@chakra-ui/layout";
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Circle,
+  Divider,
+  Flex,
+  Grid,
+  HStack,
+  Stack,
+} from "@chakra-ui/layout";
 import {
   Button,
   Checkbox,
@@ -317,14 +326,39 @@ export const Create: React.FC<{}> = ({}) => {
         p={4}
         my={2}
       >
-        <Text
-          fontSize="g"
-          fontWeight="bold"
-          textAlign="center"
-          color="grayMain"
-        >
-          Create Content
-        </Text>
+        <Grid templateColumns="repeat(3, 1fr)">
+          <IconButton
+            aria-label="Go Back"
+            width="24px"
+            minWidth="24px"
+            height="24px"
+            isRound={true}
+            size="lg"
+            bg="none"
+            _focus={{
+              boxShadow: "none",
+            }}
+            _hover={{
+              bg: "grayLight",
+            }}
+            icon={<ArrowBackIcon />}
+            onClick={() => {
+              if (parentData?.sentence?.id) {
+                router.push("/learn/" + parentData.sentence.id);
+              } else {
+                router.back();
+              }
+            }}
+          />
+          <Text
+            fontSize="g"
+            fontWeight="bold"
+            textAlign="center"
+            color="grayMain"
+          >
+            Create Content
+          </Text>
+        </Grid>
       </Box>
       {parentData?.sentence && (
         <Box
