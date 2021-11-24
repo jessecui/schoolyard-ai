@@ -589,8 +589,7 @@ const Review: React.FC<{}> = ({}) => {
                   <Text color="grayMain">
                     <Icon as={IoPeople} mr={1} w={5} h={5} />
                     {q.viewCount +
-                      (q.viewCount == 1 ? " person was" : " people were") +
-                      " also curious"}
+                      (q.viewCount == 1 ? " view" : " views")}
                   </Text>
                   <Text color="grayMain">
                     <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />

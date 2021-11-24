@@ -592,8 +592,8 @@ const Learn: React.FC<{}> = ({}) => {
                         <Link>
                           <Icon
                             as={BiZoomIn}
-                            w="36px"
-                            height="36px"
+                            w="24px"
+                            height="24px"
                             color="iris"
                             _hover={{ color: "irisDark" }}
                           />
