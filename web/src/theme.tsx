@@ -31,6 +31,13 @@ const colors = {
   blueSky: "#1B91FF",
 };
 
-const theme = extendTheme({ config, fonts, styles, colors });
+const fontSizes = {
+  xl: "18px",
+  lg: "16px",
+  md: "15px",
+  sm: "14px"
+}
+
+const theme = extendTheme({ config, fonts, styles, colors, fontSizes });
 
 export default theme;
