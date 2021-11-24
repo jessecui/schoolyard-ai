@@ -55,13 +55,13 @@ export class Question extends BaseEntity {
   })
   questionType: QuestionType;
 
-  @Field()
-  @Column()
+  @Field({nullable: true})
+  @Column({nullable: true})
   sentenceId: number;
 
-  @Field(() => Sentence)
+  @Field(() => Sentence, {nullable: true})
   @ManyToOne(() => Sentence, (sentence) => sentence.questions, {
-    onDelete: "CASCADE",
+    onDelete: "SET NULL",
   })
   sentence: Sentence[];
 

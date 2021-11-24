@@ -54,7 +54,10 @@ export class QuestionResolver {
 
   @FieldResolver(() => Sentence)
   sentence(@Root() question: Question) {
-    return Sentence.findOneOrFail(question.sentenceId);
+    if (!question.sentenceId) {
+      return;
+    }
+    return Sentence.findOne(question.sentenceId);
   }
 
   @FieldResolver(() => VoteType, { nullable: true })

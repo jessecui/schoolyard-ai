@@ -74,7 +74,7 @@ export class Sentence extends BaseEntity {
   @Column("varchar", { array: true })
   subjects: string[];
 
-  @ManyToMany(() => Question, (question) => question.sentence)
+  @OneToMany(() => Question, (question) => question.sentence)
   questions: Question[];
 
   @OneToMany(() => SentenceVote, (vote) => vote.sentence)

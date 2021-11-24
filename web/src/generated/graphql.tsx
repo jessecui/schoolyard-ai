@@ -192,8 +192,8 @@ export type Question = {
   id: Scalars['Float'];
   question: Scalars['String'];
   questionType: QuestionType;
-  sentence: Sentence;
-  sentenceId: Scalars['Float'];
+  sentence?: Maybe<Sentence>;
+  sentenceId?: Maybe<Scalars['Float']>;
   subjects: Array<Scalars['String']>;
   teacher: User;
   teacherId: Scalars['Float'];
@@ -414,7 +414,7 @@ export type QuestionQueryVariables = Exact<{
 }>;
 
 
-export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, sentence: { __typename?: 'Sentence', id: number, text: string } } | null | undefined };
+export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, sentence?: { __typename?: 'Sentence', id: number, text: string } | null | undefined } | null | undefined };
 
 export type QuestionsQueryVariables = Exact<{
   limit: Scalars['Int'];
