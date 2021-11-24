@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Question } from "./Question";
+import { QuestionReview } from "./QuestionReview";
 import { QuestionView } from "./QuestionView";
 import { QuestionVote } from "./QuestionVote";
 import { Sentence } from "./Sentence";
@@ -54,6 +55,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => QuestionView, (view) => view.user)
   questionViews: QuestionView[];
+
+  @OneToMany(() => QuestionReview, (review) => review.user)
+  questionReviews: QuestionReview[];
 
   @Field(() => Date)
   @CreateDateColumn()

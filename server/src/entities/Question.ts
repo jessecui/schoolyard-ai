@@ -13,6 +13,7 @@ import { QuestionVote, VoteType } from "./QuestionVote";
 import { QuestionView } from "./QuestionView";
 import { Sentence } from "./Sentence";
 import { User } from "./User";
+import { QuestionReview } from "./QuestionReview";
 
 export enum QuestionType {
   TEXT = "text", // Written answer
@@ -93,6 +94,9 @@ export class Question extends BaseEntity {
   @Field()
   @Column({ default: 0 })
   viewCount: number;
+
+  @OneToMany(() => QuestionReview, (review) => review.question)
+  reviews: QuestionReview[];
 
   @Field(() => Date)
   @CreateDateColumn()

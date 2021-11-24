@@ -20,6 +20,7 @@ import { Sentence } from "../entities/Sentence";
 import { User } from "../entities/User";
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
+import { QuestionReview, ReviewStatus } from "../entities/QuestionReview";
 
 @InputType()
 class QuestionInput {
@@ -341,5 +342,97 @@ export class QuestionResolver {
         .returning("*")
         .execute();
     }
+  }
+
+  @Mutation(() => QuestionReview)
+  async createQuestionReview(
+    @Arg("questionId", () => Int) questionId: number,
+    @Arg("reviewStatus", () => ReviewStatus) reviewStatus: ReviewStatus,
+    @Ctx() { req }: MyContext
+  ) {
+    const today = new Date();
+    let tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+
+    let afterTomorrow = new Date();
+    afterTomorrow.setDate(today.getDate() + 2);
+    const review = await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(QuestionReview)
+      .values({
+        userId: req.session.userId,
+        questionId,
+        reviewStatus,
+        correctStreak: reviewStatus == ReviewStatus.CORRECT ? 1 : 0,
+        dateNextAvailable:
+          reviewStatus == ReviewStatus.INCORRECT
+            ? tomorrow
+            : reviewStatus == ReviewStatus.CORRECT
+            ? afterTomorrow
+            : today,
+      })
+      .returning("*")
+      .execute();
+    return review.raw[0];
+  }
+
+  @Mutation(() => QuestionReview, { nullable: true })
+  async updateQuestionReview(
+    @Arg("questionId", () => Int) questionId: number,
+    @Arg("reviewStatus", () => ReviewStatus) reviewStatus: ReviewStatus,
+    @Ctx() { req }: MyContext
+  ) {
+    const existingReview = await QuestionReview.findOne({
+      where: { userId: req.session.userId, questionId },
+    });
+    if (existingReview) {
+      if (
+        new Date().getTime() <
+        new Date(existingReview.dateNextAvailable).getTime()
+      ) {
+        return null;
+      }
+      let correctStreak;
+      let dateNextAvailable = new Date();
+      if (reviewStatus == ReviewStatus.CORRECT) {
+        dateNextAvailable.setDate(
+          dateNextAvailable.getDate() + existingReview.correctStreak * 2
+        );
+        correctStreak = existingReview.correctStreak + 1;
+      } else if (reviewStatus == ReviewStatus.INCORRECT) {
+        dateNextAvailable.setDate(
+          dateNextAvailable.getDate() + existingReview.correctStreak + 1
+        );
+        correctStreak = 0;
+      } else {
+        return null;
+      }
+
+      const review = await getConnection()
+        .createQueryBuilder()
+        .update(QuestionReview)
+        .set({
+          userId: req.session.userId,
+          questionId,
+          reviewStatus,
+          correctStreak,
+          dateNextAvailable,
+        })
+        .returning("*")
+        .execute();
+      return review.raw[0];
+    }
+    return null;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async deleteQuestionReview(
+    @Arg("questionId", () => Int) questionId: number,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    await QuestionReview.delete({ userId: req.session.userId, questionId });
+    return true;
   }
 }

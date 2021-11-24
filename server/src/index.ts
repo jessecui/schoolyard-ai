@@ -24,6 +24,7 @@ import { ParentChild } from "./entities/ParentChild";
 import { SentenceView } from "./entities/SentenceView";
 import { createSentenceVoteLoader } from "./utils/createSentenceVoteLoader";
 import { Cloning } from "./entities/Cloning";
+import { QuestionReview } from "./entities/QuestionReview";
 
 // Update these variables upon adding new entities and resolvers
 const entities = [
@@ -34,6 +35,7 @@ const entities = [
   Question,
   QuestionVote,
   QuestionView,
+  QuestionReview,
   ParentChild,
   Cloning,
 ];
