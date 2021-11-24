@@ -357,7 +357,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
               bg: "grayLight",
             }}
             icon={<ArrowBackIcon />}
-            onClick={() => router.push("/master/")}
+            onClick={() => router.push("/review/")}
           />
         <Text
           fontSize="g"
@@ -721,7 +721,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                                     },
                                   });
                                 }
-                                router.push("/master?deleteSuccess=true");
+                                router.push("/review?deleteSuccess=true");
                               }}
                               ml={3}
                             >

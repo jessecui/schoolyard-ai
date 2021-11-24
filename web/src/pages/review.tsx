@@ -44,7 +44,7 @@ import {
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
-const Master: React.FC<{}> = ({}) => {
+const Review: React.FC<{}> = ({}) => {
   const router = useRouter();
 
   const { data, loading } = useQuestionsQuery({
@@ -442,7 +442,7 @@ const Master: React.FC<{}> = ({}) => {
             position="absolute"
             right="8px"
             top="8px"
-            onClick={() => router.push("/master", undefined, { shallow: true })}
+            onClick={() => router.push("/review", undefined, { shallow: true })}
           />
         </Alert>
       )}
@@ -612,4 +612,4 @@ const Master: React.FC<{}> = ({}) => {
   );
 };
 
-export default withApollo({ ssr: true })(Master);
+export default withApollo({ ssr: true })(Review);

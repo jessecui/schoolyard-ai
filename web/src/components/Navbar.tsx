@@ -201,7 +201,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   </Heading>
                 </Link>
               </NextLink>
-              <NextLink href="/master">
+              <NextLink href="/review">
                 <Link style={{ textDecoration: "none" }}>
                   <Heading
                     color="grayMain"
@@ -212,7 +212,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                     }}
                     size="md"
                   >
-                    master
+                    review
                   </Heading>
                 </Link>
               </NextLink>
