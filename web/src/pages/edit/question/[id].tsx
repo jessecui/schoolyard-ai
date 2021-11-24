@@ -339,7 +339,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
         borderRadius="md"
         bg="White"
         p={4}
-        my={2}
+        mb={2}
       >
         <Grid templateColumns="repeat(3, 1fr)">
           <IconButton

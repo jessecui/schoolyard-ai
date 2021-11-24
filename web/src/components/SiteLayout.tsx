@@ -31,7 +31,8 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
             <Container maxW="container.sm">{children}</Container>
           </GridItem>
           <GridItem colSpan={3}>
-          <Box
+            {meData?.me?.id && (
+              <Box
                 border="2px"
                 borderColor="grayLight"
                 borderRadius="md"
@@ -42,6 +43,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                   Performance Scorecard
                 </Text>
               </Box>
+            )}
           </GridItem>
         </Grid>
       </Container>
