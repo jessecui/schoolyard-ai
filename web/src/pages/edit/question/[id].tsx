@@ -424,8 +424,8 @@ export const EditQuestion: React.FC<{}> = ({}) => {
               p={4}
               my={2}
             >
-              {questionData?.question && (
-                <Box>
+              {questionData?.question?.sentence?.text && (
+                <Box mb={4}>
                   <Text fontWeight="bold" color="grayMain">
                     Sentence Being Linked
                   </Text>
@@ -433,7 +433,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                   <Text>{questionData.question?.sentence.text}</Text>
                 </Box>
               )}
-              <Box mt={4}>
+              <Box>
                 <Text fontWeight="bold" color="grayMain">
                   Question
                 </Text>
