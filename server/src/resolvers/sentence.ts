@@ -22,6 +22,7 @@ import {
 } from "typeorm";
 import { Cloning } from "../entities/Cloning";
 import { ParentChild } from "../entities/ParentChild";
+import { Question } from "../entities/Question";
 import { VoteType } from "../entities/QuestionVote";
 import { Sentence } from "../entities/Sentence";
 import { SentenceView } from "../entities/SentenceView";
@@ -194,6 +195,17 @@ export class SentenceResolver {
     });
 
     return vote ? vote.voteType : null;
+  }
+
+  @FieldResolver(() => [Question])
+  async questions(@Root() sentence: Sentence) {
+    return await Question.find({
+      where: {        
+        sentenceId: sentence.id,
+      },
+      skip: 0,
+      take: 100,
+    })
   }
 
   @Mutation(() => Sentence)

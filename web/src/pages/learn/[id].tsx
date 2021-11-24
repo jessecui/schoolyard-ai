@@ -33,6 +33,7 @@ import { MdLibraryAdd } from "react-icons/md";
 import {
   AddVoteToSentenceMutation,
   MeQuery,
+  Question,
   Sentence,
   SentenceQuery,
   useAddViewToSentenceMutation,
@@ -43,7 +44,9 @@ import {
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
-const Learn: React.FC<{}> = ({}) => {
+const Learn: React.FC<{
+  setAvailableQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
+}> = ({ setAvailableQuestions }) => {
   const router = useRouter();
   const { data, loading } = useSentenceQuery({
     variables: { id: Number(router.query.id) },
@@ -58,12 +61,24 @@ const Learn: React.FC<{}> = ({}) => {
   >();
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
+  
   useEffect(() => {
     setSentenceData(data);
     setSentenceDataLoading(loading);
     setUserData(meData);
     setUserDataLoading(meLoading);
   });
+  useEffect(() => {
+    const availableQuestions = data?.sentence?.clones
+      ? data.sentence.clones.map((clone) => clone.questions).flat(1)
+      : ([] as Question[]);
+
+    setAvailableQuestions(
+      (data?.sentence?.clones
+        ? data.sentence.clones.map((clone) => clone.questions).flat(1)
+        : []) as Question[]
+    );
+  }, [data?.sentence?.clones]);
 
   const [viewedIds, setViewedIds] = useState<number[]>([]);
 

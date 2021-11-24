@@ -74,6 +74,7 @@ export class Sentence extends BaseEntity {
   @Column("varchar", { array: true })
   subjects: string[];
 
+  @Field(() => [Question])
   @OneToMany(() => Question, (question) => question.sentence)
   questions: Question[];
 

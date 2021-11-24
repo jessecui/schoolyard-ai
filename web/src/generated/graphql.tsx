@@ -33,8 +33,10 @@ export type Mutation = {
   changeProfile: UserResponse;
   createParagraph: Sentence;
   createQuestion: Question;
+  createQuestionReview: QuestionReview;
   deleteParagraph: Scalars['Boolean'];
   deleteQuestion: Scalars['Boolean'];
+  deleteQuestionReview: Scalars['Boolean'];
   deleteUser: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   login: UserResponse;
@@ -42,6 +44,7 @@ export type Mutation = {
   register: UserResponse;
   updateParagraph?: Maybe<Sentence>;
   updateQuestion?: Maybe<Question>;
+  updateQuestionReview?: Maybe<QuestionReview>;
 };
 
 
@@ -97,6 +100,12 @@ export type MutationCreateQuestionArgs = {
 };
 
 
+export type MutationCreateQuestionReviewArgs = {
+  questionId: Scalars['Int'];
+  reviewStatus: ReviewStatus;
+};
+
+
 export type MutationDeleteParagraphArgs = {
   id: Scalars['Int'];
 };
@@ -104,6 +113,11 @@ export type MutationDeleteParagraphArgs = {
 
 export type MutationDeleteQuestionArgs = {
   id: Scalars['Int'];
+};
+
+
+export type MutationDeleteQuestionReviewArgs = {
+  questionId: Scalars['Int'];
 };
 
 
@@ -132,6 +146,12 @@ export type MutationUpdateParagraphArgs = {
 export type MutationUpdateQuestionArgs = {
   id: Scalars['Int'];
   questionInput: QuestionInput;
+};
+
+
+export type MutationUpdateQuestionReviewArgs = {
+  questionId: Scalars['Int'];
+  reviewStatus: ReviewStatus;
 };
 
 export type PaginatedQuestions = {
@@ -212,6 +232,17 @@ export type QuestionInput = {
   subjects?: Maybe<Array<Scalars['String']>>;
 };
 
+export type QuestionReview = {
+  __typename?: 'QuestionReview';
+  correctStreak: Scalars['Float'];
+  dateCreated: Scalars['DateTime'];
+  dateNextAvailable: Scalars['DateTime'];
+  dateUpdated: Scalars['DateTime'];
+  questionId: Scalars['Float'];
+  reviewStatus: ReviewStatus;
+  userId: Scalars['Float'];
+};
+
 export enum QuestionType {
   Multiple = 'MULTIPLE',
   Single = 'SINGLE',
@@ -225,6 +256,12 @@ export type RegisterUserInputs = {
   password: Scalars['String'];
 };
 
+export enum ReviewStatus {
+  Correct = 'CORRECT',
+  Incorrect = 'INCORRECT',
+  Queued = 'QUEUED'
+}
+
 export type Sentence = {
   __typename?: 'Sentence';
   children?: Maybe<Array<Sentence>>;
@@ -235,6 +272,7 @@ export type Sentence = {
   id: Scalars['Float'];
   orderNumber?: Maybe<Scalars['Float']>;
   parent?: Maybe<Sentence>;
+  questions: Array<Question>;
   subjects: Array<Scalars['String']>;
   teacher: User;
   teacherId: Scalars['Float'];
@@ -429,7 +467,7 @@ export type SentenceQueryVariables = Exact<{
 }>;
 
 
-export type SentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacherId: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, upVoteCount: number, downVoteCount: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, orderNumber?: number | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', text: string, orderNumber?: number | null | undefined }> | null | undefined } | null | undefined, teacher: { __typename?: 'User', id: number, firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined }> | null | undefined }> | null | undefined } | null | undefined };
+export type SentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacherId: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, upVoteCount: number, downVoteCount: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, orderNumber?: number | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }>, parent?: { __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', text: string, orderNumber?: number | null | undefined }> | null | undefined } | null | undefined, teacher: { __typename?: 'User', id: number, firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined }> | null | undefined }> | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }> } | null | undefined };
 
 export type SentencesQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -1302,6 +1340,11 @@ export const SentenceDocument = gql`
     clones {
       id
       text
+      questions {
+        id
+        question
+        subjects
+      }
       parent {
         id
         text
@@ -1351,6 +1394,11 @@ export const SentenceDocument = gql`
         }
       }
       orderNumber
+    }
+    questions {
+      id
+      question
+      subjects
     }
   }
 }

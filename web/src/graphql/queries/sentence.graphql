@@ -50,6 +50,11 @@ query Sentence($id: Int!) {
     clones {
       id
       text
+      questions {
+        id
+        question
+        subjects
+      }
       parent {
         id
         text
@@ -98,7 +103,12 @@ query Sentence($id: Int!) {
           }
         }
       }
-      orderNumber
+      orderNumber      
+    }
+    questions {
+      id
+      question
+      subjects
     }
   }
 }

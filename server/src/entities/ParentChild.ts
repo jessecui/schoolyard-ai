@@ -27,10 +27,10 @@ export class ParentChild extends BaseEntity {
   child: Sentence;
 
   @Field()
-  @PrimaryColumn()
+  @Column()
   childId: number;
 
   @Field()
-  @Column()
+  @PrimaryColumn()
   orderNumber: number;
 }
