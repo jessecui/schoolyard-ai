@@ -1,23 +1,19 @@
 import { ApolloCache } from "@apollo/client/cache";
-import {
-  Box,
-  Circle,
-  Divider,
-  Flex, HStack,
-  Stack
-} from "@chakra-ui/layout";
+import { Box, Circle, Divider, Flex, HStack, Stack } from "@chakra-ui/layout";
 import {
   Alert,
   AlertIcon,
   Button,
-  Checkbox, CloseButton, FormControl,
+  Checkbox,
+  CloseButton,
+  FormControl,
   FormErrorMessage,
   Icon,
   IconButton,
   Input,
   Radio,
   RadioGroup,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import gql from "graphql-tag";
@@ -29,7 +25,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine
+  RiThumbUpLine,
 } from "react-icons/ri";
 import {
   AddVoteMutation,
@@ -40,7 +36,7 @@ import {
   useAddVoteMutation,
   useMeQuery,
   useQuestionsQuery,
-  VoteType
+  VoteType,
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -576,7 +572,13 @@ const Review: React.FC<{}> = ({}) => {
                   ) : (
                     <>
                       <Text color="grayMain">
-                        <Icon mx="4px" height="24px" as={RiThumbUpLine} h="18px" w="18px" />
+                        <Icon
+                          mx="4px"
+                          height="24px"
+                          as={RiThumbUpLine}
+                          h="18px"
+                          w="18px"
+                        />
                         {q.upVoteCount}
                       </Text>
                       <Text color="grayMain">
@@ -588,8 +590,7 @@ const Review: React.FC<{}> = ({}) => {
 
                   <Text color="grayMain">
                     <Icon as={IoPeople} mr={1} w={5} h={5} />
-                    {q.viewCount +
-                      (q.viewCount == 1 ? " view" : " views")}
+                    {q.viewCount + (q.viewCount == 1 ? " view" : " views")}
                   </Text>
                   <Text color="grayMain">
                     <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
