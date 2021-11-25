@@ -123,6 +123,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
         <Grid templateColumns="repeat(3, 1fr)">
           <IconButton
             aria-label="Go Back"
+            color="grayMain"
             width="24px"
             minWidth="24px"
             height="24px"
@@ -139,7 +140,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
             onClick={() => router.push("/learn/" + sentenceData.sentence?.id)}
           />
         <Text
-          fontSize="g"
+          fontSize="md"
           fontWeight="bold"
           textAlign="center"
           color="grayMain"
@@ -200,7 +201,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                   {getSentenceParent(sentenceData.sentence as Sentence) &&
                     sentenceData.sentence?.children && (
                       <Box>
-                        <Text fontWeight="bold" color="grayMain">
+                        <Text fontWeight="bold" color="grayMain" fontSize="sm">
                           Sentence Being Linked
                         </Text>
                         <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -218,7 +219,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                       </Box>
                     )}
                   <Box>
-                    <Text fontWeight="bold" color="grayMain">
+                    <Text fontWeight="bold" color="grayMain" fontSize="sm">
                       Summary Sentence
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -282,11 +283,11 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                   {props.values.explanationSentences &&
                     props.values.explanationSentences.length > 0 && (
                       <Box>
-                        <Text fontWeight="bold" color="grayMain">
+                        <Text fontWeight="bold" color="grayMain" fontSize="sm">
                           Explanation Sentences
                         </Text>
                         <Divider borderColor="grayLight" border="1px" mb={2} />
-                        <Text color="grayMain">
+                        <Text color="grayMain" fontSize="sm">
                           Make sure to not change the meaning of the explanation
                           sentences if they have their own explanation
                           sentences.
@@ -343,7 +344,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                       </Box>
                     )}
                   <Box>
-                    <Text fontWeight="bold" color="grayMain">
+                    <Text fontWeight="bold" color="grayMain" fontSize="sm">
                       Subjects
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -380,7 +381,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                 p={4}
                 my={2}
               >
-                <Text fontWeight="bold" color="grayMain">
+                <Text fontWeight="bold" color="grayMain" fontSize="sm">
                   Preview
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -397,7 +398,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                             return subject ? (
                               <Flex align="center" key={subject}>
                                 <Circle mr="4px" size={4} bg="grayMain" />
-                                <Text size="sm">
+                                <Text fontSize="sm">
                                   {"#" + subject.toLowerCase()}
                                 </Text>
                               </Flex>

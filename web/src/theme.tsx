@@ -32,10 +32,11 @@ const colors = {
 };
 
 const fontSizes = {
-  xl: "18px",
-  lg: "16px",
-  md: "15px",
-  sm: "14px"
+  xl: "16px",
+  lg: "15px",
+  md: "14px",
+  sm: "13px",
+  xs: "12px"
 }
 
 const theme = extendTheme({ config, fonts, styles, colors, fontSizes });

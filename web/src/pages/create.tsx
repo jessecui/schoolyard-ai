@@ -91,7 +91,7 @@ export const Create: React.FC<{}> = ({}) => {
   ) => (
     <Stack spacing={4} mt={4}>
       <Box>
-        <Text fontWeight="bold" color="grayMain">
+        <Text fontWeight="bold" color="grayMain" fontSize="md">
           Answer Options
         </Text>
         <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -332,6 +332,7 @@ export const Create: React.FC<{}> = ({}) => {
             width="24px"
             minWidth="24px"
             height="24px"
+            color="grayMain"
             isRound={true}
             size="lg"
             bg="none"
@@ -351,7 +352,7 @@ export const Create: React.FC<{}> = ({}) => {
             }}
           />
           <Text
-            fontSize="g"
+            fontSize="md"
             fontWeight="bold"
             textAlign="center"
             color="grayMain"
@@ -369,7 +370,7 @@ export const Create: React.FC<{}> = ({}) => {
           p={4}
           my={2}
         >
-          <Text fontWeight="bold" color="grayMain">
+          <Text fontWeight="bold" color="grayMain" fontSize="sm">
             Content Type
           </Text>
           <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -445,7 +446,7 @@ export const Create: React.FC<{}> = ({}) => {
                 <Stack spacing={4}>
                   {parentData?.sentence && (
                     <Box>
-                      <Text fontWeight="bold" color="grayMain">
+                      <Text fontWeight="bold" color="grayMain" fontSize="sm">
                         Sentence Being Linked
                       </Text>
                       <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -453,7 +454,7 @@ export const Create: React.FC<{}> = ({}) => {
                     </Box>
                   )}
                   <Box>
-                    <Text fontWeight="bold" color="grayMain">
+                    <Text fontWeight="bold" color="grayMain" fontSize="sm">
                       Summary Sentence
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -515,7 +516,7 @@ export const Create: React.FC<{}> = ({}) => {
                     </Field>
                   </Box>
                   <Box>
-                    <Text fontWeight="bold" color="grayMain">
+                    <Text fontWeight="bold" color="grayMain" fontSize="sm">
                       Explanation Sentences
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -588,7 +589,7 @@ export const Create: React.FC<{}> = ({}) => {
                     />
                   </Box>
                   <Box>
-                    <Text fontWeight="bold" color="grayMain">
+                    <Text fontWeight="bold" color="grayMain" fontSize="sm">
                       Subjects
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -625,7 +626,7 @@ export const Create: React.FC<{}> = ({}) => {
                 p={4}
                 my={2}
               >
-                <Text fontWeight="bold" color="grayMain">
+                <Text fontWeight="bold" color="grayMain" fontSize="sm">
                   Preview
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -642,7 +643,7 @@ export const Create: React.FC<{}> = ({}) => {
                             return subject ? (
                               <Flex align="center" key={subject}>
                                 <Circle mr="4px" size={4} bg="grayMain" />
-                                <Text size="sm">
+                                <Text fontSize="sm">
                                   {"#" + subject.toLowerCase()}
                                 </Text>
                               </Flex>
@@ -758,7 +759,7 @@ export const Create: React.FC<{}> = ({}) => {
               >
                 {parentData?.sentence && (
                   <Box>
-                    <Text fontWeight="bold" color="grayMain">
+                    <Text fontWeight="bold" color="grayMain" fontSize="sm">
                       Sentence Being Linked
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -766,7 +767,7 @@ export const Create: React.FC<{}> = ({}) => {
                   </Box>
                 )}
                 <Box mt={4}>
-                  <Text fontWeight="bold" color="grayMain">
+                  <Text fontWeight="bold" color="grayMain" fontSize="sm">
                     Question
                   </Text>
                   <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -790,7 +791,7 @@ export const Create: React.FC<{}> = ({}) => {
                   </Field>
                 </Box>
                 <Box mt={4}>
-                  <Text fontWeight="bold" color="grayMain">
+                  <Text fontWeight="bold" color="grayMain" fontSize="sm">
                     Question Type
                   </Text>
                   <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -826,7 +827,7 @@ export const Create: React.FC<{}> = ({}) => {
                   answerBoxes(props)}
                 {props.values.questionType == QuestionType.Text && (
                   <Box>
-                    <Text fontWeight="bold" color="grayMain" mt={4}>
+                    <Text fontWeight="bold" color="grayMain" mt={4} fontSize="sm">
                       Answer
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -865,7 +866,7 @@ export const Create: React.FC<{}> = ({}) => {
                   </Box>
                 )}
                 <Box mt={4}>
-                  <Text fontWeight="bold" color="grayMain">
+                  <Text fontWeight="bold" color="grayMain" fontSize="sm">
                     Subjects
                   </Text>
                   <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -901,7 +902,7 @@ export const Create: React.FC<{}> = ({}) => {
                 p={4}
                 my={2}
               >
-                <Text fontWeight="bold" color="grayMain">
+                <Text fontWeight="bold" color="grayMain" fontSize="sm">
                   Preview
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -918,7 +919,7 @@ export const Create: React.FC<{}> = ({}) => {
                             return subject ? (
                               <Flex align="center" key={subject}>
                                 <Circle mr="4px" size={4} bg="grayMain" />
-                                <Text size="sm">
+                                <Text fontSize="sm">
                                   {"#" + subject.toLowerCase()}
                                 </Text>
                               </Flex>

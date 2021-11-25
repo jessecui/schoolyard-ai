@@ -10,7 +10,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { cloneElement, isValidElement, useEffect, useState } from "react";
+import React, {
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useState,
+} from "react";
 import { Question, useMeQuery } from "../generated/graphql";
 import { Navbar } from "./Navbar";
 
@@ -23,7 +28,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
     if (router.pathname !== "/learn/[id]") {
       setAvailableQuestions([]);
     }
-  }, [router])
+  }, [router]);
 
   return (
     <>
@@ -41,7 +46,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                     bg="White"
                     p={4}
                   >
-                    <Text fontWeight="bold" color="grayMain">
+                    <Text fontWeight="bold" color="grayMain" fontSize="md">
                       Available Questions
                     </Text>
                     <Stack py={2} spacing={4}>
@@ -52,7 +57,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                               {question.subjects.map((subject) => (
                                 <Flex align="center" key={subject}>
                                   <Circle mr="4px" size={4} bg="grayMain" />
-                                  <Text fontSize="xs">{subject}</Text>
+                                  <Text fontSize="xs">{"#" + subject}</Text>
                                 </Flex>
                               ))}
                             </HStack>
@@ -60,15 +65,10 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                           <Text fontWeight="bold" fontSize="lg">
                             {question.question}
                           </Text>
-                          <Button
-                            mt={1}
-                            bg="mint"
-                            color="white"
-                            size="xs"
-                          >
+                          <Button mt={1} bg="mint" color="white" size="xs">
                             <StarIcon mr={2} />
-                            <Text as="span" fontSize="sm">
-                              save question
+                            <Text as="span" fontSize="xs">
+                              save
                             </Text>
                           </Button>
                         </Box>
@@ -83,7 +83,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                   bg="White"
                   p={4}
                 >
-                  <Text fontWeight="bold" color="grayMain">
+                  <Text fontWeight="bold" color="grayMain" fontSize="md">
                     Recently Saved Questions
                   </Text>
                 </Box>
@@ -105,7 +105,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                 bg="White"
                 p={4}
               >
-                <Text fontWeight="bold" color="grayMain">
+                <Text fontWeight="bold" color="grayMain" fontSize="md">
                   Performance Scorecard
                 </Text>
               </Box>

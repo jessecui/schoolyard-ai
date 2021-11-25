@@ -61,7 +61,7 @@ const Learn: React.FC<{
   >();
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
-  
+
   useEffect(() => {
     setSentenceData(data);
     setSentenceDataLoading(loading);
@@ -225,7 +225,7 @@ const Learn: React.FC<{
                       size={4}
                       bg="grayMain" // TODO make these the colors from before using router params
                     />
-                    <Text size="sm" whiteSpace="nowrap">
+                    <Text fontSize="sm" whiteSpace="nowrap">
                       {"#" + subject.toLowerCase()}
                     </Text>
                   </Flex>
@@ -354,7 +354,7 @@ const Learn: React.FC<{
         <HStack spacing={4}>
           {!meLoading && meData?.me ? (
             <>
-              <Text color="grayMain">
+              <Text color="grayMain" fontSize="sm">
                 <IconButton
                   mr={1}
                   minWidth="24px"
@@ -397,7 +397,7 @@ const Learn: React.FC<{
                 />
                 {activeSentence.upVoteCount}
               </Text>
-              <Text color="grayMain">
+              <Text color="grayMain" fontSize="sm">
                 <IconButton
                   mr={1}
                   minWidth="24px"
@@ -443,7 +443,7 @@ const Learn: React.FC<{
             </>
           ) : (
             <>
-              <Text color="grayMain">
+              <Text color="grayMain" fontSize="sm">
                 <Icon
                   mx="4px"
                   height="24px"
@@ -453,19 +453,19 @@ const Learn: React.FC<{
                 />
                 {activeSentence.upVoteCount}
               </Text>
-              <Text color="grayMain">
+              <Text color="grayMain" fontSize="sm">
                 <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
                 {activeSentence.downVoteCount}
               </Text>
             </>
           )}
 
-          <Text color="grayMain">
+          <Text color="grayMain" fontSize="sm">
             <Icon as={IoPeople} mr={1} w={5} h={5} />
             {activeSentence.viewCount +
               (activeSentence.viewCount == 1 ? " view" : " views")}
           </Text>
-          <Text color="grayMain">
+          <Text color="grayMain" fontSize="sm">
             <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
             {new Date(activeSentence.createdAt).toLocaleString("default", {
               month: "short",
@@ -489,7 +489,7 @@ const Learn: React.FC<{
             {activeSentence.children?.map((child, index) => (
               <Flex key={child.id}>
                 <Box width={"75%"}>
-                  <Text>
+                  <Text fontSize="sm">
                     {child.text}
                     &nbsp;
                     {child.clones &&
@@ -502,23 +502,30 @@ const Learn: React.FC<{
                           activeChildrenCloneIndices[index]
                         ]
                       ).children?.map((grandchild) => (
-                        <Text key={grandchild.id} as="span" color="black">
+                        <Text
+                          key={grandchild.id}
+                          as="span"
+                          color="black"
+                          fontSize="sm"
+                        >
                           {grandchild.text}&nbsp;
                         </Text>
                       ))}
                   </Text>
                 </Box>
                 <Spacer borderRight="2px solid" borderColor="grayMain" />
-                <Flex width={"20%"} ml={4} flexDirection="column">
-                  <Flex align="center" flexWrap="wrap">
+                <Flex width={"20%"} ml={2} flexDirection="column">                  
+                  <Center>
                     <Icon
                       as={IoPersonCircle}
                       color="grayMain"
-                      w={"24px"}
-                      h={"24px"}
+                      w={"20px"}
+                      h={"20px"}
                       mr={"6px"}
                     />
-                    <Text fontWeight="bold" color="grayMain" fontSize={"14px"}>
+                  </Center>
+                  <Center>
+                    <Text fontWeight="bold" color="grayMain" fontSize="xs">
                       {child.clones &&
                         clonesWithChildren(child.clones)[
                           activeChildrenCloneIndices[index]
@@ -541,12 +548,13 @@ const Learn: React.FC<{
                           ]
                         ).teacher.lastName}
                     </Text>
-                  </Flex>
+                  </Center>
                   <Center>
-                    <HStack>
+                    <HStack spacing="2px">
                       <IconButton
                         aria-label="Previous Child Clone"
-                        size="xs"
+                        minWidth="20px"
+                        height="20px"
                         fontSize="18px"
                         bg="grayMain"
                         color="white"
@@ -616,7 +624,8 @@ const Learn: React.FC<{
                       </NextLink>
                       <IconButton
                         aria-label="Next Child Clone"
-                        size="xs"
+                        minWidth="20px"
+                        height="20px"
                         fontSize="18px"
                         bg="grayMain"
                         color="white"
@@ -694,13 +703,15 @@ const Learn: React.FC<{
                     h={"24px"}
                     mr={"6px"}
                   />
-                  <Text fontWeight="bold" color="grayMain" fontSize={"14px"}>
+                  <Text fontWeight="bold" color="grayMain" fontSize="sm">
                     {p.parent?.teacher.firstName[0]}
                     {". "}
                     {p.parent?.teacher.lastName}
                   </Text>
                 </Flex>
-                <Text as="span">{p?.parent!.text} </Text>
+                <Text as="span" fontSize="sm">
+                  {p?.parent!.text}{" "}
+                </Text>
                 {p?.parent!.children?.map((c) => (
                   <Text
                     key={c.orderNumber}
@@ -708,15 +719,16 @@ const Learn: React.FC<{
                       c.orderNumber == p.orderNumber ? "bold" : "normal"
                     }
                     as="span"
+                    fontSize="sm"
                   >
                     {c.text}{" "}
                   </Text>
                 ))}
-                <Box>
+                <Box mt={1}>
                   <NextLink href={"/learn/" + p.parent?.id}>
                     <Link color="iris" _hover={{ color: "irisDark" }}>
                       <Icon as={IoExpand} w="20px" height="20px" />
-                      <Text ml={1} display="inline">
+                      <Text ml={1} display="inline" fontSize="sm">
                         expand
                       </Text>
                     </Link>
