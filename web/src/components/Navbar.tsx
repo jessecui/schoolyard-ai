@@ -8,7 +8,7 @@ import {
   Heading,
   HStack,
   Link,
-  Spacer,
+  Spacer
 } from "@chakra-ui/layout";
 import {
   Container,
@@ -17,22 +17,20 @@ import {
   Menu,
   MenuButton,
   MenuDivider,
-  MenuItem,
-  MenuList,
+  MenuItem, MenuList, Text
 } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
-  IoCreate,
   IoListCircle,
   IoLogOut,
   IoMail,
   IoPersonCircle,
-  IoSettings,
+  IoSettings
 } from "react-icons/io5";
-import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
 import LogoImage from "../../public/images/schoolyard_logo.png";
-import { useRouter } from "next/router";
+import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
 
 interface NavbarProps {}
 
@@ -110,33 +108,33 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               {userData.me.firstName + " " + userData.me.lastName}
             </Box>
           </MenuButton>
-          <MenuList borderColor="grayLight">            
+          <MenuList borderColor="grayLight">
             <MenuItem
-              icon={<Icon color="grayMain" as={IoListCircle} w={6} h={6} />}
+              icon={<Icon color="grayMain" as={IoListCircle} w="20px" h="20px" />}
             >
-              History Log
+              <Text fontSize="md">History Log</Text>
             </MenuItem>
             <NextLink href="/account-settings">
               <Link _hover={{ textDecoration: "none" }}>
                 <MenuItem
-                  icon={<Icon color="grayMain" as={IoSettings} w={6} h={6} />}
+                  icon={<Icon color="grayMain" as={IoSettings} w="20px" h="20px" />}
                 >
-                  Account Settings
+                  <Text fontSize="md">Account Settings</Text>
                 </MenuItem>
               </Link>
             </NextLink>
-            <MenuItem icon={<Icon color="grayMain" as={IoMail} w={6} h={6} />}>
-              Contact
+            <MenuItem icon={<Icon color="grayMain" as={IoMail} w="20px" h="20px" />}>
+            <Text fontSize="md">Contact</Text>
             </MenuItem>
             <MenuItem
-              icon={<Icon color="grayMain" as={IoLogOut} w={6} h={6} />}
+              icon={<Icon color="grayMain" as={IoLogOut} w="20px" h="20px" />}
               onClick={async () => {
                 await logout();
                 await apolloClient.resetStore();
                 router.push("/");
               }}
             >
-              Log Out
+              <Text fontSize="md">Log Out</Text>
             </MenuItem>
             <MenuDivider color="grayLight" />
             <Flex px={4} color="iris" fontSize="sm">
