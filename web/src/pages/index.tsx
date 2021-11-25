@@ -132,7 +132,7 @@ const Index: React.FC<{}> = ({}) => {
                 <Flex align="center" width="80%">
                   <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
                   <Box>
-                    <Text fontWeight="bold" fontSize="lg">
+                    <Text fontWeight="bold" fontSize="md">
                       {sentence.teacher.firstName} {sentence.teacher.lastName}
                     </Text>
                     <HStack spacing="6px">
@@ -143,7 +143,7 @@ const Index: React.FC<{}> = ({}) => {
                             size={4}
                             bg="grayMain" // TODO make these the colors from before using router params
                           />
-                          <Text size="sm" whiteSpace="nowrap">
+                          <Text fontSize="sm" whiteSpace="nowrap">
                             {"#" + subject.toLowerCase()}
                           </Text>
                         </Flex>
@@ -163,7 +163,7 @@ const Index: React.FC<{}> = ({}) => {
               <HStack spacing={4}>
                 {!meLoading && meData?.me ? (
                   <>
-                    <Text color="grayMain">
+                    <Text color="grayMain" fontSize="sm">
                       <IconButton
                         mr={1}
                         minWidth="24px"
@@ -207,7 +207,7 @@ const Index: React.FC<{}> = ({}) => {
                       />
                       {sentence.upVoteCount}
                     </Text>
-                    <Text color="grayMain">
+                    <Text color="grayMain" fontSize="sm">
                       <IconButton
                         mr={1}
                         minWidth="24px"
@@ -254,7 +254,7 @@ const Index: React.FC<{}> = ({}) => {
                   </>
                 ) : (
                   <>
-                    <Text color="grayMain">
+                    <Text color="grayMain" fontSize="sm">
                       <Icon
                         mx="4px"
                         height="24px"
@@ -264,19 +264,19 @@ const Index: React.FC<{}> = ({}) => {
                       />
                       {sentence.upVoteCount}
                     </Text>
-                    <Text color="grayMain">
+                    <Text color="grayMain" fontSize="sm">
                       <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
                       {sentence.downVoteCount}
                     </Text>
                   </>
                 )}
 
-                <Text color="grayMain">
+                <Text color="grayMain" fontSize="sm">
                   <Icon as={IoPeople} mr={1} w={5} h={5} />
                   {sentence.viewCount +
                     (sentence.viewCount == 1 ? " view" : " views")}
                 </Text>
-                <Text color="grayMain">
+                <Text color="grayMain" fontSize="sm">
                   <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
                   {new Date(sentence.createdAt).toLocaleString("default", {
                     month: "short",
@@ -288,8 +288,8 @@ const Index: React.FC<{}> = ({}) => {
               <Box mt={3}>
                 <NextLink href={"/learn/" + sentence.id}>
                   <Link color="iris" _hover={{ color: "irisDark" }}>
-                    <Icon as={BiZoomIn} w="36px" height="36px" />
-                    <Text ml={1} as="span" fontWeight="bold" fontSize="lg">
+                    <Icon as={BiZoomIn} w="24px" height="24px" />
+                    <Text ml={1} as="span" fontWeight="bold" fontSize="md">
                       zoom in
                     </Text>
                   </Link>

@@ -99,9 +99,9 @@ const AccountSettings: React.FC<{}> = ({}) => {
             borderColor="grayLight"
             borderRadius="md"
             bg="White"
-            p={8}
+            p={4}
           >
-            <Text color="grayMain" fontWeight="bold" mb={4}>
+            <Text color="grayMain" fontWeight="bold" fontSize="md" mb={4}>
               Profile Settings
             </Text>
             <Form>
@@ -159,9 +159,9 @@ const AccountSettings: React.FC<{}> = ({}) => {
             borderRadius="md"
             bg="White"
             mt={4}
-            p={8}
+            p={4}
           >
-            <Text color="grayMain" fontWeight="bold" mb={4}>
+            <Text color="grayMain" fontWeight="bold" fontSize="md" mb={4}>
               Change Password
             </Text>
             <Form>
@@ -204,8 +204,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
         borderRadius="md"
         bg="White"
         mt={4}
-        px={8}
-        py={2}
+        p={4}
       >
         <Button
           size="sm"
@@ -231,7 +230,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
         >
           <AlertDialogOverlay>
             <AlertDialogContent>
-              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              <AlertDialogHeader fontSize="md" fontWeight="bold">
                 Delete Account
               </AlertDialogHeader>
               <AlertDialogBody>
