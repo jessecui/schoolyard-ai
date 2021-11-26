@@ -237,7 +237,7 @@ const Learn: React.FC<{
           <HStack spacing={2}>
             {userData?.me?.id == activeSentence.teacherId && (
               <NextLink href={"/edit/paragraph/" + activeSentence.id}>
-                <Link>
+                <Link href={"/edit/paragraph/" + activeSentence.id}>
                   <Icon
                     as={RiEditBoxFill}
                     w="28px"
@@ -255,7 +255,12 @@ const Learn: React.FC<{
                   (activeSentence ? "?parent=" + activeSentence.id : "")
                 }
               >
-                <Link>
+                <Link
+                  href={
+                    "/create" +
+                    (activeSentence ? "?parent=" + activeSentence.id : "")
+                  }
+                >
                   <Icon
                     as={MdLibraryAdd}
                     w="28px"
@@ -514,7 +519,7 @@ const Learn: React.FC<{
                   </Text>
                 </Box>
                 <Spacer borderRight="2px solid" borderColor="grayMain" />
-                <Flex width={"20%"} ml={2} flexDirection="column">                  
+                <Flex width={"20%"} ml={2} flexDirection="column">
                   <Center>
                     <Icon
                       as={IoPersonCircle}
@@ -612,7 +617,18 @@ const Learn: React.FC<{
                             ].id)
                         }
                       >
-                        <Link>
+                        <Link
+                          href={
+                            "/learn/" +
+                            (child.clones &&
+                              clonesWithChildren(child.clones)[
+                                activeChildrenCloneIndices[index]
+                              ] &&
+                              clonesWithChildren(child.clones)[
+                                activeChildrenCloneIndices[index]
+                              ].id)
+                          }
+                        >
                           <Icon
                             as={BiZoomIn}
                             w="24px"
@@ -726,7 +742,11 @@ const Learn: React.FC<{
                 ))}
                 <Box mt={1}>
                   <NextLink href={"/learn/" + p.parent?.id}>
-                    <Link color="iris" _hover={{ color: "irisDark" }}>
+                    <Link
+                      color="iris"
+                      _hover={{ color: "irisDark" }}
+                      href={"/learn/" + p.parent?.id}
+                    >
                       <Icon as={IoExpand} w="20px" height="20px" />
                       <Text ml={1} display="inline" fontSize="sm">
                         expand

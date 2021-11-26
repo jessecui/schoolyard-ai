@@ -44,7 +44,7 @@ const LogIn: React.FC<loginProps> = ({}) => {
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
           } else if (response.data?.login.user) {
-              router.push("/");
+            router.push("/");
           } else {
             console.log("Log in issue response: ", response);
           }
@@ -82,7 +82,7 @@ const LogIn: React.FC<loginProps> = ({}) => {
               </Center>
               <Center>
                 <NextLink href="/forgot-password">
-                  <Link color="iris" my={2}>
+                  <Link href="/forgot-password" color="iris" my={2}>
                     Forgot Password?
                   </Link>
                 </NextLink>
@@ -92,7 +92,9 @@ const LogIn: React.FC<loginProps> = ({}) => {
             <Center>
               <Text>New to Schoolyard?&nbsp;</Text>
               <NextLink href="/sign-up">
-                <Link color="iris">Sign Up</Link>
+                <Link href="/sign-up" color="iris">
+                  Sign Up
+                </Link>
               </NextLink>
             </Center>
           </Box>

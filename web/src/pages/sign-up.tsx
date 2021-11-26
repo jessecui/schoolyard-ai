@@ -73,7 +73,10 @@ const SignUp: React.FC<registerProps> = ({}) => {
               });
             },
           });
-          if (response.data?.register.errors && response.data?.register.errors.length > 0) {
+          if (
+            response.data?.register.errors &&
+            response.data?.register.errors.length > 0
+          ) {
             setErrors(toErrorMap(response.data.register.errors));
           } else if (response.data?.register.user) {
             router.push("/");
@@ -110,7 +113,9 @@ const SignUp: React.FC<registerProps> = ({}) => {
                       <Checkbox {...field} id="terms" mt={8}>
                         I have read and agreed to the{" "}
                         <NextLink href="/terms-and-conditions">
-                          <Link color="iris">Terms and Conditions</Link>
+                          <Link href="/terms-and-conditions" color="iris">
+                            Terms and Conditions
+                          </Link>
                         </NextLink>
                       </Checkbox>
                     </Center>
@@ -140,7 +145,9 @@ const SignUp: React.FC<registerProps> = ({}) => {
             <Center>
               <Text>Already have an account?&nbsp;</Text>
               <NextLink href="/log-in">
-                <Link color="iris">Log In</Link>
+                <Link href="/log-in" color="iris">
+                  Log In
+                </Link>
               </NextLink>
             </Center>
           </Box>

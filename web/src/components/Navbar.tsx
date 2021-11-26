@@ -8,7 +8,7 @@ import {
   Heading,
   HStack,
   Link,
-  Spacer
+  Spacer,
 } from "@chakra-ui/layout";
 import {
   Container,
@@ -17,7 +17,9 @@ import {
   Menu,
   MenuButton,
   MenuDivider,
-  MenuItem, MenuList, Text
+  MenuItem,
+  MenuList,
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -27,7 +29,7 @@ import {
   IoLogOut,
   IoMail,
   IoPersonCircle,
-  IoSettings
+  IoSettings,
 } from "react-icons/io5";
 import LogoImage from "../../public/images/schoolyard_logo.png";
 import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
@@ -110,21 +112,30 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
           </MenuButton>
           <MenuList borderColor="grayLight">
             <MenuItem
-              icon={<Icon color="grayMain" as={IoListCircle} w="20px" h="20px" />}
+              icon={
+                <Icon color="grayMain" as={IoListCircle} w="20px" h="20px" />
+              }
             >
               <Text fontSize="md">History Log</Text>
             </MenuItem>
             <NextLink href="/account-settings">
-              <Link _hover={{ textDecoration: "none" }}>
+              <Link
+                href="/account-settings"
+                _hover={{ textDecoration: "none" }}
+              >
                 <MenuItem
-                  icon={<Icon color="grayMain" as={IoSettings} w="20px" h="20px" />}
+                  icon={
+                    <Icon color="grayMain" as={IoSettings} w="20px" h="20px" />
+                  }
                 >
                   <Text fontSize="md">Account Settings</Text>
                 </MenuItem>
               </Link>
             </NextLink>
-            <MenuItem icon={<Icon color="grayMain" as={IoMail} w="20px" h="20px" />}>
-            <Text fontSize="md">Contact</Text>
+            <MenuItem
+              icon={<Icon color="grayMain" as={IoMail} w="20px" h="20px" />}
+            >
+              <Text fontSize="md">Contact</Text>
             </MenuItem>
             <MenuItem
               icon={<Icon color="grayMain" as={IoLogOut} w="20px" h="20px" />}
@@ -161,7 +172,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         <Grid templateColumns="repeat(3, 1fr)" gap={6}>
           <Flex align="center">
             <NextLink href="/">
-              <Link>
+              <Link href="/">
                 <Image
                   alt="Schoolyard Logo"
                   htmlWidth={180}
@@ -174,7 +185,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
           <Center>
             <HStack spacing="36px">
               <NextLink href="/">
-                <Link style={{ textDecoration: "none" }}>
+                <Link href="/" style={{ textDecoration: "none" }}>
                   <Heading
                     color={
                       router.asPath === "/" ||
@@ -200,7 +211,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 </Link>
               </NextLink>
               <NextLink href="/review">
-                <Link style={{ textDecoration: "none" }}>
+                <Link href="/review" style={{ textDecoration: "none" }}>
                   <Heading
                     color="grayMain"
                     _hover={{
@@ -215,7 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 </Link>
               </NextLink>
               <NextLink href="/create">
-                <Link style={{ textDecoration: "none" }}>
+                <Link href="/create" style={{ textDecoration: "none" }}>
                   <Heading
                     color={
                       router.asPath.startsWith("/create") ||
