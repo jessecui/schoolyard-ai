@@ -74,7 +74,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
     let sentenceClonesWithChildrenAndOrder = sentence.clones
       ? sentence.clones.filter(
           (clone: Sentence) =>
-            clone.children && clone.id != sentence.id && clone.orderNumber
+            clone.id != sentence.id && clone.orderNumber != undefined
         )
       : null;
 
@@ -93,7 +93,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
     let sentenceClonesWithChildrenAndOrder = sentence.clones
       ? sentence.clones.filter(
           (clone: Sentence) =>
-            clone.children && clone.id != sentence.id && clone.orderNumber
+            clone.id != sentence.id && clone.orderNumber != undefined
         )
       : null;
     let returnVal = sentence.parent
