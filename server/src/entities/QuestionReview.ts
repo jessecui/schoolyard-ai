@@ -36,6 +36,7 @@ export class QuestionReview extends BaseEntity {
   @PrimaryColumn()
   questionId: number;
 
+  @Field(() => Question)
   @ManyToOne(() => Question, (question) => question.reviews, {
     onDelete: "CASCADE",
   })

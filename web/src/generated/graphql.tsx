@@ -238,6 +238,7 @@ export type QuestionReview = {
   dateCreated: Scalars['DateTime'];
   dateNextAvailable: Scalars['DateTime'];
   dateUpdated: Scalars['DateTime'];
+  question: Question;
   questionId: Scalars['Float'];
   reviewStatus: ReviewStatus;
   userId: Scalars['Float'];
@@ -290,6 +291,7 @@ export type User = {
   firstName: Scalars['String'];
   id: Scalars['Float'];
   lastName: Scalars['String'];
+  questionReviews: Array<QuestionReview>;
   updatedAt: Scalars['DateTime'];
 };
 
@@ -306,9 +308,9 @@ export enum VoteType {
 
 export type ErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type UserFragment = { __typename?: 'User', id: number, email: string, firstName: string, lastName: string };
+export type UserFragment = { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> };
 
-export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string } | null | undefined };
+export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined };
 
 export type AddViewMutationVariables = Exact<{
   questionId: Scalars['Int'];
@@ -346,7 +348,7 @@ export type ChangePasswordMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string } | null | undefined } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
 
 export type ChangePasswordWithTokenMutationVariables = Exact<{
   token: Scalars['String'];
@@ -354,7 +356,7 @@ export type ChangePasswordWithTokenMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordWithTokenMutation = { __typename?: 'Mutation', changePasswordWithToken: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string } | null | undefined } };
+export type ChangePasswordWithTokenMutation = { __typename?: 'Mutation', changePasswordWithToken: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
 
 export type ChangeProfileMutationVariables = Exact<{
   email: Scalars['String'];
@@ -363,7 +365,7 @@ export type ChangeProfileMutationVariables = Exact<{
 }>;
 
 
-export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string } | null | undefined } };
+export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
 
 export type CreateParagraphMutationVariables = Exact<{
   paragraphInput: ParagraphInput;
@@ -379,6 +381,14 @@ export type CreateQuestionMutationVariables = Exact<{
 
 
 export type CreateQuestionMutation = { __typename?: 'Mutation', createQuestion: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, teacher: { __typename?: 'User', firstName: string, lastName: string } } };
+
+export type CreateQuestionReviewMutationVariables = Exact<{
+  questionId: Scalars['Int'];
+  reviewStatus: ReviewStatus;
+}>;
+
+
+export type CreateQuestionReviewMutation = { __typename?: 'Mutation', createQuestionReview: { __typename?: 'QuestionReview', userId: number, questionId: number } };
 
 export type DeleteParagraphMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -412,7 +422,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string } | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -424,7 +434,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string } | null | undefined } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
 
 export type UpdateParagraphMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -445,7 +455,7 @@ export type UpdateQuestionMutation = { __typename?: 'Mutation', updateQuestion?:
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined };
 
 export type QuestionQueryVariables = Exact<{
   id: Scalars['Int'];
@@ -489,6 +499,16 @@ export const UserFragmentDoc = gql`
   email
   firstName
   lastName
+  questionReviews {
+    questionId
+    reviewStatus
+    dateCreated
+    dateUpdated
+    question {
+      question
+      subjects
+    }
+  }
 }
     `;
 export const UserResponseFragmentDoc = gql`
@@ -835,6 +855,41 @@ export function useCreateQuestionMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateQuestionMutationHookResult = ReturnType<typeof useCreateQuestionMutation>;
 export type CreateQuestionMutationResult = Apollo.MutationResult<CreateQuestionMutation>;
 export type CreateQuestionMutationOptions = Apollo.BaseMutationOptions<CreateQuestionMutation, CreateQuestionMutationVariables>;
+export const CreateQuestionReviewDocument = gql`
+    mutation CreateQuestionReview($questionId: Int!, $reviewStatus: ReviewStatus!) {
+  createQuestionReview(questionId: $questionId, reviewStatus: $reviewStatus) {
+    userId
+    questionId
+  }
+}
+    `;
+export type CreateQuestionReviewMutationFn = Apollo.MutationFunction<CreateQuestionReviewMutation, CreateQuestionReviewMutationVariables>;
+
+/**
+ * __useCreateQuestionReviewMutation__
+ *
+ * To run a mutation, you first call `useCreateQuestionReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateQuestionReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createQuestionReviewMutation, { data, loading, error }] = useCreateQuestionReviewMutation({
+ *   variables: {
+ *      questionId: // value for 'questionId'
+ *      reviewStatus: // value for 'reviewStatus'
+ *   },
+ * });
+ */
+export function useCreateQuestionReviewMutation(baseOptions?: Apollo.MutationHookOptions<CreateQuestionReviewMutation, CreateQuestionReviewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateQuestionReviewMutation, CreateQuestionReviewMutationVariables>(CreateQuestionReviewDocument, options);
+      }
+export type CreateQuestionReviewMutationHookResult = ReturnType<typeof useCreateQuestionReviewMutation>;
+export type CreateQuestionReviewMutationResult = Apollo.MutationResult<CreateQuestionReviewMutation>;
+export type CreateQuestionReviewMutationOptions = Apollo.BaseMutationOptions<CreateQuestionReviewMutation, CreateQuestionReviewMutationVariables>;
 export const DeleteParagraphDocument = gql`
     mutation DeleteParagraph($id: Int!) {
   deleteParagraph(id: $id)

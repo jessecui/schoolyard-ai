@@ -19,6 +19,8 @@ import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
 import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
 import { isAuth } from "../middleware/isAuth";
+import { QuestionReview } from "../entities/QuestionReview";
+import { Question } from "../entities/Question";
 
 @ObjectType()
 class FieldError {
@@ -46,6 +48,16 @@ export class UserResolver {
       return user.email;
     }
     return "";
+  }
+
+  @FieldResolver(() => String)
+  async questionReviews(@Root() _: User, @Ctx() { req }: MyContext) {
+    return await QuestionReview.find({
+      where: { userId: req.session.userId },
+      skip: 0,
+      take: 100,
+      relations: ["question"]
+    });
   }
 
   @Mutation(() => UserResponse)

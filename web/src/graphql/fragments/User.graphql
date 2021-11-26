@@ -3,4 +3,14 @@ fragment User on User {
   email
   firstName
   lastName
+  questionReviews {
+    questionId    
+    reviewStatus
+    dateCreated
+    dateUpdated
+    question {
+      question
+      subjects
+    }
+  }  
 }
