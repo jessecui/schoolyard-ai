@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -57,10 +56,10 @@ export class Sentence extends BaseEntity {
   orderNumber: number
 
   // Clone Lineage
-  @ManyToMany(() => Cloning, (cloning) => cloning.olderClones)
+  @OneToMany(() => Cloning, (cloning) => cloning.olderClone)
   asOlderClone: Cloning[];
 
-  @ManyToMany(() => Cloning, (cloning) => cloning.youngerClones)
+  @OneToMany(() => Cloning, (cloning) => cloning.youngerClone)
   asYoungerClone: Cloning[];
 
   @Field(() => [Sentence], {nullable: true})

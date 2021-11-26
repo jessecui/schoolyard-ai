@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiZoomIn } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
