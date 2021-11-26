@@ -86,7 +86,9 @@ const ChangePassword: NextPage<{}> = () => {
                     {tokenError}
                   </Box>
                   <NextLink href="/forgot-password">
-                    <Link color="iris">Click here to get a new one.</Link>
+                    <Link href="/forgot-password" color="iris">
+                      Click here to get a new one.
+                    </Link>
                   </NextLink>
                 </Flex>
               ) : null}

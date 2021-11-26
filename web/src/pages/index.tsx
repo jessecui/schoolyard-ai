@@ -287,7 +287,11 @@ const Index: React.FC<{}> = ({}) => {
               </HStack>
               <Box mt={3}>
                 <NextLink href={"/learn/" + sentence.id}>
-                  <Link color="iris" _hover={{ color: "irisDark" }}>
+                  <Link
+                    color="iris"
+                    _hover={{ color: "irisDark" }}
+                    href={"/learn/" + sentence.id}
+                  >
                     <Icon as={BiZoomIn} w="24px" height="24px" />
                     <Text ml={1} as="span" fontWeight="bold" fontSize="md">
                       zoom in
