@@ -6,6 +6,7 @@ import {
   Circle,
   Flex,
   HStack,
+  Icon,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -16,13 +17,21 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Question, useMeQuery } from "../generated/graphql";
+import { GoChecklist } from "react-icons/go";
+import {
+  Question,
+  ReviewStatus,
+  useCreateQuestionReviewMutation,
+  useMeQuery,
+} from "../generated/graphql";
 import { Navbar } from "./Navbar";
 
 export const SiteLayout: React.FC<{}> = ({ children }) => {
   const router = useRouter();
   const { data: meData, loading: meLoading } = useMeQuery();
   const [availableQuestions, setAvailableQuestions] = useState<Question[]>([]);
+
+  const [createQuestionReview] = useCreateQuestionReviewMutation();
 
   useEffect(() => {
     if (router.pathname !== "/learn/[id]") {
@@ -65,7 +74,20 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                           <Text fontWeight="bold" fontSize="lg">
                             {question.question}
                           </Text>
-                          <Button mt={1} bg="mint" color="white" size="xs">
+                          <Button
+                            mt={1}
+                            bg="mint"
+                            color="white"
+                            size="xs"
+                            onClick={() =>
+                              createQuestionReview({
+                                variables: {
+                                  questionId: question.id,
+                                  reviewStatus: ReviewStatus.Queued,
+                                },
+                              })
+                            }
+                          >
                             <StarIcon mr={2} />
                             <Text as="span" fontSize="xs">
                               save
@@ -86,6 +108,44 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                   <Text fontWeight="bold" color="grayMain" fontSize="md">
                     Recently Saved Questions
                   </Text>
+                  <Stack py={2} spacing={4}>
+                    {meData.me.questionReviews.map((questionReview) => (
+                      <Box key={questionReview.questionId}>
+                        <Box>
+                          <HStack spacing="6px">
+                            {questionReview.question.subjects.map((subject) => (
+                              <Flex align="center" key={subject}>
+                                <Circle mr="4px" size={4} bg="grayMain" />
+                                <Text fontSize="xs">{"#" + subject}</Text>
+                              </Flex>
+                            ))}
+                          </HStack>
+                        </Box>
+                        <Text fontWeight="bold" fontSize="lg">
+                          {questionReview.question.question}
+                        </Text>
+                        <Button
+                          mt={1}
+                          bg="iris"
+                          color="white"
+                          size="xs"
+                          onClick={() =>
+                            createQuestionReview({
+                              variables: {
+                                questionId: questionReview.questionId,
+                                reviewStatus: ReviewStatus.Queued,
+                              },
+                            })
+                          }
+                        >
+                          <Icon as={GoChecklist} />
+                          <Text ml={2} as="span" fontSize="xs">
+                            answer
+                          </Text>
+                        </Button>
+                      </Box>
+                    ))}
+                  </Stack>
                 </Box>
               </Stack>
             )}

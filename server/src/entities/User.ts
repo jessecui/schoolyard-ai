@@ -56,6 +56,7 @@ export class User extends BaseEntity {
   @OneToMany(() => QuestionView, (view) => view.user)
   questionViews: QuestionView[];
 
+  @Field(() => [QuestionReview])
   @OneToMany(() => QuestionReview, (review) => review.user)
   questionReviews: QuestionReview[];
 
