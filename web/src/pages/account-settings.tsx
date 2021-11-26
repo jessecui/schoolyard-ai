@@ -215,6 +215,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
             color: "red.800",
             textDecorationLine: "underline",
           }}
+          fontWeight="normal"
           onClick={() => setIsOpen(true)}
           _focus={{
             boxShadow: "none",
