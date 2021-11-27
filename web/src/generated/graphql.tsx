@@ -388,7 +388,7 @@ export type CreateQuestionReviewMutationVariables = Exact<{
 }>;
 
 
-export type CreateQuestionReviewMutation = { __typename?: 'Mutation', createQuestionReview: { __typename?: 'QuestionReview', userId: number, questionId: number } };
+export type CreateQuestionReviewMutation = { __typename?: 'Mutation', createQuestionReview: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } };
 
 export type DeleteParagraphMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -858,8 +858,14 @@ export type CreateQuestionMutationOptions = Apollo.BaseMutationOptions<CreateQue
 export const CreateQuestionReviewDocument = gql`
     mutation CreateQuestionReview($questionId: Int!, $reviewStatus: ReviewStatus!) {
   createQuestionReview(questionId: $questionId, reviewStatus: $reviewStatus) {
-    userId
     questionId
+    reviewStatus
+    dateCreated
+    dateUpdated
+    question {
+      question
+      subjects
+    }
   }
 }
     `;

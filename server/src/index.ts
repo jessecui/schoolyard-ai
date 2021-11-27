@@ -25,6 +25,7 @@ import { SentenceView } from "./entities/SentenceView";
 import { createSentenceVoteLoader } from "./utils/createSentenceVoteLoader";
 import { Cloning } from "./entities/Cloning";
 import { QuestionReview } from "./entities/QuestionReview";
+import { QuestionReviewResolver } from "./resolvers/questionReview";
 
 // Update these variables upon adding new entities and resolvers
 const entities = [
@@ -39,7 +40,12 @@ const entities = [
   ParentChild,
   Cloning,
 ];
-const resolvers = [UserResolver, SentenceResolver, QuestionResolver];
+const resolvers = [
+  UserResolver,
+  SentenceResolver,
+  QuestionResolver,
+  QuestionReviewResolver,
+];
 
 // Also make sure to update MyContext type in types.ts
 const loaders = {
