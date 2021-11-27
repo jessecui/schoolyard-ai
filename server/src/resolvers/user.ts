@@ -20,7 +20,6 @@ import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
 import { isAuth } from "../middleware/isAuth";
 import { QuestionReview } from "../entities/QuestionReview";
-import { Question } from "../entities/Question";
 
 @ObjectType()
 class FieldError {

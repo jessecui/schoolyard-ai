@@ -39,6 +39,16 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
     }
   }, [router]);
 
+  const savedQuestionIds = meData?.me?.questionReviews.map(
+    (review) => review.questionId
+  );
+  const availableQuestionsNotSaved = savedQuestionIds
+    ? availableQuestions.filter(
+        (question) =>
+          savedQuestionIds && !savedQuestionIds.includes(question.id)
+      )
+    : [];
+
   return (
     <>
       <Navbar />
@@ -47,7 +57,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
           <GridItem colSpan={3}>
             {meData?.me?.id && (
               <Stack spacing={2}>
-                {availableQuestions && availableQuestions.length > 0 && (
+                {availableQuestionsNotSaved.length > 0 && (
                   <Box
                     border="2px"
                     borderColor="grayLight"
@@ -59,47 +69,42 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                       Available Questions
                     </Text>
                     <Stack py={2} spacing={4}>
-                      {availableQuestions.map(
-                        (question) =>
-                          !meData.me?.questionReviews
-                            .map((review) => review.questionId)
-                            .includes(question.id) && (
-                            <Box key={question.id}>
-                              <Box>
-                                <HStack spacing="6px">
-                                  {question.subjects.map((subject) => (
-                                    <Flex align="center" key={subject}>
-                                      <Circle mr="4px" size={4} bg="grayMain" />
-                                      <Text fontSize="xs">{"#" + subject}</Text>
-                                    </Flex>
-                                  ))}
-                                </HStack>
-                              </Box>
-                              <Text fontWeight="bold" fontSize="lg">
-                                {question.question}
-                              </Text>
-                              <Button
-                                mt={1}
-                                bg="mint"
-                                color="white"
-                                size="xs"
-                                onClick={() =>
-                                  createQuestionReview({
-                                    variables: {
-                                      questionId: question.id,
-                                      reviewStatus: ReviewStatus.Queued,
-                                    },
-                                  })
-                                }
-                              >
-                                <StarIcon mr={2} />
-                                <Text as="span" fontSize="xs">
-                                  save
-                                </Text>
-                              </Button>
-                            </Box>
-                          )
-                      )}
+                      {availableQuestionsNotSaved.map((question) => (
+                        <Box key={question.id}>
+                          <Box>
+                            <HStack spacing="6px">
+                              {question.subjects.map((subject) => (
+                                <Flex align="center" key={subject}>
+                                  <Circle mr="4px" size={4} bg="grayMain" />
+                                  <Text fontSize="xs">{"#" + subject}</Text>
+                                </Flex>
+                              ))}
+                            </HStack>
+                          </Box>
+                          <Text fontWeight="bold" fontSize="lg">
+                            {question.question}
+                          </Text>
+                          <Button
+                            mt={1}
+                            bg="mint"
+                            color="white"
+                            size="xs"
+                            onClick={() =>
+                              createQuestionReview({
+                                variables: {
+                                  questionId: question.id,
+                                  reviewStatus: ReviewStatus.Queued,
+                                },
+                              })
+                            }
+                          >
+                            <StarIcon mr={2} />
+                            <Text as="span" fontSize="xs">
+                              save
+                            </Text>
+                          </Button>
+                        </Box>
+                      ))}
                     </Stack>
                   </Box>
                 )}
