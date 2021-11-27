@@ -19,7 +19,10 @@ import React, {
 } from "react";
 import { GoChecklist } from "react-icons/go";
 import {
+  MeDocument,
+  MeQuery,
   Question,
+  QuestionReview,
   ReviewStatus,
   useCreateQuestionReviewMutation,
   useMeQuery,
@@ -39,15 +42,31 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
     }
   }, [router]);
 
-  const savedQuestionIds = meData?.me?.questionReviews.map(
-    (review) => review.questionId
-  );
-  const availableQuestionsNotSaved = savedQuestionIds
-    ? availableQuestions.filter(
-        (question) =>
-          savedQuestionIds && !savedQuestionIds.includes(question.id)
-      )
-    : [];
+  let sortedQuestionReviews: QuestionReview[] = [];
+  let availableQuestionsNotSaved: Question[] = [];
+
+  if (meData?.me) {
+    sortedQuestionReviews = Object.assign(
+      [],
+      meData.me.questionReviews
+    ) as QuestionReview[];
+    console.log(sortedQuestionReviews);
+    sortedQuestionReviews.sort(
+      (a, b) =>
+        new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
+    );
+    console.log(sortedQuestionReviews);
+
+    const savedQuestionIds = meData.me.questionReviews.map(
+      (review) => review.questionId
+    );
+    availableQuestionsNotSaved = savedQuestionIds
+      ? availableQuestions.filter(
+          (question) =>
+            savedQuestionIds && !savedQuestionIds.includes(question.id)
+        )
+      : [];
+  }
 
   return (
     <>
@@ -95,6 +114,28 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                                   questionId: question.id,
                                   reviewStatus: ReviewStatus.Queued,
                                 },
+                                update: (cache, { data: responseData }) => {
+                                  if (
+                                    meData.me &&
+                                    responseData?.createQuestionReview
+                                  ) {
+                                    let updatedMeData = Object.assign(
+                                      {},
+                                      meData.me
+                                    );
+                                    updatedMeData.questionReviews = [
+                                      ...updatedMeData.questionReviews,
+                                      responseData.createQuestionReview,
+                                    ];
+                                    cache.writeQuery<MeQuery>({
+                                      query: MeDocument,
+                                      data: {
+                                        __typename: "Query",
+                                        me: updatedMeData,
+                                      },
+                                    });
+                                  }
+                                },
                               })
                             }
                           >
@@ -119,45 +160,29 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                     Recently Saved Questions
                   </Text>
                   <Stack py={2} spacing={4}>
-                    {meData?.me &&
-                      meData.me.questionReviews.map((questionReview) => (
-                        <Box key={questionReview.questionId}>
-                          <Box>
-                            <HStack spacing="6px">
-                              {questionReview.question.subjects.map(
-                                (subject) => (
-                                  <Flex align="center" key={subject}>
-                                    <Circle mr="4px" size={4} bg="grayMain" />
-                                    <Text fontSize="xs">{"#" + subject}</Text>
-                                  </Flex>
-                                )
-                              )}
-                            </HStack>
-                          </Box>
-                          <Text fontWeight="bold" fontSize="lg">
-                            {questionReview.question.question}
-                          </Text>
-                          <Button
-                            mt={1}
-                            bg="iris"
-                            color="white"
-                            size="xs"
-                            onClick={() =>
-                              createQuestionReview({
-                                variables: {
-                                  questionId: questionReview.questionId,
-                                  reviewStatus: ReviewStatus.Queued,
-                                },
-                              })
-                            }
-                          >
-                            <Icon as={GoChecklist} />
-                            <Text ml={2} as="span" fontSize="xs">
-                              answer
-                            </Text>
-                          </Button>
+                    {sortedQuestionReviews.map((questionReview) => (
+                      <Box key={questionReview.questionId}>
+                        <Box>
+                          <HStack spacing="6px">
+                            {questionReview.question.subjects.map((subject) => (
+                              <Flex align="center" key={subject}>
+                                <Circle mr="4px" size={4} bg="grayMain" />
+                                <Text fontSize="xs">{"#" + subject}</Text>
+                              </Flex>
+                            ))}
+                          </HStack>
                         </Box>
-                      ))}
+                        <Text fontWeight="bold" fontSize="lg">
+                          {questionReview.question.question}
+                        </Text>
+                        <Button mt={1} bg="iris" color="white" size="xs">
+                          <Icon as={GoChecklist} />
+                          <Text ml={2} as="span" fontSize="xs">
+                            answer
+                          </Text>
+                        </Button>
+                      </Box>
+                    ))}
                   </Stack>
                 </Box>
               </Stack>

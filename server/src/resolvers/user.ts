@@ -49,13 +49,12 @@ export class UserResolver {
     return "";
   }
 
-  @FieldResolver(() => String)
+  @FieldResolver(() => [QuestionReview])
   async questionReviews(@Root() _: User, @Ctx() { req }: MyContext) {
     return await QuestionReview.find({
       where: { userId: req.session.userId },
       skip: 0,
       take: 100,
-      relations: ["question"]
     });
   }
 
