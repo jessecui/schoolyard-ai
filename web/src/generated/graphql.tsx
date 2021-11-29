@@ -176,6 +176,7 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
   question?: Maybe<Question>;
+  questionReview?: Maybe<QuestionReview>;
   questions: PaginatedQuestions;
   sentence?: Maybe<Sentence>;
   sentences: PaginatedSentences;
@@ -184,6 +185,11 @@ export type Query = {
 
 export type QueryQuestionArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryQuestionReviewArgs = {
+  questionId: Scalars['Int'];
 };
 
 
@@ -452,6 +458,14 @@ export type UpdateQuestionMutationVariables = Exact<{
 
 export type UpdateQuestionMutation = { __typename?: 'Mutation', updateQuestion?: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, teacher: { __typename?: 'User', firstName: string, lastName: string } } | null | undefined };
 
+export type UpdateQuestionReviewMutationVariables = Exact<{
+  questionId: Scalars['Int'];
+  reviewStatus: ReviewStatus;
+}>;
+
+
+export type UpdateQuestionReviewMutation = { __typename?: 'Mutation', updateQuestionReview?: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } | null | undefined };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -463,6 +477,13 @@ export type QuestionQueryVariables = Exact<{
 
 
 export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, sentence?: { __typename?: 'Sentence', id: number, text: string } | null | undefined } | null | undefined };
+
+export type QuestionReviewQueryVariables = Exact<{
+  questionId: Scalars['Int'];
+}>;
+
+
+export type QuestionReviewQuery = { __typename?: 'Query', questionReview?: { __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any } | null | undefined };
 
 export type QuestionsQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -1206,6 +1227,47 @@ export function useUpdateQuestionMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateQuestionMutationHookResult = ReturnType<typeof useUpdateQuestionMutation>;
 export type UpdateQuestionMutationResult = Apollo.MutationResult<UpdateQuestionMutation>;
 export type UpdateQuestionMutationOptions = Apollo.BaseMutationOptions<UpdateQuestionMutation, UpdateQuestionMutationVariables>;
+export const UpdateQuestionReviewDocument = gql`
+    mutation UpdateQuestionReview($questionId: Int!, $reviewStatus: ReviewStatus!) {
+  updateQuestionReview(questionId: $questionId, reviewStatus: $reviewStatus) {
+    questionId
+    reviewStatus
+    dateCreated
+    dateUpdated
+    question {
+      question
+      subjects
+    }
+  }
+}
+    `;
+export type UpdateQuestionReviewMutationFn = Apollo.MutationFunction<UpdateQuestionReviewMutation, UpdateQuestionReviewMutationVariables>;
+
+/**
+ * __useUpdateQuestionReviewMutation__
+ *
+ * To run a mutation, you first call `useUpdateQuestionReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateQuestionReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateQuestionReviewMutation, { data, loading, error }] = useUpdateQuestionReviewMutation({
+ *   variables: {
+ *      questionId: // value for 'questionId'
+ *      reviewStatus: // value for 'reviewStatus'
+ *   },
+ * });
+ */
+export function useUpdateQuestionReviewMutation(baseOptions?: Apollo.MutationHookOptions<UpdateQuestionReviewMutation, UpdateQuestionReviewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateQuestionReviewMutation, UpdateQuestionReviewMutationVariables>(UpdateQuestionReviewDocument, options);
+      }
+export type UpdateQuestionReviewMutationHookResult = ReturnType<typeof useUpdateQuestionReviewMutation>;
+export type UpdateQuestionReviewMutationResult = Apollo.MutationResult<UpdateQuestionReviewMutation>;
+export type UpdateQuestionReviewMutationOptions = Apollo.BaseMutationOptions<UpdateQuestionReviewMutation, UpdateQuestionReviewMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -1295,6 +1357,44 @@ export function useQuestionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Q
 export type QuestionQueryHookResult = ReturnType<typeof useQuestionQuery>;
 export type QuestionLazyQueryHookResult = ReturnType<typeof useQuestionLazyQuery>;
 export type QuestionQueryResult = Apollo.QueryResult<QuestionQuery, QuestionQueryVariables>;
+export const QuestionReviewDocument = gql`
+    query QuestionReview($questionId: Int!) {
+  questionReview(questionId: $questionId) {
+    reviewStatus
+    dateCreated
+    dateUpdated
+    dateNextAvailable
+  }
+}
+    `;
+
+/**
+ * __useQuestionReviewQuery__
+ *
+ * To run a query within a React component, call `useQuestionReviewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionReviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuestionReviewQuery({
+ *   variables: {
+ *      questionId: // value for 'questionId'
+ *   },
+ * });
+ */
+export function useQuestionReviewQuery(baseOptions: Apollo.QueryHookOptions<QuestionReviewQuery, QuestionReviewQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<QuestionReviewQuery, QuestionReviewQueryVariables>(QuestionReviewDocument, options);
+      }
+export function useQuestionReviewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionReviewQuery, QuestionReviewQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<QuestionReviewQuery, QuestionReviewQueryVariables>(QuestionReviewDocument, options);
+        }
+export type QuestionReviewQueryHookResult = ReturnType<typeof useQuestionReviewQuery>;
+export type QuestionReviewLazyQueryHookResult = ReturnType<typeof useQuestionReviewLazyQuery>;
+export type QuestionReviewQueryResult = Apollo.QueryResult<QuestionReviewQuery, QuestionReviewQueryVariables>;
 export const QuestionsDocument = gql`
     query Questions($limit: Int!, $cursor: String) {
   questions(limit: $limit, cursor: $cursor) {

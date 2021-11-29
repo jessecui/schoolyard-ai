@@ -51,7 +51,7 @@ export class QuestionReview extends BaseEntity {
   correctStreak: number;
 
   @Field(() => Date)
-  @Column({ type: "date" })
+  @Column()
   dateNextAvailable: Date;
 
   @Field(() => Date)

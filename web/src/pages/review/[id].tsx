@@ -1,14 +1,4 @@
-import { useRouter } from "next/router";
-import {
-  AddQuestionVoteMutation,
-  Question,
-  useAddQuestionViewMutation,
-  useAddQuestionVoteMutation,
-  useMeQuery,
-  useQuestionQuery,
-  VoteType,
-} from "../../generated/graphql";
-import { withApollo } from "../../utils/withApollo";
+import { ApolloCache, gql } from "@apollo/client";
 import {
   Box,
   Button,
@@ -27,26 +17,48 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { Field, Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import React from "react";
-import { Formik, Form, Field } from "formik";
-import { IoPersonCircle, IoPeople } from "react-icons/io5";
+import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
-  RiThumbUpFill,
-  RiThumbUpLine,
+  RiCalendarEventFill,
   RiThumbDownFill,
   RiThumbDownLine,
-  RiCalendarEventFill,
+  RiThumbUpFill,
+  RiThumbUpLine,
 } from "react-icons/ri";
-import { ApolloCache, gql } from "@apollo/client";
+import {
+  AddQuestionVoteMutation,
+  Question,
+  ReviewStatus,
+  useAddQuestionViewMutation,
+  useAddQuestionVoteMutation,
+  useMeQuery,
+  useQuestionQuery,
+  useQuestionReviewQuery,
+  useUpdateQuestionReviewMutation,
+  VoteType,
+} from "../../generated/graphql";
+import { withApollo } from "../../utils/withApollo";
 
 const Review: React.FC<{}> = ({}) => {
   const router = useRouter();
   const { data, loading } = useQuestionQuery({
-    variables: { id: Number(router.query.id) },
+    variables: { id: router.query.id ? Number(router.query.id) : -1 },
   });
   const { data: meData, loading: meLoading } = useMeQuery();
   const [addVote] = useAddQuestionVoteMutation();
   const [addView] = useAddQuestionViewMutation();
+  const [updateQuestionReview] = useUpdateQuestionReviewMutation();
+  const { data: reviewData, loading: reviewLoading } = useQuestionReviewQuery({
+    variables: { questionId: router.query.id ? Number(router.query.id) : -1 },
+  });
+
+  const questionIsLocked = reviewData?.questionReview?.dateNextAvailable
+    ? new Date().getTime() <
+      new Date(reviewData.questionReview.dateNextAvailable).getTime()
+    : false;
 
   const updateAfterVote = (
     cache: ApolloCache<AddQuestionVoteMutation>,
@@ -103,17 +115,26 @@ const Review: React.FC<{}> = ({}) => {
           validateOnChange={false}
           validateOnBlur={false}
           onSubmit={async (values: any, { setStatus }) => {
+            let reviewStatus;
             if (
               values.answerBox.toLowerCase() ===
               question.answer[0].toLowerCase()
             ) {
               setStatus("correct");
+              reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
+              reviewStatus = ReviewStatus.Incorrect;
             }
             await addView({
               variables: {
                 questionId: question.id,
+              },
+            });
+            updateQuestionReview({
+              variables: {
+                questionId: question.id,
+                reviewStatus,
               },
             });
           }}
@@ -131,6 +152,7 @@ const Review: React.FC<{}> = ({}) => {
                       border="2px"
                       borderColor="grayLight"
                       isDisabled={
+                        questionIsLocked ||
                         props.status === "correct" ||
                         props.status === "incorrect"
                       }
@@ -143,7 +165,9 @@ const Review: React.FC<{}> = ({}) => {
                 <Button
                   isLoading={props.isSubmitting}
                   isDisabled={
-                    props.status === "correct" || props.status === "incorrect"
+                    questionIsLocked ||
+                    props.status === "correct" ||
+                    props.status === "incorrect"
                   }
                   bg="blueSky"
                   color="white"
@@ -179,14 +203,23 @@ const Review: React.FC<{}> = ({}) => {
           validateOnChange={false}
           validateOnBlur={false}
           onSubmit={async (values: any, { setStatus }) => {
+            let reviewStatus;
             if (values.radioGroup === question.answer[0]) {
               setStatus("correct");
+              reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
+              reviewStatus = ReviewStatus.Incorrect;
             }
             await addView({
               variables: {
                 questionId: question.id,
+              },
+            });
+            updateQuestionReview({
+              variables: {
+                questionId: question.id,
+                reviewStatus,
               },
             });
           }}
@@ -229,7 +262,9 @@ const Review: React.FC<{}> = ({}) => {
                 <Button
                   isLoading={props.isSubmitting}
                   isDisabled={
-                    props.status === "correct" || props.status === "incorrect"
+                    questionIsLocked ||
+                    props.status === "correct" ||
+                    props.status === "incorrect"
                   }
                   bg="blueSky"
                   color="white"
@@ -270,16 +305,25 @@ const Review: React.FC<{}> = ({}) => {
               for (var a of as) if (!bs.has(a)) return false;
               return true;
             };
+            let reviewStatus;
             if (
               eqSet(new Set(values.checkboxGroup), new Set(question.answer))
             ) {
               setStatus("correct");
+              reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
+              reviewStatus = ReviewStatus.Incorrect;
             }
             await addView({
               variables: {
                 questionId: question.id,
+              },
+            });
+            updateQuestionReview({
+              variables: {
+                questionId: question.id,
+                reviewStatus,
               },
             });
           }}
@@ -303,6 +347,7 @@ const Review: React.FC<{}> = ({}) => {
                           key={String(question.id) + choice}
                           value={choice}
                           isDisabled={
+                            questionIsLocked ||
                             props.status === "correct" ||
                             props.status === "incorrect"
                           }
@@ -323,7 +368,9 @@ const Review: React.FC<{}> = ({}) => {
                 <Button
                   isLoading={props.isSubmitting}
                   isDisabled={
-                    props.status === "correct" || props.status === "incorrect"
+                    questionIsLocked ||
+                    props.status === "correct" ||
+                    props.status === "incorrect"
                   }
                   bg="blueSky"
                   color="white"
@@ -517,6 +564,23 @@ const Review: React.FC<{}> = ({}) => {
       </HStack>
       <Divider borderColor="grayLight" border="1px" my={3} />
       <Box>{questionForm(data.question as Question)}</Box>
+      {reviewData?.questionReview && questionIsLocked && (
+        <Box mt={2}>
+          <Text fontSize="sm">
+            You answered this question{" "}
+            {reviewData.questionReview.reviewStatus == ReviewStatus.Correct
+              ? "correctly"
+              : "incorrectly"}{" "}
+            on{" "}
+            {new Date(reviewData.questionReview.dateUpdated).toLocaleString()}.
+            It will be locked until{" "}
+            {new Date(
+              reviewData.questionReview.dateNextAvailable
+            ).toLocaleString()}
+            .
+          </Text>
+        </Box>
+      )}
     </Box>
   ) : null;
 };
