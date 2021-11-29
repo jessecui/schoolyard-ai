@@ -623,7 +623,7 @@ export class SentenceResolver {
 
   @Mutation(() => Sentence)
   @UseMiddleware(isAuth)
-  async addVoteToSentence(
+  async addSentenceVote(
     @Arg("sentenceId", () => Int) sentenceId: number,
     @Arg("voteType", () => VoteType) voteType: VoteType,
     @Ctx() { req }: MyContext
@@ -731,7 +731,7 @@ export class SentenceResolver {
   }
 
   @Mutation(() => Sentence, { nullable: true })
-  async addViewToSentence(
+  async addSentenceView(
     @Arg("sentenceId", () => Int) sentenceId: number,
     @Ctx() { req }: MyContext
   ) {

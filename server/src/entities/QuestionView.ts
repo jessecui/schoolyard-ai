@@ -1,6 +1,7 @@
 import { ObjectType } from "type-graphql";
 import {
   BaseEntity,
+  Column,
   Entity,
   ManyToOne,
   PrimaryColumn
@@ -26,4 +27,7 @@ export class QuestionView extends BaseEntity {
     onDelete: 'CASCADE',
   })
   question: Question;
+
+  @Column()
+  userViewCount: number;
 }

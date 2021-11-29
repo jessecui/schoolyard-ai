@@ -1,0 +1,5 @@
+mutation AddSentenceView($sentenceId: Int!) {
+  addSentenceView(sentenceId: $sentenceId) {
+    viewCount
+  }
+}

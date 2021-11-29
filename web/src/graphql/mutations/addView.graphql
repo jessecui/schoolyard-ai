@@ -1,5 +1,0 @@
-mutation AddView($questionId: Int!) {
-  addView(questionId: $questionId) {
-    viewCount
-  }
-}

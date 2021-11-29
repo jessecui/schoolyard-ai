@@ -22,10 +22,10 @@ import {
 } from "react-icons/ri";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
-  AddVoteToSentenceMutation,
+  AddSentenceVoteMutation,
   MeQuery,
   SentencesQuery,
-  useAddVoteToSentenceMutation,
+  useAddSentenceVoteMutation,
   useMeQuery,
   useSentencesQuery,
   VoteType,
@@ -59,10 +59,10 @@ const Index: React.FC<{}> = ({}) => {
     setUserDataLoading(meLoading);
   });
 
-  const [addVote] = useAddVoteToSentenceMutation();
+  const [addVote] = useAddSentenceVoteMutation();
 
   const updateAfterVote = (
-    cache: ApolloCache<AddVoteToSentenceMutation>,
+    cache: ApolloCache<AddSentenceVoteMutation>,
     sentenceId: number,
     newUserVoteType: VoteType | null,
     newUpVoteCount: number,
@@ -185,7 +185,7 @@ const Index: React.FC<{}> = ({}) => {
                             },
                             update: (cache, { data: responseData }) => {
                               const votedSentence =
-                                responseData?.addVoteToSentence;
+                                responseData?.addSentenceVote;
                               updateAfterVote(
                                 cache,
                                 sentence!.id,
@@ -229,7 +229,7 @@ const Index: React.FC<{}> = ({}) => {
                             },
                             update: (cache, { data: responseData }) => {
                               const votedSentence =
-                                responseData?.addVoteToSentence;
+                                responseData?.addSentenceVote;
                               updateAfterVote(
                                 cache,
                                 sentence!.id,

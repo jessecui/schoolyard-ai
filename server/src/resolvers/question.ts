@@ -186,7 +186,7 @@ export class QuestionResolver {
 
   @Mutation(() => Question)
   @UseMiddleware(isAuth)
-  async addVote(
+  async addQuestionVote(
     @Arg("questionId", () => Int) questionId: number,
     @Arg("voteType", () => VoteType) voteType: VoteType,
     @Ctx() { req }: MyContext
@@ -294,7 +294,7 @@ export class QuestionResolver {
   }
 
   @Mutation(() => Question, { nullable: true })
-  async addView(
+  async addQuestionView(
     @Arg("questionId", () => Int) questionId: number,
     @Ctx() { req }: MyContext
   ) {
@@ -304,9 +304,8 @@ export class QuestionResolver {
       const view = await QuestionView.findOne({
         where: { questionId, userId },
       });
-      if (!view) {
-        // Only one view per question for each user
-        await getConnection().transaction(async (manager) => {
+      await getConnection().transaction(async (manager) => {
+        if (!view) {
           await manager
             .createQueryBuilder()
             .insert()
@@ -314,27 +313,36 @@ export class QuestionResolver {
             .values({
               userId,
               questionId,
+              userViewCount: 1,
             })
             .execute();
-          viewedQuestion = await manager
+        } else {
+          await manager
             .createQueryBuilder()
-            .update(Question)
-            .set({ viewCount: () => '"viewCount" + 1' })
-            .where("id = :questionId", {
+            .update(QuestionView)
+            .set({ userViewCount: () => '"userViewCount" + 1' })
+            .where("userId = :userId and questionId = :questionId", {
+              userId,
               questionId,
             })
-            .returning("*")
             .execute();
-        });
-        return viewedQuestion.raw[0];
-      } else {
-        return null;
-      }
+        }
+        viewedQuestion = await manager
+          .createQueryBuilder()
+          .update(Question)
+          .set({ viewCount: () => '"viewCount" + 1' })
+          .where("id = :questionId", {
+            questionId,
+          })
+          .returning("*")
+          .execute();
+      });
+      return viewedQuestion.raw[0];
     } else {
       // For non-authenticated users, we can just add to the view count
       viewedQuestion = await getConnection()
         .createQueryBuilder()
-        .update(Question)
+        .update(Sentence)
         .set({ viewCount: () => '"viewCount" + 1' })
         .where("id = :questionId", {
           questionId,
