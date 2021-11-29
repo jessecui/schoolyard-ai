@@ -1,2 +1,5 @@
 # Schoolyard Website Repo
-website URL: tbd
+Schoolyard is a curiosity-driven short-form learning education technology (edtech) platform that will redefine how users learn online, explore the internet, and grow their careers. Schoolyard will fulfill the current rising need of fast online skill-specific training required due to post-pandemic societal changes surrounding education and work. It distinguishes itself from existing online education technology platforms which contain long-form static curriculums. Schoolyard allows users to choose their own breadth and depth of educational content and then quiz themselves on the knowledge that they have explored. 
+
+The user-driven content scoping will be supported by an exhaustive graph of semantic relationships (EGSR) between ideas/units of knowledge. EGSR will be manually created by users through the platform and existing machine learning algorithms, but will eventually receive enough training data to create its own artificial intelligence (AI) model. The AI graph model, which will be able to graph semantic relationships between all types of knowledge, will redefine the way users explore the internet by allowing for an internet browser that can automatically link relevant content from separate websites.
+
