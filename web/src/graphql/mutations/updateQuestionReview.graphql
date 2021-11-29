@@ -1,0 +1,12 @@
+mutation UpdateQuestionReview($questionId: Int!, $reviewStatus: ReviewStatus!) {
+  updateQuestionReview(questionId: $questionId, reviewStatus: $reviewStatus) {   
+    questionId    
+    reviewStatus
+    dateCreated
+    dateUpdated
+    question {
+      question
+      subjects
+    }
+  }
+}

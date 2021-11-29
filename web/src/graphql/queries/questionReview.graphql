@@ -1,0 +1,8 @@
+query QuestionReview($questionId: Int!) {
+  questionReview(questionId: $questionId) {       
+    reviewStatus
+    dateCreated
+    dateUpdated    
+    dateNextAvailable
+  }
+}
