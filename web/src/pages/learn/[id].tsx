@@ -31,13 +31,13 @@ import {
 import { MdLibraryAdd } from "react-icons/md";
 
 import {
-  AddVoteToSentenceMutation,
+  AddSentenceVoteMutation,
   MeQuery,
   Question,
   Sentence,
   SentenceQuery,
-  useAddViewToSentenceMutation,
-  useAddVoteToSentenceMutation,
+  useAddSentenceViewMutation,
+  useAddSentenceVoteMutation,
   useMeQuery,
   useSentenceQuery,
   VoteType,
@@ -51,8 +51,8 @@ const Learn: React.FC<{
   const { data, loading } = useSentenceQuery({
     variables: { id: Number(router.query.id) },
   });
-  const [addVote] = useAddVoteToSentenceMutation();
-  const [addView] = useAddViewToSentenceMutation();
+  const [addVote] = useAddSentenceVoteMutation();
+  const [addView] = useAddSentenceViewMutation();
   const { data: meData, loading: meLoading } = useMeQuery();
 
   const [sentenceData, setSentenceData] = useState<SentenceQuery | undefined>();
@@ -125,7 +125,7 @@ const Learn: React.FC<{
   }, [activeCloneIndex, sentenceData?.sentence?.id]);
 
   const updateAfterVote = (
-    cache: ApolloCache<AddVoteToSentenceMutation>,
+    cache: ApolloCache<AddSentenceVoteMutation>,
     sentenceId: number,
     newUserVoteType: VoteType | null,
     newUpVoteCount: number,
@@ -380,7 +380,7 @@ const Learn: React.FC<{
                         voteType: VoteType.Up,
                       },
                       update: (cache, { data: responseData }) => {
-                        const votedSentence = responseData?.addVoteToSentence;
+                        const votedSentence = responseData?.addSentenceVote;
                         updateAfterVote(
                           cache,
                           activeSentence!.id,
@@ -423,7 +423,7 @@ const Learn: React.FC<{
                         voteType: VoteType.Down,
                       },
                       update: (cache, { data: responseData }) => {
-                        const votedSentence = responseData?.addVoteToSentence;
+                        const votedSentence = responseData?.addSentenceVote;
                         updateAfterVote(
                           cache,
                           activeSentence!.id,

@@ -1,7 +1,0 @@
-mutation AddVoteToSentence($sentenceId: Int!, $voteType: VoteType!) {
-  addVoteToSentence(sentenceId: $sentenceId, voteType: $voteType) {
-    upVoteCount
-    downVoteCount
-    userVoteType
-  }
-}

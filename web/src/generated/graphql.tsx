@@ -24,10 +24,10 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addView?: Maybe<Question>;
-  addViewToSentence?: Maybe<Sentence>;
-  addVote: Question;
-  addVoteToSentence: Sentence;
+  addQuestionView?: Maybe<Question>;
+  addQuestionVote: Question;
+  addSentenceView?: Maybe<Sentence>;
+  addSentenceVote: Sentence;
   changePassword: UserResponse;
   changePasswordWithToken: UserResponse;
   changeProfile: UserResponse;
@@ -48,23 +48,23 @@ export type Mutation = {
 };
 
 
-export type MutationAddViewArgs = {
+export type MutationAddQuestionViewArgs = {
   questionId: Scalars['Int'];
 };
 
 
-export type MutationAddViewToSentenceArgs = {
-  sentenceId: Scalars['Int'];
-};
-
-
-export type MutationAddVoteArgs = {
+export type MutationAddQuestionVoteArgs = {
   questionId: Scalars['Int'];
   voteType: VoteType;
 };
 
 
-export type MutationAddVoteToSentenceArgs = {
+export type MutationAddSentenceViewArgs = {
+  sentenceId: Scalars['Int'];
+};
+
+
+export type MutationAddSentenceVoteArgs = {
   sentenceId: Scalars['Int'];
   voteType: VoteType;
 };
@@ -312,35 +312,35 @@ export type UserFragment = { __typename?: 'User', id: number, email: string, fir
 
 export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined };
 
-export type AddViewMutationVariables = Exact<{
+export type AddQuestionViewMutationVariables = Exact<{
   questionId: Scalars['Int'];
 }>;
 
 
-export type AddViewMutation = { __typename?: 'Mutation', addView?: { __typename?: 'Question', viewCount: number } | null | undefined };
+export type AddQuestionViewMutation = { __typename?: 'Mutation', addQuestionView?: { __typename?: 'Question', viewCount: number } | null | undefined };
 
-export type AddViewToSentenceMutationVariables = Exact<{
-  sentenceId: Scalars['Int'];
-}>;
-
-
-export type AddViewToSentenceMutation = { __typename?: 'Mutation', addViewToSentence?: { __typename?: 'Sentence', viewCount: number } | null | undefined };
-
-export type AddVoteMutationVariables = Exact<{
+export type AddQuestionVoteMutationVariables = Exact<{
   questionId: Scalars['Int'];
   voteType: VoteType;
 }>;
 
 
-export type AddVoteMutation = { __typename?: 'Mutation', addVote: { __typename?: 'Question', upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined } };
+export type AddQuestionVoteMutation = { __typename?: 'Mutation', addQuestionVote: { __typename?: 'Question', upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined } };
 
-export type AddVoteToSentenceMutationVariables = Exact<{
+export type AddSentenceViewMutationVariables = Exact<{
+  sentenceId: Scalars['Int'];
+}>;
+
+
+export type AddSentenceViewMutation = { __typename?: 'Mutation', addSentenceView?: { __typename?: 'Sentence', viewCount: number } | null | undefined };
+
+export type AddSentenceVoteMutationVariables = Exact<{
   sentenceId: Scalars['Int'];
   voteType: VoteType;
 }>;
 
 
-export type AddVoteToSentenceMutation = { __typename?: 'Mutation', addVoteToSentence: { __typename?: 'Sentence', upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined } };
+export type AddSentenceVoteMutation = { __typename?: 'Mutation', addSentenceVote: { __typename?: 'Sentence', upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined } };
 
 export type ChangePasswordMutationVariables = Exact<{
   oldPassword: Scalars['String'];
@@ -522,144 +522,144 @@ export const UserResponseFragmentDoc = gql`
 }
     ${ErrorFragmentDoc}
 ${UserFragmentDoc}`;
-export const AddViewDocument = gql`
-    mutation AddView($questionId: Int!) {
-  addView(questionId: $questionId) {
+export const AddQuestionViewDocument = gql`
+    mutation AddQuestionView($questionId: Int!) {
+  addQuestionView(questionId: $questionId) {
     viewCount
   }
 }
     `;
-export type AddViewMutationFn = Apollo.MutationFunction<AddViewMutation, AddViewMutationVariables>;
+export type AddQuestionViewMutationFn = Apollo.MutationFunction<AddQuestionViewMutation, AddQuestionViewMutationVariables>;
 
 /**
- * __useAddViewMutation__
+ * __useAddQuestionViewMutation__
  *
- * To run a mutation, you first call `useAddViewMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddViewMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAddQuestionViewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddQuestionViewMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addViewMutation, { data, loading, error }] = useAddViewMutation({
+ * const [addQuestionViewMutation, { data, loading, error }] = useAddQuestionViewMutation({
  *   variables: {
  *      questionId: // value for 'questionId'
  *   },
  * });
  */
-export function useAddViewMutation(baseOptions?: Apollo.MutationHookOptions<AddViewMutation, AddViewMutationVariables>) {
+export function useAddQuestionViewMutation(baseOptions?: Apollo.MutationHookOptions<AddQuestionViewMutation, AddQuestionViewMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddViewMutation, AddViewMutationVariables>(AddViewDocument, options);
+        return Apollo.useMutation<AddQuestionViewMutation, AddQuestionViewMutationVariables>(AddQuestionViewDocument, options);
       }
-export type AddViewMutationHookResult = ReturnType<typeof useAddViewMutation>;
-export type AddViewMutationResult = Apollo.MutationResult<AddViewMutation>;
-export type AddViewMutationOptions = Apollo.BaseMutationOptions<AddViewMutation, AddViewMutationVariables>;
-export const AddViewToSentenceDocument = gql`
-    mutation AddViewToSentence($sentenceId: Int!) {
-  addViewToSentence(sentenceId: $sentenceId) {
-    viewCount
-  }
-}
-    `;
-export type AddViewToSentenceMutationFn = Apollo.MutationFunction<AddViewToSentenceMutation, AddViewToSentenceMutationVariables>;
-
-/**
- * __useAddViewToSentenceMutation__
- *
- * To run a mutation, you first call `useAddViewToSentenceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddViewToSentenceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addViewToSentenceMutation, { data, loading, error }] = useAddViewToSentenceMutation({
- *   variables: {
- *      sentenceId: // value for 'sentenceId'
- *   },
- * });
- */
-export function useAddViewToSentenceMutation(baseOptions?: Apollo.MutationHookOptions<AddViewToSentenceMutation, AddViewToSentenceMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddViewToSentenceMutation, AddViewToSentenceMutationVariables>(AddViewToSentenceDocument, options);
-      }
-export type AddViewToSentenceMutationHookResult = ReturnType<typeof useAddViewToSentenceMutation>;
-export type AddViewToSentenceMutationResult = Apollo.MutationResult<AddViewToSentenceMutation>;
-export type AddViewToSentenceMutationOptions = Apollo.BaseMutationOptions<AddViewToSentenceMutation, AddViewToSentenceMutationVariables>;
-export const AddVoteDocument = gql`
-    mutation AddVote($questionId: Int!, $voteType: VoteType!) {
-  addVote(questionId: $questionId, voteType: $voteType) {
+export type AddQuestionViewMutationHookResult = ReturnType<typeof useAddQuestionViewMutation>;
+export type AddQuestionViewMutationResult = Apollo.MutationResult<AddQuestionViewMutation>;
+export type AddQuestionViewMutationOptions = Apollo.BaseMutationOptions<AddQuestionViewMutation, AddQuestionViewMutationVariables>;
+export const AddQuestionVoteDocument = gql`
+    mutation AddQuestionVote($questionId: Int!, $voteType: VoteType!) {
+  addQuestionVote(questionId: $questionId, voteType: $voteType) {
     upVoteCount
     downVoteCount
     userVoteType
   }
 }
     `;
-export type AddVoteMutationFn = Apollo.MutationFunction<AddVoteMutation, AddVoteMutationVariables>;
+export type AddQuestionVoteMutationFn = Apollo.MutationFunction<AddQuestionVoteMutation, AddQuestionVoteMutationVariables>;
 
 /**
- * __useAddVoteMutation__
+ * __useAddQuestionVoteMutation__
  *
- * To run a mutation, you first call `useAddVoteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddVoteMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAddQuestionVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddQuestionVoteMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addVoteMutation, { data, loading, error }] = useAddVoteMutation({
+ * const [addQuestionVoteMutation, { data, loading, error }] = useAddQuestionVoteMutation({
  *   variables: {
  *      questionId: // value for 'questionId'
  *      voteType: // value for 'voteType'
  *   },
  * });
  */
-export function useAddVoteMutation(baseOptions?: Apollo.MutationHookOptions<AddVoteMutation, AddVoteMutationVariables>) {
+export function useAddQuestionVoteMutation(baseOptions?: Apollo.MutationHookOptions<AddQuestionVoteMutation, AddQuestionVoteMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddVoteMutation, AddVoteMutationVariables>(AddVoteDocument, options);
+        return Apollo.useMutation<AddQuestionVoteMutation, AddQuestionVoteMutationVariables>(AddQuestionVoteDocument, options);
       }
-export type AddVoteMutationHookResult = ReturnType<typeof useAddVoteMutation>;
-export type AddVoteMutationResult = Apollo.MutationResult<AddVoteMutation>;
-export type AddVoteMutationOptions = Apollo.BaseMutationOptions<AddVoteMutation, AddVoteMutationVariables>;
-export const AddVoteToSentenceDocument = gql`
-    mutation AddVoteToSentence($sentenceId: Int!, $voteType: VoteType!) {
-  addVoteToSentence(sentenceId: $sentenceId, voteType: $voteType) {
-    upVoteCount
-    downVoteCount
-    userVoteType
+export type AddQuestionVoteMutationHookResult = ReturnType<typeof useAddQuestionVoteMutation>;
+export type AddQuestionVoteMutationResult = Apollo.MutationResult<AddQuestionVoteMutation>;
+export type AddQuestionVoteMutationOptions = Apollo.BaseMutationOptions<AddQuestionVoteMutation, AddQuestionVoteMutationVariables>;
+export const AddSentenceViewDocument = gql`
+    mutation AddSentenceView($sentenceId: Int!) {
+  addSentenceView(sentenceId: $sentenceId) {
+    viewCount
   }
 }
     `;
-export type AddVoteToSentenceMutationFn = Apollo.MutationFunction<AddVoteToSentenceMutation, AddVoteToSentenceMutationVariables>;
+export type AddSentenceViewMutationFn = Apollo.MutationFunction<AddSentenceViewMutation, AddSentenceViewMutationVariables>;
 
 /**
- * __useAddVoteToSentenceMutation__
+ * __useAddSentenceViewMutation__
  *
- * To run a mutation, you first call `useAddVoteToSentenceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddVoteToSentenceMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAddSentenceViewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddSentenceViewMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addVoteToSentenceMutation, { data, loading, error }] = useAddVoteToSentenceMutation({
+ * const [addSentenceViewMutation, { data, loading, error }] = useAddSentenceViewMutation({
+ *   variables: {
+ *      sentenceId: // value for 'sentenceId'
+ *   },
+ * });
+ */
+export function useAddSentenceViewMutation(baseOptions?: Apollo.MutationHookOptions<AddSentenceViewMutation, AddSentenceViewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddSentenceViewMutation, AddSentenceViewMutationVariables>(AddSentenceViewDocument, options);
+      }
+export type AddSentenceViewMutationHookResult = ReturnType<typeof useAddSentenceViewMutation>;
+export type AddSentenceViewMutationResult = Apollo.MutationResult<AddSentenceViewMutation>;
+export type AddSentenceViewMutationOptions = Apollo.BaseMutationOptions<AddSentenceViewMutation, AddSentenceViewMutationVariables>;
+export const AddSentenceVoteDocument = gql`
+    mutation AddSentenceVote($sentenceId: Int!, $voteType: VoteType!) {
+  addSentenceVote(sentenceId: $sentenceId, voteType: $voteType) {
+    upVoteCount
+    downVoteCount
+    userVoteType
+  }
+}
+    `;
+export type AddSentenceVoteMutationFn = Apollo.MutationFunction<AddSentenceVoteMutation, AddSentenceVoteMutationVariables>;
+
+/**
+ * __useAddSentenceVoteMutation__
+ *
+ * To run a mutation, you first call `useAddSentenceVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddSentenceVoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addSentenceVoteMutation, { data, loading, error }] = useAddSentenceVoteMutation({
  *   variables: {
  *      sentenceId: // value for 'sentenceId'
  *      voteType: // value for 'voteType'
  *   },
  * });
  */
-export function useAddVoteToSentenceMutation(baseOptions?: Apollo.MutationHookOptions<AddVoteToSentenceMutation, AddVoteToSentenceMutationVariables>) {
+export function useAddSentenceVoteMutation(baseOptions?: Apollo.MutationHookOptions<AddSentenceVoteMutation, AddSentenceVoteMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddVoteToSentenceMutation, AddVoteToSentenceMutationVariables>(AddVoteToSentenceDocument, options);
+        return Apollo.useMutation<AddSentenceVoteMutation, AddSentenceVoteMutationVariables>(AddSentenceVoteDocument, options);
       }
-export type AddVoteToSentenceMutationHookResult = ReturnType<typeof useAddVoteToSentenceMutation>;
-export type AddVoteToSentenceMutationResult = Apollo.MutationResult<AddVoteToSentenceMutation>;
-export type AddVoteToSentenceMutationOptions = Apollo.BaseMutationOptions<AddVoteToSentenceMutation, AddVoteToSentenceMutationVariables>;
+export type AddSentenceVoteMutationHookResult = ReturnType<typeof useAddSentenceVoteMutation>;
+export type AddSentenceVoteMutationResult = Apollo.MutationResult<AddSentenceVoteMutation>;
+export type AddSentenceVoteMutationOptions = Apollo.BaseMutationOptions<AddSentenceVoteMutation, AddSentenceVoteMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($oldPassword: String!, $newPassword: String!) {
   changePassword(oldPassword: $oldPassword, newPassword: $newPassword) {

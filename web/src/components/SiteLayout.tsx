@@ -1,5 +1,5 @@
 import { StarIcon } from "@chakra-ui/icons";
-import { Container, Grid, GridItem } from "@chakra-ui/layout";
+import { Center, Container, Grid, GridItem } from "@chakra-ui/layout";
 import {
   Box,
   Button,
@@ -50,12 +50,10 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
       [],
       meData.me.questionReviews
     ) as QuestionReview[];
-    console.log(sortedQuestionReviews);
     sortedQuestionReviews.sort(
       (a, b) =>
         new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
     );
-    console.log(sortedQuestionReviews);
 
     const savedQuestionIds = meData.me.questionReviews.map(
       (review) => review.questionId
@@ -72,7 +70,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
     <>
       <Navbar />
       <Container maxW="container.xl" pt={4}>
-        <Grid templateColumns="repeat(10, 1fr)" gap={4}>
+        <Grid templateColumns="repeat(10, 1fr)">
           <GridItem colSpan={3}>
             {meData?.me?.id && (
               <Stack spacing={2}>
@@ -175,7 +173,15 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                         <Text fontWeight="bold" fontSize="lg">
                           {questionReview.question.question}
                         </Text>
-                        <Button mt={1} bg="iris" color="white" size="xs">
+                        <Button
+                          mt={1}
+                          bg="iris"
+                          color="white"
+                          size="xs"
+                          onClick={() =>
+                            router.push("/review/" + questionReview.questionId)
+                          }
+                        >
                           <Icon as={GoChecklist} />
                           <Text ml={2} as="span" fontSize="xs">
                             answer

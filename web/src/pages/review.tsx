@@ -28,12 +28,12 @@ import {
   RiThumbUpLine,
 } from "react-icons/ri";
 import {
-  AddVoteMutation,
+  AddQuestionVoteMutation,
   MeQuery,
   Question,
   QuestionsQuery,
-  useAddViewMutation,
-  useAddVoteMutation,
+  useAddQuestionViewMutation,
+  useAddQuestionVoteMutation,
   useMeQuery,
   useQuestionsQuery,
   VoteType,
@@ -51,8 +51,8 @@ const Review: React.FC<{}> = ({}) => {
     notifyOnNetworkStatusChange: true,
   });
   const { data: meData, loading: meLoading } = useMeQuery();
-  const [addVote] = useAddVoteMutation();
-  const [addView] = useAddViewMutation();
+  const [addVote] = useAddQuestionVoteMutation();
+  const [addView] = useAddQuestionViewMutation();
 
   // Create our own states that set queried data only when component mounts
   // Avoids errors where the server renders differently than the client
@@ -403,7 +403,7 @@ const Review: React.FC<{}> = ({}) => {
   };
 
   const updateAfterVote = (
-    cache: ApolloCache<AddVoteMutation>,
+    cache: ApolloCache<AddQuestionVoteMutation>,
     questionId: number,
     newUserVoteType: VoteType | null,
     newUpVoteCount: number,
@@ -501,7 +501,7 @@ const Review: React.FC<{}> = ({}) => {
                                 voteType: VoteType.Up,
                               },
                               update: (cache, { data }) => {
-                                const votedQuestion = data?.addVote;
+                                const votedQuestion = data?.addQuestionVote;
                                 updateAfterVote(
                                   cache,
                                   q.id,
@@ -545,7 +545,7 @@ const Review: React.FC<{}> = ({}) => {
                                 voteType: VoteType.Down,
                               },
                               update: (cache, { data }) => {
-                                const votedQuestion = data?.addVote;
+                                const votedQuestion = data?.addQuestionVote;
                                 updateAfterVote(
                                   cache,
                                   q.id,

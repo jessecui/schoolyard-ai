@@ -1,5 +1,0 @@
-mutation AddViewToSentence($sentenceId: Int!) {
-  addViewToSentence(sentenceId: $sentenceId) {
-    viewCount
-  }
-}
