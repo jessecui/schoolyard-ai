@@ -157,9 +157,9 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                   <Text fontWeight="bold" color="grayMain" fontSize="md">
                     Recently Saved Questions
                   </Text>
-                  <Stack py={2} spacing={4}>
+                  <Stack spacing={4}>
                     {sortedQuestionReviews.map((questionReview) => (
-                      <Box key={questionReview.questionId}>
+                      <Box key={questionReview.questionId} mt={2}>
                         <Box>
                           <HStack spacing="6px">
                             {questionReview.question.subjects.map((subject) => (
