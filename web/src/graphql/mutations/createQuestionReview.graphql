@@ -4,6 +4,7 @@ mutation CreateQuestionReview($questionId: Int!, $reviewStatus: ReviewStatus!) {
     reviewStatus
     dateCreated
     dateUpdated
+    dateNextAvailable
     question {
       question
       subjects
