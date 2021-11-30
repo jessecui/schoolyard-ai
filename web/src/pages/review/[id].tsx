@@ -74,16 +74,13 @@ const Review: React.FC<{}> = ({}) => {
   const [addQuestionVote] = useAddQuestionVoteMutation();
   const [addQuestionView] = useAddQuestionViewMutation();
   const [addSentenceVote] = useAddSentenceVoteMutation();
-  const [addSentenceView] = useAddSentenceViewMutation();
   const [createQuestionReview] = useCreateQuestionReviewMutation();
   const [updateQuestionReview] = useUpdateQuestionReviewMutation();
   const [deleteQuestionReview] = useDeleteQuestionReviewMutation();
-
   const { data: reviewData, loading: reviewLoading } = useQuestionReviewQuery({
     variables: { questionId: router.query.id ? Number(router.query.id) : -1 },
   });
 
-  const [questionAnswered, setQuestionAnswered] = useState("");
   useEffect(() => {
     if (!meLoading && !meData?.me) {
       router.push("/");
@@ -277,11 +274,9 @@ const Review: React.FC<{}> = ({}) => {
               question.answer[0].toLowerCase()
             ) {
               setStatus("correct");
-              setQuestionAnswered("correct");
               reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
-              setQuestionAnswered("incorrect");
               reviewStatus = ReviewStatus.Incorrect;
             }
             await addQuestionView({
@@ -369,11 +364,9 @@ const Review: React.FC<{}> = ({}) => {
             let reviewStatus;
             if (values.radioGroup === question.answer[0]) {
               setStatus("correct");
-              setQuestionAnswered("correct");
               reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
-              setQuestionAnswered("incorrect");
               reviewStatus = ReviewStatus.Incorrect;
             }
             await addQuestionView({
@@ -485,11 +478,9 @@ const Review: React.FC<{}> = ({}) => {
               eqSet(new Set(values.checkboxGroup), new Set(question.answer))
             ) {
               setStatus("correct");
-              setQuestionAnswered("correct");
               reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
-              setQuestionAnswered("incorrect");
               reviewStatus = ReviewStatus.Incorrect;
             }
             await addQuestionView({
@@ -839,10 +830,9 @@ const Review: React.FC<{}> = ({}) => {
             </Text>
           </Box>
         )}
-        {questionAnswered && otherAvailableQuestions.length > 0 && (
+        {questionIsLocked && otherAvailableQuestions.length > 0 && (
           <Button
             onClick={() => {
-              setQuestionAnswered("");
               router.push("/review/" + otherAvailableQuestions[0].questionId);
             }}
             bg="iris"
@@ -859,7 +849,7 @@ const Review: React.FC<{}> = ({}) => {
         )}
       </Box>
       {data.question.sentence &&
-        (questionAnswered === "incorrect" || questionIsLocked) && (
+        questionIsLocked && (
           <Box
             border="2px"
             borderColor="grayLight"
