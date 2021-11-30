@@ -13,6 +13,21 @@ query Question($id: Int!) {
     sentence {
       id
       text
+      subjects
+      teacherId
+      teacher {
+        firstName
+        lastName
+      }
+      children {
+        id
+        text
+      }
+      userVoteType
+      upVoteCount
+      downVoteCount
+      viewCount
+      createdAt
     }
     subjects
     upVoteCount

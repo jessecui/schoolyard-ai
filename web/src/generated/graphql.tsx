@@ -483,7 +483,7 @@ export type QuestionQueryVariables = Exact<{
 }>;
 
 
-export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, sentence?: { __typename?: 'Sentence', id: number, text: string } | null | undefined } | null | undefined };
+export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, userVoteType?: VoteType | null | undefined, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined } | null | undefined };
 
 export type QuestionReviewQueryVariables = Exact<{
   questionId: Scalars['Int'];
@@ -1359,6 +1359,21 @@ export const QuestionDocument = gql`
     sentence {
       id
       text
+      subjects
+      teacherId
+      teacher {
+        firstName
+        lastName
+      }
+      children {
+        id
+        text
+      }
+      userVoteType
+      upVoteCount
+      downVoteCount
+      viewCount
+      createdAt
     }
     subjects
     upVoteCount

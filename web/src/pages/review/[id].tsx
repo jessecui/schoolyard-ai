@@ -16,6 +16,7 @@ import {
   Icon,
   IconButton,
   Input,
+  Link,
   Menu,
   MenuButton,
   MenuItem,
@@ -29,7 +30,7 @@ import {
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { BiDotsHorizontalRounded, BiZoomIn } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
   RiCalendarEventFill,
@@ -40,6 +41,7 @@ import {
 } from "react-icons/ri";
 import {
   AddQuestionVoteMutation,
+  AddSentenceVoteMutation,
   MeDocument,
   MeQuery,
   Question,
@@ -50,6 +52,8 @@ import {
   UpdateQuestionReviewMutation,
   useAddQuestionViewMutation,
   useAddQuestionVoteMutation,
+  useAddSentenceViewMutation,
+  useAddSentenceVoteMutation,
   useCreateQuestionReviewMutation,
   useDeleteQuestionReviewMutation,
   useMeQuery,
@@ -59,6 +63,7 @@ import {
   VoteType,
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
+import NextLink from "next/link";
 
 const Review: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -66,8 +71,10 @@ const Review: React.FC<{}> = ({}) => {
     variables: { id: router.query.id ? Number(router.query.id) : -1 },
   });
   const { data: meData, loading: meLoading } = useMeQuery();
-  const [addVote] = useAddQuestionVoteMutation();
-  const [addView] = useAddQuestionViewMutation();
+  const [addQuestionVote] = useAddQuestionVoteMutation();
+  const [addQuestionView] = useAddQuestionViewMutation();
+  const [addSentenceVote] = useAddSentenceVoteMutation();
+  const [addSentenceView] = useAddSentenceViewMutation();
   const [createQuestionReview] = useCreateQuestionReviewMutation();
   const [updateQuestionReview] = useUpdateQuestionReviewMutation();
   const [deleteQuestionReview] = useDeleteQuestionReviewMutation();
@@ -76,7 +83,7 @@ const Review: React.FC<{}> = ({}) => {
     variables: { questionId: router.query.id ? Number(router.query.id) : -1 },
   });
 
-  const [questionAnswered, setQuestionAnswered] = useState(false);
+  const [questionAnswered, setQuestionAnswered] = useState("");
   useEffect(() => {
     if (!meLoading && !meData?.me) {
       router.push("/");
@@ -137,7 +144,7 @@ const Review: React.FC<{}> = ({}) => {
       new Date(reviewData.questionReview.dateNextAvailable).getTime()
     : false;
 
-  const updateAfterVote = (
+  const updateQuestionAfterVote = (
     cache: ApolloCache<AddQuestionVoteMutation>,
     questionId: number,
     newUserVoteType: VoteType | null,
@@ -149,6 +156,32 @@ const Review: React.FC<{}> = ({}) => {
         id: "Question:" + questionId,
         fragment: gql`
           fragment __ on Question {
+            upVoteCount
+            downVoteCount
+            userVoteType
+          }
+        `,
+        data: {
+          upVoteCount: newUpVoteCount,
+          downVoteCount: newDownVoteCount,
+          userVoteType: newUserVoteType,
+        },
+      });
+    }
+  };
+
+  const updateAfterVote = (
+    cache: ApolloCache<AddSentenceVoteMutation>,
+    sentenceId: number,
+    newUserVoteType: VoteType | null,
+    newUpVoteCount: number,
+    newDownVoteCount: number
+  ) => {
+    if (data) {
+      cache.writeFragment({
+        id: "Sentence:" + sentenceId,
+        fragment: gql`
+          fragment __ on Sentence {
             upVoteCount
             downVoteCount
             userVoteType
@@ -244,12 +277,14 @@ const Review: React.FC<{}> = ({}) => {
               question.answer[0].toLowerCase()
             ) {
               setStatus("correct");
+              setQuestionAnswered("correct");
               reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
+              setQuestionAnswered("incorrect");
               reviewStatus = ReviewStatus.Incorrect;
             }
-            await addView({
+            await addQuestionView({
               variables: {
                 questionId: question.id,
               },
@@ -265,7 +300,6 @@ const Review: React.FC<{}> = ({}) => {
                 }
               },
             });
-            setQuestionAnswered(true);
           }}
         >
           {(props) => (
@@ -335,12 +369,14 @@ const Review: React.FC<{}> = ({}) => {
             let reviewStatus;
             if (values.radioGroup === question.answer[0]) {
               setStatus("correct");
+              setQuestionAnswered("correct");
               reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
+              setQuestionAnswered("incorrect");
               reviewStatus = ReviewStatus.Incorrect;
             }
-            await addView({
+            await addQuestionView({
               variables: {
                 questionId: question.id,
               },
@@ -356,7 +392,6 @@ const Review: React.FC<{}> = ({}) => {
                 }
               },
             });
-            setQuestionAnswered(true);
           }}
         >
           {(props) => (
@@ -450,12 +485,14 @@ const Review: React.FC<{}> = ({}) => {
               eqSet(new Set(values.checkboxGroup), new Set(question.answer))
             ) {
               setStatus("correct");
+              setQuestionAnswered("correct");
               reviewStatus = ReviewStatus.Correct;
             } else {
               setStatus("incorrect");
+              setQuestionAnswered("incorrect");
               reviewStatus = ReviewStatus.Incorrect;
             }
-            await addView({
+            await addQuestionView({
               variables: {
                 questionId: question.id,
               },
@@ -471,7 +508,6 @@ const Review: React.FC<{}> = ({}) => {
                 }
               },
             });
-            setQuestionAnswered(true);
           }}
         >
           {(props) => (
@@ -679,14 +715,14 @@ const Review: React.FC<{}> = ({}) => {
                     bg: "grayLight",
                   }}
                   onClick={async () => {
-                    await addVote({
+                    await addQuestionVote({
                       variables: {
                         questionId: data.question!.id,
                         voteType: VoteType.Up,
                       },
                       update: (cache, { data: responseData }) => {
                         const votedQuestion = responseData?.addQuestionVote;
-                        updateAfterVote(
+                        updateQuestionAfterVote(
                           cache,
                           data.question!.id,
                           votedQuestion!.userVoteType as VoteType | null,
@@ -722,14 +758,14 @@ const Review: React.FC<{}> = ({}) => {
                     bg: "grayLight",
                   }}
                   onClick={async () => {
-                    await addVote({
+                    await addQuestionVote({
                       variables: {
                         questionId: data.question!.id,
                         voteType: VoteType.Down,
                       },
                       update: (cache, { data: responseData }) => {
                         const votedQuestion = responseData?.addQuestionVote;
-                        updateAfterVote(
+                        updateQuestionAfterVote(
                           cache,
                           data.question!.id,
                           votedQuestion!.userVoteType as VoteType | null,
@@ -806,7 +842,7 @@ const Review: React.FC<{}> = ({}) => {
         {questionAnswered && otherAvailableQuestions.length > 0 && (
           <Button
             onClick={() => {
-              setQuestionAnswered(false);
+              setQuestionAnswered("");
               router.push("/review/" + otherAvailableQuestions[0].questionId);
             }}
             bg="iris"
@@ -822,6 +858,196 @@ const Review: React.FC<{}> = ({}) => {
           </Button>
         )}
       </Box>
+      {data.question.sentence &&
+        (questionAnswered === "incorrect" || questionIsLocked) && (
+          <Box
+            border="2px"
+            borderColor="grayLight"
+            borderRadius="md"
+            bg="White"
+            p={4}
+            mt={2}
+          >
+            <Text fontWeight="bold" color="grayMain" fontSize="md" pb={2}>
+              Learn Again
+            </Text>
+            <Flex>
+              <Flex align="center" width="80%">
+                <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+                <Box>
+                  <Text fontWeight="bold" fontSize="md">
+                    {data.question.sentence.teacher.firstName}{" "}
+                    {data.question.sentence.teacher.lastName}
+                  </Text>
+                  <HStack spacing="6px">
+                    {data.question.sentence.subjects.map((subject) => (
+                      <Flex align="center" key={subject}>
+                        <Circle
+                          mr="4px"
+                          size={4}
+                          bg="grayMain" // TODO make these the colors from before using router params
+                        />
+                        <Text fontSize="sm" whiteSpace="nowrap">
+                          {"#" + subject.toLowerCase()}
+                        </Text>
+                      </Flex>
+                    ))}
+                  </HStack>
+                </Box>
+              </Flex>
+            </Flex>
+            <Text my={2} fontWeight="bold" fontSize="xl">
+              {data.question.sentence.text}
+            </Text>
+            <Text my={2} fontSize="lg">
+              {data.question.sentence.children
+                ? data.question.sentence.children
+                    .map((child) => child.text)
+                    .join(" ")
+                : null}
+            </Text>
+            <HStack spacing={4}>
+              {!meLoading && meData?.me ? (
+                <>
+                  <Text color="grayMain" fontSize="sm">
+                    <IconButton
+                      mr={1}
+                      minWidth="24px"
+                      height="24px"
+                      isRound={true}
+                      size="lg"
+                      bg="none"
+                      _focus={{
+                        boxShadow: "none",
+                      }}
+                      _hover={{
+                        bg: "grayLight",
+                      }}
+                      onClick={async () => {
+                        await addSentenceVote({
+                          variables: {
+                            sentenceId: data.question!.sentence!.id,
+                            voteType: VoteType.Up,
+                          },
+                          update: (cache, { data: responseData }) => {
+                            const votedSentence = responseData?.addSentenceVote;
+                            updateAfterVote(
+                              cache,
+                              data.question!.sentence!.id,
+                              votedSentence!.userVoteType as VoteType | null,
+                              votedSentence!.upVoteCount,
+                              votedSentence!.downVoteCount
+                            );
+                          },
+                        });
+                      }}
+                      aria-label="Up Vote Sentence"
+                      icon={
+                        data.question.sentence.userVoteType == VoteType.Up ? (
+                          <RiThumbUpFill />
+                        ) : (
+                          <RiThumbUpLine />
+                        )
+                      }
+                    />
+                    {data.question.sentence.upVoteCount}
+                  </Text>
+                  <Text color="grayMain" fontSize="sm">
+                    <IconButton
+                      mr={1}
+                      minWidth="24px"
+                      height="24px"
+                      isRound={true}
+                      size="lg"
+                      bg="none"
+                      _focus={{
+                        boxShadow: "none",
+                      }}
+                      _hover={{
+                        bg: "grayLight",
+                      }}
+                      onClick={async () => {
+                        await addSentenceVote({
+                          variables: {
+                            sentenceId: data.question!.sentence!.id,
+                            voteType: VoteType.Down,
+                          },
+                          update: (cache, { data: responseData }) => {
+                            const votedSentence = responseData?.addSentenceVote;
+                            updateAfterVote(
+                              cache,
+                              data.question!.sentence!.id,
+                              votedSentence!.userVoteType as VoteType | null,
+                              votedSentence!.upVoteCount,
+                              votedSentence!.downVoteCount
+                            );
+                          },
+                        });
+                      }}
+                      aria-label="Down Vote Sentence"
+                      icon={
+                        data.question.sentence.userVoteType == VoteType.Down ? (
+                          <RiThumbDownFill />
+                        ) : (
+                          <RiThumbDownLine />
+                        )
+                      }
+                    />
+                    {data.question.sentence.downVoteCount}
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text color="grayMain" fontSize="sm">
+                    <Icon
+                      mx="4px"
+                      height="24px"
+                      as={RiThumbUpLine}
+                      h="18px"
+                      w="18px"
+                    />
+                    {data.question.sentence.upVoteCount}
+                  </Text>
+                  <Text color="grayMain" fontSize="sm">
+                    <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
+                    {data.question.sentence.downVoteCount}
+                  </Text>
+                </>
+              )}
+
+              <Text color="grayMain" fontSize="sm">
+                <Icon as={IoPeople} mr={1} w={5} h={5} />
+                {data.question.sentence.viewCount +
+                  (data.question.sentence.viewCount == 1 ? " view" : " views")}
+              </Text>
+              <Text color="grayMain" fontSize="sm">
+                <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
+                {new Date(data.question.sentence.createdAt).toLocaleString(
+                  "default",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  }
+                )}
+              </Text>
+            </HStack>
+            <Box mt={3}>
+              <NextLink href={"/learn/" + data.question.sentence.id}>
+                <Link
+                  color="iris"
+                  _hover={{ color: "irisDark" }}
+                  href={"/learn/" + data.question.sentence.id}
+                >
+                  <Icon as={BiZoomIn} w="24px" height="24px" />
+                  <Text ml={1} as="span" fontWeight="bold" fontSize="md">
+                    zoom in
+                  </Text>
+                </Link>
+              </NextLink>
+            </Box>
+          </Box>
+        )}
     </>
   ) : null;
 };
