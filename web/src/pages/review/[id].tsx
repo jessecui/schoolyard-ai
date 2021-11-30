@@ -1,9 +1,13 @@
 import { ApolloCache, gql } from "@apollo/client";
+import { DeleteIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Checkbox,
   Circle,
+  CloseButton,
   Divider,
   Flex,
   FormControl,
@@ -12,14 +16,20 @@ import {
   Icon,
   IconButton,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Radio,
   RadioGroup,
+  Spacer,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
   RiCalendarEventFill,
@@ -38,6 +48,7 @@ import {
   UpdateQuestionReviewMutation,
   useAddQuestionViewMutation,
   useAddQuestionVoteMutation,
+  useDeleteQuestionReviewMutation,
   useMeQuery,
   useQuestionQuery,
   useQuestionReviewQuery,
@@ -55,6 +66,8 @@ const Review: React.FC<{}> = ({}) => {
   const [addVote] = useAddQuestionVoteMutation();
   const [addView] = useAddQuestionViewMutation();
   const [updateQuestionReview] = useUpdateQuestionReviewMutation();
+  const [deleteQuestionReview] = useDeleteQuestionReviewMutation();
+
   const { data: reviewData, loading: reviewLoading } = useQuestionReviewQuery({
     variables: { questionId: router.query.id ? Number(router.query.id) : -1 },
   });
@@ -66,6 +79,7 @@ const Review: React.FC<{}> = ({}) => {
   });
 
   let otherQuestions: QuestionReview[] = [];
+  let otherAvailableQuestions: QuestionReview[] = [];
 
   if (meData?.me && data?.question?.id) {
     const today = new Date().getTime();
@@ -73,17 +87,17 @@ const Review: React.FC<{}> = ({}) => {
       [],
       meData.me.questionReviews
     ) as QuestionReview[];
-    otherQuestions = otherQuestions.filter((review) => {
-      return (
-        review.questionId != data.question!.id &&
-        today >= new Date(review.dateNextAvailable).getTime()
-      );
-    });
     otherQuestions.sort(
       (a, b) =>
         new Date(b.dateNextAvailable).getTime() -
         new Date(a.dateNextAvailable).getTime()
     );
+    otherQuestions = otherQuestions.filter((review) => {
+      return review.questionId != data.question!.id;
+    });
+    otherAvailableQuestions = otherQuestions.filter((review) => {
+      return today >= new Date(review.dateNextAvailable).getTime();
+    });
   }
 
   const questionIsLocked = reviewData?.questionReview?.dateNextAvailable
@@ -512,194 +526,271 @@ const Review: React.FC<{}> = ({}) => {
   };
 
   return data?.question ? (
-    <Box
-      border="2px"
-      borderColor="grayLight"
-      borderRadius="md"
-      bg="White"
-      p={4}
-      key={data.question.id}
-    >
-      <Flex align="center">
-        <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
-        <Box>
-          <Text fontWeight="bold" fontSize="lg">
-            {data.question.teacher.firstName} {data.question.teacher.lastName}
-          </Text>
-          <HStack spacing="6px">
-            {data.question.subjects.map((subject) => (
-              <Flex align="center" key={String(data.question!.id) + subject}>
-                <Circle mr="4px" size={4} bg="grayMain" />
-                <Text size="sm">{"#" + subject.toLowerCase()}</Text>
-              </Flex>
-            ))}
-          </HStack>
-        </Box>
-      </Flex>
-      <Text my={2} fontWeight="bold" fontSize="xl">
-        {data.question.question}
-      </Text>
-      <HStack spacing={4}>
-        {!meLoading && meData ? (
-          <>
-            <Text color="grayMain">
-              <IconButton
-                mr={1}
-                minWidth="24px"
-                height="24px"
-                isRound={true}
-                size="lg"
-                bg="none"
-                _focus={{
-                  boxShadow: "none",
-                }}
-                _hover={{
-                  bg: "grayLight",
-                }}
-                onClick={async () => {
-                  await addVote({
+    <>
+      {router.query.questionDeleteSuccess && (
+        <Alert status="success" mb={2}>
+          <AlertIcon />
+          Question successfully deleted
+          <CloseButton
+            position="absolute"
+            right="8px"
+            top="8px"
+            onClick={() =>
+              router.push("/review/" + router.query.id, undefined, {
+                shallow: true,
+              })
+            }
+          />
+        </Alert>
+      )}
+      <Box
+        border="2px"
+        borderColor="grayLight"
+        borderRadius="md"
+        bg="White"
+        p={4}
+        key={data.question.id}
+      >
+        <Flex>
+          <Flex align="center" width="80%">
+            <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+            <Box>
+              <Text fontWeight="bold" fontSize="lg">
+                {data.question.teacher.firstName}{" "}
+                {data.question.teacher.lastName}
+              </Text>
+              <HStack spacing="6px">
+                {data.question.subjects.map((subject) => (
+                  <Flex
+                    align="center"
+                    key={String(data.question!.id) + subject}
+                  >
+                    <Circle mr="4px" size={4} bg="grayMain" />
+                    <Text size="sm">{"#" + subject.toLowerCase()}</Text>
+                  </Flex>
+                ))}
+              </HStack>
+            </Box>
+          </Flex>
+          <Spacer />
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={<Icon as={BiDotsHorizontalRounded} />}
+              variant="outline"
+            />
+            <MenuList>
+              <MenuItem
+                icon={<DeleteIcon fontSize="md" />}
+                onClick={() => {
+                  deleteQuestionReview({
                     variables: {
-                      questionId: data.question!.id,
-                      voteType: VoteType.Up,
+                      questionId: data.question?.id ? data.question.id : -1,
                     },
-                    update: (cache, { data: responseData }) => {
-                      const votedQuestion = responseData?.addQuestionVote;
-                      updateAfterVote(
-                        cache,
-                        data.question!.id,
-                        votedQuestion!.userVoteType as VoteType | null,
-                        votedQuestion!.upVoteCount,
-                        votedQuestion!.downVoteCount
-                      );
+                    update: (cache) => {
+                      cache.evict({
+                        fieldName: "questionReview",
+                        args: { questionId: data.question?.id },
+                      });
+                      let updatedQuestionReviews =
+                        meData!.me!.questionReviews.filter(
+                          (review) => review.questionId != data.question?.id
+                        );
+                      cache.writeFragment({
+                        id: "User:" + meData?.me?.id,
+                        fragment: gql`
+                          fragment _ on User {
+                            questionReviews
+                          }
+                        `,
+                        data: {
+                          questionReviews: updatedQuestionReviews,
+                        },
+                      });
                     },
                   });
+                  if (otherQuestions.length > 0) {
+                    router.push(
+                      "/review/" +
+                        otherQuestions[0].questionId +
+                        "?questionDeleteSuccess=true"
+                    );
+                  } else {
+                    router.push("/?questionDeleteSuccess=true");
+                  }
                 }}
-                aria-label="Up Vote Question"
-                icon={
-                  data.question.userVoteType == VoteType.Up ? (
-                    <RiThumbUpFill />
-                  ) : (
-                    <RiThumbUpLine />
-                  )
-                }
-              />
-              {data.question.upVoteCount}
-            </Text>
-            <Text color="grayMain">
-              <IconButton
-                mr={1}
-                minWidth="24px"
-                height="24px"
-                isRound={true}
-                size="lg"
-                bg="none"
-                _focus={{
-                  boxShadow: "none",
-                }}
-                _hover={{
-                  bg: "grayLight",
-                }}
-                onClick={async () => {
-                  await addVote({
-                    variables: {
-                      questionId: data.question!.id,
-                      voteType: VoteType.Down,
-                    },
-                    update: (cache, { data: responseData }) => {
-                      const votedQuestion = responseData?.addQuestionVote;
-                      updateAfterVote(
-                        cache,
-                        data.question!.id,
-                        votedQuestion!.userVoteType as VoteType | null,
-                        votedQuestion!.upVoteCount,
-                        votedQuestion!.downVoteCount
-                      );
-                    },
-                  });
-                }}
-                aria-label="Down Vote Question"
-                icon={
-                  data.question.userVoteType == VoteType.Down ? (
-                    <RiThumbDownFill />
-                  ) : (
-                    <RiThumbDownLine />
-                  )
-                }
-              />
-              {data.question.downVoteCount}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Text color="grayMain">
-              <Icon
-                mx="4px"
-                height="24px"
-                as={RiThumbUpLine}
-                h="18px"
-                w="18px"
-              />
-              {data.question.upVoteCount}
-            </Text>
-            <Text color="grayMain">
-              <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
-              {data.question.downVoteCount}
-            </Text>
-          </>
-        )}
+              >
+                <Text fontSize="md">Delete Question</Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
+        <Text my={2} fontWeight="bold" fontSize="xl">
+          {data.question.question}
+        </Text>
+        <HStack spacing={4}>
+          {!meLoading && meData ? (
+            <>
+              <Text color="grayMain">
+                <IconButton
+                  mr={1}
+                  minWidth="24px"
+                  height="24px"
+                  isRound={true}
+                  size="lg"
+                  bg="none"
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                  _hover={{
+                    bg: "grayLight",
+                  }}
+                  onClick={async () => {
+                    await addVote({
+                      variables: {
+                        questionId: data.question!.id,
+                        voteType: VoteType.Up,
+                      },
+                      update: (cache, { data: responseData }) => {
+                        const votedQuestion = responseData?.addQuestionVote;
+                        updateAfterVote(
+                          cache,
+                          data.question!.id,
+                          votedQuestion!.userVoteType as VoteType | null,
+                          votedQuestion!.upVoteCount,
+                          votedQuestion!.downVoteCount
+                        );
+                      },
+                    });
+                  }}
+                  aria-label="Up Vote Question"
+                  icon={
+                    data.question.userVoteType == VoteType.Up ? (
+                      <RiThumbUpFill />
+                    ) : (
+                      <RiThumbUpLine />
+                    )
+                  }
+                />
+                {data.question.upVoteCount}
+              </Text>
+              <Text color="grayMain">
+                <IconButton
+                  mr={1}
+                  minWidth="24px"
+                  height="24px"
+                  isRound={true}
+                  size="lg"
+                  bg="none"
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                  _hover={{
+                    bg: "grayLight",
+                  }}
+                  onClick={async () => {
+                    await addVote({
+                      variables: {
+                        questionId: data.question!.id,
+                        voteType: VoteType.Down,
+                      },
+                      update: (cache, { data: responseData }) => {
+                        const votedQuestion = responseData?.addQuestionVote;
+                        updateAfterVote(
+                          cache,
+                          data.question!.id,
+                          votedQuestion!.userVoteType as VoteType | null,
+                          votedQuestion!.upVoteCount,
+                          votedQuestion!.downVoteCount
+                        );
+                      },
+                    });
+                  }}
+                  aria-label="Down Vote Question"
+                  icon={
+                    data.question.userVoteType == VoteType.Down ? (
+                      <RiThumbDownFill />
+                    ) : (
+                      <RiThumbDownLine />
+                    )
+                  }
+                />
+                {data.question.downVoteCount}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text color="grayMain">
+                <Icon
+                  mx="4px"
+                  height="24px"
+                  as={RiThumbUpLine}
+                  h="18px"
+                  w="18px"
+                />
+                {data.question.upVoteCount}
+              </Text>
+              <Text color="grayMain">
+                <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
+                {data.question.downVoteCount}
+              </Text>
+            </>
+          )}
 
-        <Text color="grayMain">
-          <Icon as={IoPeople} mr={1} w={5} h={5} />
-          {data.question.viewCount +
-            (data.question.viewCount == 1 ? " view" : " views")}
-        </Text>
-        <Text color="grayMain">
-          <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
-          {new Date(data.question.createdAt).toLocaleString("default", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </Text>
-      </HStack>
-      <Divider borderColor="grayLight" border="1px" my={3} />
-      <Box>{questionForm(data.question as Question)}</Box>
-      {reviewData?.questionReview && questionIsLocked && (
-        <Box mt={2}>
-          <Text fontSize="sm">
-            You answered this question{" "}
-            {reviewData.questionReview.reviewStatus == ReviewStatus.Correct
-              ? "correctly"
-              : "incorrectly"}{" "}
-            on{" "}
-            {new Date(reviewData.questionReview.dateUpdated).toLocaleString()}.
-            It will be locked until{" "}
-            {new Date(
-              reviewData.questionReview.dateNextAvailable
-            ).toLocaleString()}
-            .
+          <Text color="grayMain">
+            <Icon as={IoPeople} mr={1} w={5} h={5} />
+            {data.question.viewCount +
+              (data.question.viewCount == 1 ? " view" : " views")}
           </Text>
-        </Box>
-      )}
-      {questionAnswered && otherQuestions.length > 0 && (
-        <Button
-          onClick={() => {
-            setQuestionAnswered(false);
-            router.push("/review/" + otherQuestions[0].questionId);
-          }}
-          bg="iris"
-          mt={2}
-          color="white"
-          _hover={{
-            bg: "irisDark",
-          }}
-          size="sm"
-          type="submit"
-        >
-          Next Question
-        </Button>
-      )}
-    </Box>
+          <Text color="grayMain">
+            <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
+            {new Date(data.question.createdAt).toLocaleString("default", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </Text>
+        </HStack>
+        <Divider borderColor="grayLight" border="1px" my={3} />
+        <Box>{questionForm(data.question as Question)}</Box>
+        {reviewData?.questionReview && questionIsLocked && (
+          <Box mt={2}>
+            <Text fontSize="sm">
+              You answered this question{" "}
+              {reviewData.questionReview.reviewStatus == ReviewStatus.Correct
+                ? "correctly"
+                : "incorrectly"}{" "}
+              on{" "}
+              {new Date(reviewData.questionReview.dateUpdated).toLocaleString()}
+              . It will be locked until{" "}
+              {new Date(
+                reviewData.questionReview.dateNextAvailable
+              ).toLocaleString()}
+              .
+            </Text>
+          </Box>
+        )}
+        {questionAnswered && otherAvailableQuestions.length > 0 && (
+          <Button
+            onClick={() => {
+              setQuestionAnswered(false);
+              router.push("/review/" + otherAvailableQuestions[0].questionId);
+            }}
+            bg="iris"
+            mt={2}
+            color="white"
+            _hover={{
+              bg: "irisDark",
+            }}
+            size="sm"
+            type="submit"
+          >
+            Next Question
+          </Button>
+        )}
+      </Box>
+    </>
   ) : null;
 };
 

@@ -101,6 +101,18 @@ const Index: React.FC<{}> = ({}) => {
           />
         </Alert>
       )}
+      {router.query.questionDeleteSuccess && (
+        <Alert status="success" mb={2}>
+          <AlertIcon />
+          Question successfully deleted
+          <CloseButton
+            position="absolute"
+            right="8px"
+            top="8px"
+            onClick={() => router.push("/", undefined, { shallow: true })}
+          />
+        </Alert>
+      )}
       <InfiniteScroll
         dataLength={sentenceData.sentences.sentences.length}
         next={() => {
