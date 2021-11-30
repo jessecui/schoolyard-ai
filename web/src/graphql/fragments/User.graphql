@@ -8,6 +8,7 @@ fragment User on User {
     reviewStatus
     dateCreated
     dateUpdated
+    dateNextAvailable
     question {
       question
       subjects

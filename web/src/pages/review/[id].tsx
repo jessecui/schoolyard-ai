@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
   RiCalendarEventFill,
@@ -31,7 +31,11 @@ import {
 import {
   AddQuestionVoteMutation,
   Question,
+  QuestionReview,
+  QuestionReviewDocument,
+  QuestionReviewQuery,
   ReviewStatus,
+  UpdateQuestionReviewMutation,
   useAddQuestionViewMutation,
   useAddQuestionVoteMutation,
   useMeQuery,
@@ -54,6 +58,33 @@ const Review: React.FC<{}> = ({}) => {
   const { data: reviewData, loading: reviewLoading } = useQuestionReviewQuery({
     variables: { questionId: router.query.id ? Number(router.query.id) : -1 },
   });
+  const [questionAnswered, setQuestionAnswered] = useState(false);
+  useEffect(() => {
+    if (!meLoading && !meData?.me) {
+      router.push("/");
+    }
+  });
+
+  let otherQuestions: QuestionReview[] = [];
+
+  if (meData?.me && data?.question?.id) {
+    const today = new Date().getTime();
+    otherQuestions = Object.assign(
+      [],
+      meData.me.questionReviews
+    ) as QuestionReview[];
+    otherQuestions = otherQuestions.filter((review) => {
+      return (
+        review.questionId != data.question!.id &&
+        today >= new Date(review.dateNextAvailable).getTime()
+      );
+    });
+    otherQuestions.sort(
+      (a, b) =>
+        new Date(b.dateNextAvailable).getTime() -
+        new Date(a.dateNextAvailable).getTime()
+    );
+  }
 
   const questionIsLocked = reviewData?.questionReview?.dateNextAvailable
     ? new Date().getTime() <
@@ -86,6 +117,60 @@ const Review: React.FC<{}> = ({}) => {
     }
   };
 
+  const updateQuestionReviewCache = (
+    question: Question,
+    cache: ApolloCache<UpdateQuestionReviewMutation>,
+    responseData: UpdateQuestionReviewMutation
+  ) => {
+    let updatedQuestionReviews = meData!.me!.questionReviews.map((review) => {
+      if (review.questionId != question.id) {
+        return review;
+      } else {
+        let updatedReview = Object.assign({}, review);
+        updatedReview.dateNextAvailable =
+          responseData?.updateQuestionReview?.dateNextAvailable;
+        updatedReview.reviewStatus = responseData?.updateQuestionReview
+          ?.reviewStatus as ReviewStatus;
+        return updatedReview;
+      }
+    });
+    cache.writeFragment({
+      id: "User:" + meData?.me?.id,
+      fragment: gql`
+        fragment _ on User {
+          questionReviews
+        }
+      `,
+      data: {
+        questionReviews: updatedQuestionReviews,
+      },
+    });
+
+    let updatedReview = Object.assign({}, reviewData?.questionReview);
+    updatedReview.dateNextAvailable =
+      responseData?.updateQuestionReview?.dateNextAvailable;
+    updatedReview.reviewStatus = responseData?.updateQuestionReview
+      ?.reviewStatus as ReviewStatus;
+
+    cache.writeQuery<QuestionReviewQuery>({
+      query: QuestionReviewDocument,
+      data: {
+        questionReview: updatedReview,
+      },
+      variables: {
+        questionId: question.id,
+      },
+    });
+  };
+
+  const checkIfEmpty = (value: any) => {
+    let error;
+    if (!value) {
+      error = "Please provide an answer.";
+    }
+    return error;
+  };
+
   const questionForm = (question: Question) => {
     const textHelper = (
       <Text color="grayMain" fontSize="sm" mb={2}>
@@ -98,14 +183,6 @@ const Review: React.FC<{}> = ({}) => {
           : null}
       </Text>
     );
-
-    const checkIfEmpty = (value: any) => {
-      let error;
-      if (!value) {
-        error = "Please provide an answer.";
-      }
-      return error;
-    };
 
     let input = null;
     if (question.questionType === "TEXT") {
@@ -131,12 +208,18 @@ const Review: React.FC<{}> = ({}) => {
                 questionId: question.id,
               },
             });
-            updateQuestionReview({
+            await updateQuestionReview({
               variables: {
                 questionId: question.id,
                 reviewStatus,
               },
+              update: (cache, { data: responseData }) => {
+                if (responseData) {
+                  updateQuestionReviewCache(question, cache, responseData);
+                }
+              },
             });
+            setQuestionAnswered(true);
           }}
         >
           {(props) => (
@@ -216,12 +299,18 @@ const Review: React.FC<{}> = ({}) => {
                 questionId: question.id,
               },
             });
-            updateQuestionReview({
+            await updateQuestionReview({
               variables: {
                 questionId: question.id,
                 reviewStatus,
               },
+              update: (cache, { data: responseData }) => {
+                if (responseData) {
+                  updateQuestionReviewCache(question, cache, responseData);
+                }
+              },
             });
+            setQuestionAnswered(true);
           }}
         >
           {(props) => (
@@ -244,6 +333,11 @@ const Review: React.FC<{}> = ({}) => {
                             key={String(question.id) + choice}
                             value={choice}
                             my="4px"
+                            isDisabled={
+                              questionIsLocked ||
+                              props.status === "correct" ||
+                              props.status === "incorrect"
+                            }
                           >
                             <Text ml={2} fontSize="16px">
                               {choice}
@@ -320,12 +414,18 @@ const Review: React.FC<{}> = ({}) => {
                 questionId: question.id,
               },
             });
-            updateQuestionReview({
+            await updateQuestionReview({
               variables: {
                 questionId: question.id,
                 reviewStatus,
               },
+              update: (cache, { data: responseData }) => {
+                if (responseData) {
+                  updateQuestionReviewCache(question, cache, responseData);
+                }
+              },
             });
+            setQuestionAnswered(true);
           }}
         >
           {(props) => (
@@ -580,6 +680,24 @@ const Review: React.FC<{}> = ({}) => {
             .
           </Text>
         </Box>
+      )}
+      {questionAnswered && otherQuestions.length > 0 && (
+        <Button
+          onClick={() => {
+            setQuestionAnswered(false);
+            router.push("/review/" + otherQuestions[0].questionId);
+          }}
+          bg="iris"
+          mt={2}
+          color="white"
+          _hover={{
+            bg: "irisDark",
+          }}
+          size="sm"
+          type="submit"
+        >
+          Next Question
+        </Button>
       )}
     </Box>
   ) : null;
