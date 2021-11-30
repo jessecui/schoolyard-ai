@@ -40,6 +40,8 @@ import {
 } from "react-icons/ri";
 import {
   AddQuestionVoteMutation,
+  MeDocument,
+  MeQuery,
   Question,
   QuestionReview,
   QuestionReviewDocument,
@@ -48,6 +50,7 @@ import {
   UpdateQuestionReviewMutation,
   useAddQuestionViewMutation,
   useAddQuestionVoteMutation,
+  useCreateQuestionReviewMutation,
   useDeleteQuestionReviewMutation,
   useMeQuery,
   useQuestionQuery,
@@ -65,18 +68,47 @@ const Review: React.FC<{}> = ({}) => {
   const { data: meData, loading: meLoading } = useMeQuery();
   const [addVote] = useAddQuestionVoteMutation();
   const [addView] = useAddQuestionViewMutation();
+  const [createQuestionReview] = useCreateQuestionReviewMutation();
   const [updateQuestionReview] = useUpdateQuestionReviewMutation();
   const [deleteQuestionReview] = useDeleteQuestionReviewMutation();
 
   const { data: reviewData, loading: reviewLoading } = useQuestionReviewQuery({
     variables: { questionId: router.query.id ? Number(router.query.id) : -1 },
   });
+
   const [questionAnswered, setQuestionAnswered] = useState(false);
   useEffect(() => {
     if (!meLoading && !meData?.me) {
       router.push("/");
     }
   });
+
+  useEffect(() => {
+    if (router.query.id && !reviewLoading && !reviewData?.questionReview) {
+      createQuestionReview({
+        variables: {
+          questionId: Number(router.query.id),
+          reviewStatus: ReviewStatus.Queued,
+        },
+        update: (cache, { data: responseData }) => {
+          if (meData?.me && responseData?.createQuestionReview) {
+            let updatedMeData = Object.assign({}, meData.me);
+            updatedMeData.questionReviews = [
+              ...updatedMeData.questionReviews,
+              responseData.createQuestionReview,
+            ];
+            cache.writeQuery<MeQuery>({
+              query: MeDocument,
+              data: {
+                __typename: "Query",
+                me: updatedMeData,
+              },
+            });
+          }
+        },
+      });
+    }
+  }, [reviewData, router.query.id]);
 
   let otherQuestions: QuestionReview[] = [];
   let otherAvailableQuestions: QuestionReview[] = [];
