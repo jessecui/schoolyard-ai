@@ -13,7 +13,7 @@ const Review: React.FC<{}> = ({}) => {
     router.push("/review/" + meData.me.questionReviews[0].questionId);
   }
 
-  return !meLoading && meData?.me?.questionReviews ? (
+  return !meLoading && !meData?.me?.questionReviews ? (
     <Box
       border="2px"
       borderColor="grayLight"
@@ -26,4 +26,4 @@ const Review: React.FC<{}> = ({}) => {
   ) : null;
 };
 
-export default withApollo({ ssr: true })(Review);
+export default withApollo({ ssr: false })(Review);
