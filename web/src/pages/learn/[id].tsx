@@ -73,11 +73,7 @@ const Learn: React.FC<{
       ? data.sentence.clones.map((clone) => clone.questions).flat(1)
       : ([] as Question[]);
 
-    setAvailableQuestions(
-      (data?.sentence?.clones
-        ? data.sentence.clones.map((clone) => clone.questions).flat(1)
-        : []) as Question[]
-    );
+    setAvailableQuestions(availableQuestions as Question[]);    
   }, [data?.sentence?.clones]);
 
   const [viewedIds, setViewedIds] = useState<number[]>([]);

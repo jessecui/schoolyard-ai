@@ -26,6 +26,10 @@ import { createSentenceVoteLoader } from "./utils/createSentenceVoteLoader";
 import { Cloning } from "./entities/Cloning";
 import { QuestionReview } from "./entities/QuestionReview";
 import { QuestionReviewResolver } from "./resolvers/questionReview";
+import { SentenceSubject } from "./entities/SentenceSubject";
+import { Subject } from "./entities/Subject";
+import { Score } from "./entities/Score";
+import { QuestionSubject } from "./entities/QuestionSubject";
 
 // Update these variables upon adding new entities and resolvers
 const entities = [
@@ -39,6 +43,10 @@ const entities = [
   QuestionReview,
   ParentChild,
   Cloning,
+  Subject,  
+  SentenceSubject,
+  QuestionSubject,
+  Score,
 ];
 const resolvers = [
   UserResolver,
@@ -55,7 +63,7 @@ const loaders = {
 };
 
 const main = async () => {
-  const database_name = "schoolyard_dev";
+  const database_name = "schoolyard_dev_v2";
 
   // Set up a connection to the database with TypeORM
   const conn = await createConnection({

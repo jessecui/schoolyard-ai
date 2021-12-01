@@ -20,6 +20,8 @@ import { Sentence } from "../entities/Sentence";
 import { User } from "../entities/User";
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
+import { QuestionSubject } from "../entities/QuestionSubject";
+import { Subject } from "../entities/Subject";
 
 @InputType()
 class QuestionInput {
@@ -45,6 +47,36 @@ class PaginatedQuestions {
   hasMore: boolean;
 }
 
+const insertQuestionSubjects = async (
+  subjects: string[],
+  questionId: number,
+  update: boolean
+) => {
+  if (update) {
+    await QuestionSubject.delete({ questionId });
+  }
+  await getConnection().transaction(async (manager) => {    
+    await Promise.all(
+      subjects.map(async (subjectName, index) => {
+        subjectName = subjectName.trim();        
+        await manager
+          .createQueryBuilder()
+          .insert()
+          .into(Subject)
+          .values({ subjectName })
+          .orIgnore()
+          .execute();
+        await manager
+          .createQueryBuilder()
+          .insert()
+          .into(QuestionSubject)
+          .values({ questionId, subjectName, order: index })
+          .execute();
+      })
+    );
+  });
+};
+
 @Resolver(Question)
 export class QuestionResolver {
   @FieldResolver(() => User)
@@ -58,6 +90,19 @@ export class QuestionResolver {
       return;
     }
     return Sentence.findOne(question.sentenceId);
+  }
+
+  @FieldResolver(() => [String])
+  async subjects(@Root() question: Sentence) {
+    const subjects = await QuestionSubject.find({
+      where: { questionId: question.id },
+      skip: 0,
+      take: 10,
+      order: {
+        order: "ASC"
+      }
+    });
+    return subjects.map((subject) => subject.subjectName);
   }
 
   @FieldResolver(() => VoteType, { nullable: true })
@@ -93,18 +138,21 @@ export class QuestionResolver {
     if (questionInput.questionType == QuestionType.TEXT) {
       questionInput.choices = undefined;
     }
+    const {subjects, ...otherInputs} = questionInput;
     const rawResult = await getConnection()
       .createQueryBuilder()
       .insert()
       .into(Question)
       .values({
-        ...questionInput,
+        ...otherInputs,
         teacherId: req.session.userId,
       })
       .returning("*")
       .execute();
 
-    return rawResult.raw[0];
+    const result = rawResult.raw[0] as Question;
+    insertQuestionSubjects(subjects, result.id, false);
+    return result;
   }
 
   @Query(() => Question, { nullable: true })
@@ -159,18 +207,21 @@ export class QuestionResolver {
     if (questionInput.questionType == QuestionType.TEXT) {
       questionInput.choices = undefined;
     }
-    const result = await getConnection()
+    const {subjects, ...otherInputs} = questionInput;
+    const rawResult = await getConnection()
       .createQueryBuilder()
       .update(Question)
-      .set({ ...questionInput })
+      .set({ ...otherInputs })
       .where("id = :id and teacherId = :teacherId", {
         id,
         teacherId: req.session.userId,
       })
       .returning("*")
-      .execute();
-
-    return result.raw[0];
+      .execute();    
+      
+    const result = rawResult.raw[0] as Question;
+    insertQuestionSubjects(subjects, result.id, true);
+    return result;
   }
 
   @Mutation(() => Boolean)

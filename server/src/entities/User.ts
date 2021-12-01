@@ -12,6 +12,7 @@ import { Question } from "./Question";
 import { QuestionReview } from "./QuestionReview";
 import { QuestionView } from "./QuestionView";
 import { QuestionVote } from "./QuestionVote";
+import { Score } from "./Score";
 import { Sentence } from "./Sentence";
 import { SentenceView } from "./SentenceView";
 import { SentenceVote } from "./SentenceVote";
@@ -59,6 +60,9 @@ export class User extends BaseEntity {
   @Field(() => [QuestionReview])
   @OneToMany(() => QuestionReview, (review) => review.user)
   questionReviews: QuestionReview[];
+
+  @OneToMany(() => Score, (score) => score.user)
+  scores: Score[];
 
   @Field(() => Date)
   @CreateDateColumn()

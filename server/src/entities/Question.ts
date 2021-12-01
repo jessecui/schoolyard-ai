@@ -14,6 +14,7 @@ import { QuestionView } from "./QuestionView";
 import { Sentence } from "./Sentence";
 import { User } from "./User";
 import { QuestionReview } from "./QuestionReview";
+import { QuestionSubject } from "./QuestionSubject";
 
 export enum QuestionType {
   TEXT = "text", // Written answer
@@ -42,8 +43,13 @@ export class Question extends BaseEntity {
   teacher: User;
 
   @Field(() => [String])
-  @Column("varchar", { array: true })
   subjects: string[];
+
+  @OneToMany(
+    () => QuestionSubject,
+    (questionSubject) => questionSubject.question
+  )
+  questionSubjects: QuestionSubject[];
 
   @Field()
   @Column()

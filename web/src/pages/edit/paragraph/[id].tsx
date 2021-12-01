@@ -155,7 +155,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
           explanationSentences: sentenceData.sentence.children?.map(
             (child) => child.text
           ),
-          subjects: sentenceData.sentence.subjects.join(","),
+          subjects: sentenceData.sentence.subjects.join(", "),
           checkIfSameAsParent:
             getSentenceParent(sentenceData.sentence as Sentence) &&
             sentenceData.sentence.text ==
