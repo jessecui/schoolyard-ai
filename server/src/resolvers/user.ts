@@ -54,7 +54,9 @@ export class UserResolver {
     return await QuestionReview.find({
       where: { userId: req.session.userId },
       skip: 0,
-      take: 100,
+      order: {
+        dateCreated: "DESC"
+      }
     });
   }
 

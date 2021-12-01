@@ -28,19 +28,9 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
   const { data: meData, loading: meLoading } = useMeQuery();
   const [createQuestionReview] = useCreateQuestionReviewMutation();
 
-  let sortedQuestionReviews: QuestionReview[] = [];
   let availableQuestionsNotSaved: Question[] = [];
 
   if (meData?.me) {
-    sortedQuestionReviews = Object.assign(
-      [],
-      meData.me.questionReviews
-    ) as QuestionReview[];
-    sortedQuestionReviews.sort(
-      (a, b) =>
-        new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
-    );
-
     const savedQuestionIds = meData.me.questionReviews.map(
       (review) => review.questionId
     );
@@ -53,7 +43,7 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
   }
 
   const getTimeDifferenceString = (earlierDate: Date, laterDate: Date) => {
-    const secTimeDiff = (laterDate.getTime() - earlierDate.getTime()) / 1000;    
+    const secTimeDiff = (laterDate.getTime() - earlierDate.getTime()) / 1000;
     let months = Math.floor(secTimeDiff / (30 * 86400));
     let timeString = "";
     if (months) {
@@ -90,9 +80,9 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
           <Text fontWeight="bold" color="grayMain" fontSize="md">
             Available Questions
           </Text>
-          <Stack py={2} spacing={4}>
+          <Stack spacing={4}>
             {availableQuestionsNotSaved.map((question) => (
-              <Box key={question.id}>
+              <Box key={question.id} mt={2}>
                 <Box>
                   <HStack spacing="6px">
                     {question.subjects.map((subject) => (
@@ -121,8 +111,8 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                         if (meData.me && responseData?.createQuestionReview) {
                           let updatedMeData = Object.assign({}, meData.me);
                           updatedMeData.questionReviews = [
-                            ...updatedMeData.questionReviews,
                             responseData.createQuestionReview,
+                            ...updatedMeData.questionReviews,                            
                           ];
                           cache.writeQuery<MeQuery>({
                             query: MeDocument,
@@ -157,7 +147,7 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
           Recently Saved Questions
         </Text>
         <Stack spacing={4}>
-          {sortedQuestionReviews.map((questionReview) => (
+          {meData.me.questionReviews.slice(0, 5).map((questionReview) => (
             <Box key={questionReview.questionId} mt={2}>
               <Box>
                 <HStack spacing="6px">

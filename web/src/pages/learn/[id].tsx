@@ -213,7 +213,7 @@ const Learn: React.FC<{
           <Flex align="center" width="80%">
             <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
             <Box>
-              <Text fontWeight="bold" fontSize="lg">
+              <Text fontWeight="bold" fontSize="md">
                 {activeSentence.teacher.firstName}{" "}
                 {activeSentence.teacher.lastName}
               </Text>
