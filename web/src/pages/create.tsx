@@ -737,11 +737,16 @@ export const Create: React.FC<{}> = ({}) => {
                 answer: values.correctAnswers,
               },
             },
+            update: (cache) => {
+              cache.evict({
+                id: "Sentence:" + parentData?.sentence?.id,
+              });
+            },
           });
           if (response.errors) {
             console.log("Create question error response: ", response.errors);
           } else {
-            router.push("/");
+            router.push("/learn/" + parentData?.sentence?.id);
           }
         }}
         enableReinitialize={true}
@@ -827,7 +832,12 @@ export const Create: React.FC<{}> = ({}) => {
                   answerBoxes(props)}
                 {props.values.questionType == QuestionType.Text && (
                   <Box>
-                    <Text fontWeight="bold" color="grayMain" mt={4} fontSize="sm">
+                    <Text
+                      fontWeight="bold"
+                      color="grayMain"
+                      mt={4}
+                      fontSize="sm"
+                    >
                       Answer
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />

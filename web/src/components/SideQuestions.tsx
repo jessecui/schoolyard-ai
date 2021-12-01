@@ -49,8 +49,12 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
     if (months) {
       timeString = months + (months === 1 ? " month" : " months");
     }
+    let weeks = Math.floor(secTimeDiff / (7 * 86400));
+    if (!months && weeks) {
+      timeString = weeks + (weeks === 1 ? " week" : " weeks");
+    }
     let days = Math.floor(secTimeDiff / 86400);
-    if (!months && days) {
+    if (!weeks && days) {
       timeString = days + (days === 1 ? " day" : " days");
     }
     let hours = Math.floor(secTimeDiff / 3600);
@@ -112,7 +116,7 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                           let updatedMeData = Object.assign({}, meData.me);
                           updatedMeData.questionReviews = [
                             responseData.createQuestionReview,
-                            ...updatedMeData.questionReviews,                            
+                            ...updatedMeData.questionReviews,
                           ];
                           cache.writeQuery<MeQuery>({
                             query: MeDocument,

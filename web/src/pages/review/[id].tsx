@@ -111,7 +111,7 @@ const Review: React.FC<{}> = ({}) => {
         },
       });
     }
-  }, [reviewData, router.query.id]);
+  }, [router.query.id]);
 
   let otherQuestions: QuestionReview[] = [];
   let otherAvailableQuestions: QuestionReview[] = [];

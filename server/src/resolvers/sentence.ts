@@ -25,8 +25,10 @@ import { ParentChild } from "../entities/ParentChild";
 import { Question } from "../entities/Question";
 import { VoteType } from "../entities/QuestionVote";
 import { Sentence } from "../entities/Sentence";
+import { SentenceSubject } from "../entities/SentenceSubject";
 import { SentenceView } from "../entities/SentenceView";
 import { SentenceVote } from "../entities/SentenceVote";
+import { Subject } from "../entities/Subject";
 import { User } from "../entities/User";
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
@@ -48,6 +50,40 @@ class PaginatedSentences {
   @Field()
   hasMore: boolean;
 }
+
+const insertSentenceSubjects = async (
+  subjects: string[],
+  sentenceId: number,
+  existingManager: EntityManager | null,
+  update: boolean
+) => {
+  if (update) {
+    await SentenceSubject.delete({ sentenceId });
+  }
+  await getConnection().transaction(async (manager) => {
+    if (existingManager) {
+      manager = existingManager;
+    }
+    await Promise.all(
+      subjects.map(async (subjectName, index) => {
+        subjectName = subjectName.trim();        
+        await manager
+          .createQueryBuilder()
+          .insert()
+          .into(Subject)
+          .values({ subjectName })
+          .orIgnore()
+          .execute();
+        await manager
+          .createQueryBuilder()
+          .insert()
+          .into(SentenceSubject)
+          .values({ sentenceId, subjectName, order: index })
+          .execute();
+      })
+    );
+  });
+};
 
 const bfsClones = async (
   sentences: Sentence[],
@@ -142,6 +178,9 @@ export class SentenceResolver {
       where: { parentId: sentence.id },
       skip: 0,
       take: 100,
+      order: {
+        orderNumber: "ASC",
+      },
     });
     let children = await Promise.all(
       relationships.map(async (relationship) => {
@@ -164,6 +203,20 @@ export class SentenceResolver {
     }
     return null;
   }
+
+  @FieldResolver(() => [String])
+  async subjects(@Root() sentence: Sentence) {
+    const subjects = await SentenceSubject.find({
+      where: { sentenceId: sentence.id },
+      skip: 0,
+      take: 10,
+      order: {
+        order: "ASC"
+      }
+    });
+    return subjects.map((subject) => subject.subjectName);
+  }
+
   // Returns a list of the sentence and all of its clones
   @FieldResolver(() => [Sentence], { nullable: true })
   async clones(@Root() sentence: Sentence) {
@@ -200,12 +253,12 @@ export class SentenceResolver {
   @FieldResolver(() => [Question])
   async questions(@Root() sentence: Sentence) {
     return await Question.find({
-      where: {        
+      where: {
         sentenceId: sentence.id,
       },
       skip: 0,
       take: 100,
-    })
+    });
   }
 
   @Mutation(() => Sentence)
@@ -222,13 +275,19 @@ export class SentenceResolver {
       .into(Sentence)
       .values({
         text: paragraphInput.text,
-        subjects: paragraphInput.subjects,
         teacherId: req.session.userId,
       })
       .returning("*")
       .execute();
 
-    const newSummarySentence = summarySentenceQuery.raw[0];
+    const newSummarySentence = summarySentenceQuery.raw[0] as Sentence;
+
+    await insertSentenceSubjects(
+      paragraphInput.subjects,
+      newSummarySentence.id,
+      null,
+      false
+    );
 
     if (cloningOriginId) {
       await getConnection()
@@ -279,12 +338,18 @@ export class SentenceResolver {
             .into(Sentence)
             .values({
               text: childText,
-              subjects: paragraphInput.subjects,
               teacherId: req.session.userId,
             })
             .returning("*")
             .execute();
-          newChild = newChildQuery.raw[0];
+          newChild = newChildQuery.raw[0] as Sentence;
+
+          await insertSentenceSubjects(
+            paragraphInput.subjects,
+            newChild.id,
+            manager,
+            false
+          );
 
           await manager
             .createQueryBuilder()
@@ -375,7 +440,6 @@ export class SentenceResolver {
       .update(Sentence)
       .set({
         ...(paragraphInput.text && { text: paragraphInput.text }),
-        ...(paragraphInput.subjects && { subjects: paragraphInput.subjects }),
       })
       .where("id = :id and teacherId = :teacherId", {
         id,
@@ -384,7 +448,16 @@ export class SentenceResolver {
       .returning("*")
       .execute();
 
-    const updatedSummarySentence = summarySentenceUpdate.raw[0];
+    const updatedSummarySentence = summarySentenceUpdate.raw[0] as Sentence;
+
+    if (paragraphInput.subjects) {
+      insertSentenceSubjects(
+        paragraphInput.subjects,
+        updatedSummarySentence.id,
+        null,
+        true
+      );
+    }
 
     // Add new clones where the updated text matches
     const existingOlderClonesIds = (
@@ -454,20 +527,29 @@ export class SentenceResolver {
 
             if (childId) {
               // Update child sentence
-              await manager
+              const updatedChild = await manager
                 .createQueryBuilder()
                 .update(Sentence)
                 .set({
                   text: childText,
-                  ...(paragraphInput.subjects && {
-                    subjects: paragraphInput.subjects,
-                  }),
                 })
                 .where("id = :childId and teacherId = :teacherId", {
                   childId,
                   teacherId: req.session.userId,
                 })
+                .returning("*")
                 .execute();
+
+              const updatedChildSentence = updatedChild.raw[0] as Sentence;
+
+              if (paragraphInput.subjects) {
+                insertSentenceSubjects(
+                  paragraphInput.subjects,
+                  updatedChildSentence.id,
+                  manager,
+                  true
+                );
+              }
 
               // If there exist other sentences with the child's clones,
               // set them as clones.

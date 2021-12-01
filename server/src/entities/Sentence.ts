@@ -14,6 +14,7 @@ import { Cloning } from "./Cloning";
 import { ParentChild } from "./ParentChild";
 import { Question } from "./Question";
 import { VoteType } from "./QuestionVote";
+import { SentenceSubject } from "./SentenceSubject";
 import { SentenceView } from "./SentenceView";
 import { SentenceVote } from "./SentenceVote";
 import { User } from "./User";
@@ -49,11 +50,11 @@ export class Sentence extends BaseEntity {
   @Field(() => Sentence, { nullable: true })
   parent: Sentence;
 
-  @Field(() => [Sentence], {nullable: true})
+  @Field(() => [Sentence], { nullable: true })
   children: Sentence[];
 
-  @Field({nullable: true})
-  orderNumber: number
+  @Field({ nullable: true })
+  orderNumber: number;
 
   // Clone Lineage
   @OneToMany(() => Cloning, (cloning) => cloning.olderClone)
@@ -62,16 +63,21 @@ export class Sentence extends BaseEntity {
   @OneToMany(() => Cloning, (cloning) => cloning.youngerClone)
   asYoungerClone: Cloning[];
 
-  @Field(() => [Sentence], {nullable: true})
+  @Field(() => [Sentence], { nullable: true })
   clones: Sentence[];
 
-  @Field({nullable: true})
-  cloneQuality: number
+  @Field({ nullable: true })
+  cloneQuality: number;
 
   // Other Metadata
   @Field(() => [String])
-  @Column("varchar", { array: true })
   subjects: string[];
+
+  @OneToMany(
+    () => SentenceSubject,
+    (sentenceSubject) => sentenceSubject.sentence
+  )
+  sentenceSubjects: SentenceSubject[];
 
   @Field(() => [Question])
   @OneToMany(() => Question, (question) => question.sentence)
@@ -88,7 +94,7 @@ export class Sentence extends BaseEntity {
   @Column({ default: 0 })
   downVoteCount: number;
 
-  @Field(() => VoteType, {nullable: true})
+  @Field(() => VoteType, { nullable: true })
   userVoteType: VoteType | null;
 
   @OneToMany(() => SentenceView, (view) => view.sentence)
@@ -97,7 +103,7 @@ export class Sentence extends BaseEntity {
   @Field()
   @Column({ default: 0 })
   viewCount: number;
-  
+
   @Field(() => Date)
   @CreateDateColumn()
   createdAt: Date;
