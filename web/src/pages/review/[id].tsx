@@ -344,9 +344,9 @@ const Review: React.FC<{}> = ({}) => {
                 </Button>
 
                 {props.status === "correct" ? (
-                  <Text color="green">Correct Answer!</Text>
+                  <Text color="green" fontSize="md">Correct Answer!</Text>
                 ) : props.status === "incorrect" ? (
-                  <Text color="red">Incorrect Answer.</Text>
+                  <Text color="red" fontSize="md">Incorrect Answer.</Text>
                 ) : null}
               </HStack>
             </Form>
@@ -412,7 +412,7 @@ const Review: React.FC<{}> = ({}) => {
                               props.status === "incorrect"
                             }
                           >
-                            <Text ml={2} fontSize="16px">
+                            <Text ml={2} fontSize="lg">
                               {choice}
                             </Text>
                           </Radio>
@@ -451,9 +451,9 @@ const Review: React.FC<{}> = ({}) => {
                 </Button>
 
                 {props.status === "correct" ? (
-                  <Text color="green">Correct Answer!</Text>
+                  <Text color="green" fontSize="md">Correct Answer!</Text>
                 ) : props.status === "incorrect" ? (
-                  <Text color="red">Incorrect Answer.</Text>
+                  <Text color="red" fontSize="md">Incorrect Answer.</Text>
                 ) : null}
               </HStack>
             </Form>
@@ -524,7 +524,7 @@ const Review: React.FC<{}> = ({}) => {
                             props.status === "incorrect"
                           }
                         >
-                          <Text ml={2} fontSize="16px">
+                          <Text ml={2} fontSize="lg">
                             {choice}
                           </Text>
                         </Checkbox>
@@ -562,9 +562,9 @@ const Review: React.FC<{}> = ({}) => {
                 </Button>
 
                 {props.status === "correct" ? (
-                  <Text color="green">Correct Answer!</Text>
+                  <Text color="green" fontSize="md">Correct Answer!</Text>
                 ) : props.status === "incorrect" ? (
-                  <Text color="red">Incorrect Answer.</Text>
+                  <Text color="red" fontSize="md">Incorrect Answer.</Text>
                 ) : null}
               </HStack>
             </Form>
@@ -613,7 +613,7 @@ const Review: React.FC<{}> = ({}) => {
           <Flex align="center" width="80%">
             <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
             <Box>
-              <Text fontWeight="bold" fontSize="lg">
+              <Text fontWeight="bold" fontSize="md">
                 {data.question.teacher.firstName}{" "}
                 {data.question.teacher.lastName}
               </Text>
@@ -624,7 +624,7 @@ const Review: React.FC<{}> = ({}) => {
                     key={String(data.question!.id) + subject}
                   >
                     <Circle mr="4px" size={4} bg="grayMain" />
-                    <Text size="sm">{"#" + subject.toLowerCase()}</Text>
+                    <Text fontSize="sm">{"#" + subject.toLowerCase()}</Text>
                   </Flex>
                 ))}
               </HStack>
@@ -641,8 +641,8 @@ const Review: React.FC<{}> = ({}) => {
             <MenuList>
               <MenuItem
                 icon={<DeleteIcon fontSize="md" />}
-                onClick={() => {
-                  deleteQuestionReview({
+                onClick={async () => {
+                  await deleteQuestionReview({
                     variables: {
                       questionId: data.question?.id ? data.question.id : -1,
                     },
@@ -675,7 +675,7 @@ const Review: React.FC<{}> = ({}) => {
                         "?questionDeleteSuccess=true"
                     );
                   } else {
-                    router.push("/?questionDeleteSuccess=true");
+                    router.push("/review/");
                   }
                 }}
               >
@@ -690,7 +690,7 @@ const Review: React.FC<{}> = ({}) => {
         <HStack spacing={4}>
           {!meLoading && meData ? (
             <>
-              <Text color="grayMain">
+              <Text color="grayMain" fontSize="sm">
                 <IconButton
                   mr={1}
                   minWidth="24px"
@@ -733,7 +733,7 @@ const Review: React.FC<{}> = ({}) => {
                 />
                 {data.question.upVoteCount}
               </Text>
-              <Text color="grayMain">
+              <Text color="grayMain" fontSize="sm">
                 <IconButton
                   mr={1}
                   minWidth="24px"
@@ -779,7 +779,7 @@ const Review: React.FC<{}> = ({}) => {
             </>
           ) : (
             <>
-              <Text color="grayMain">
+              <Text color="grayMain" fontSize="sm">
                 <Icon
                   mx="4px"
                   height="24px"
@@ -789,19 +789,19 @@ const Review: React.FC<{}> = ({}) => {
                 />
                 {data.question.upVoteCount}
               </Text>
-              <Text color="grayMain">
+              <Text color="grayMain" fontSize="sm">
                 <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
                 {data.question.downVoteCount}
               </Text>
             </>
           )}
 
-          <Text color="grayMain">
+          <Text color="grayMain" fontSize="sm">
             <Icon as={IoPeople} mr={1} w={5} h={5} />
             {data.question.viewCount +
               (data.question.viewCount == 1 ? " view" : " views")}
           </Text>
-          <Text color="grayMain">
+          <Text color="grayMain" fontSize="sm">
             <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
             {new Date(data.question.createdAt).toLocaleString("default", {
               month: "short",

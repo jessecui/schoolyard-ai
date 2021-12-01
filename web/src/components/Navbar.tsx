@@ -189,6 +189,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   <Heading
                     color={
                       router.asPath === "/" ||
+                      router.asPath.startsWith("/?") ||
                       router.asPath.startsWith("/learn")
                         ? "mint"
                         : "grayMain"
@@ -196,6 +197,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                     textUnderlineOffset="16px"
                     textDecoration={
                       router.asPath === "/" ||
+                      router.asPath.startsWith("/?") ||
                       router.asPath.startsWith("/learn")
                         ? "underline"
                         : "none"
@@ -213,7 +215,13 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               <NextLink href="/review">
                 <Link href="/review" style={{ textDecoration: "none" }}>
                   <Heading
-                    color="grayMain"
+                    color={
+                      router.asPath.startsWith("/review") ? "mint" : "grayMain"
+                    }
+                    textUnderlineOffset="16px"
+                    textDecoration={
+                      router.asPath.startsWith("/review") ? "underline" : "none"
+                    }
                     _hover={{
                       color: "mint",
                       textDecoration: "underline",
