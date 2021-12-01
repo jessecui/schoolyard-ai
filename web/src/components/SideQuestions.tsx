@@ -20,6 +20,7 @@ import {
   ReviewStatus,
   useCreateQuestionReviewMutation,
   useMeQuery,
+  User,
 } from "../generated/graphql";
 
 export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
@@ -105,26 +106,36 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                   bg="mint"
                   color="white"
                   size="xs"
-                  onClick={() =>
-                    createQuestionReview({
+                  onClick={async () =>
+                    await createQuestionReview({
                       variables: {
                         questionId: question.id,
                         reviewStatus: ReviewStatus.Queued,
                       },
                       update: (cache, { data: responseData }) => {
                         if (meData.me && responseData?.createQuestionReview) {
-                          let updatedMeData = Object.assign({}, meData.me);
-                          updatedMeData.questionReviews = [
-                            responseData.createQuestionReview,
-                            ...updatedMeData.questionReviews,
-                          ];
-                          cache.writeQuery<MeQuery>({
+                          const cachedMeQuery = cache.readQuery<MeQuery>({
                             query: MeDocument,
-                            data: {
-                              __typename: "Query",
-                              me: updatedMeData,
-                            },
                           });
+
+                          const updatedMeData = Object.assign(
+                            {},
+                            cachedMeQuery?.me
+                          ) as User;
+
+                          if (updatedMeData) {
+                            updatedMeData.questionReviews = [
+                              responseData.createQuestionReview as QuestionReview,
+                              ...updatedMeData.questionReviews,
+                            ];
+                            cache.writeQuery<MeQuery>({
+                              query: MeDocument,
+                              data: {
+                                __typename: "Query",
+                                me: updatedMeData,
+                              },
+                            });
+                          }
                         }
                       },
                     })
