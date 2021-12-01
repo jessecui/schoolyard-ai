@@ -25,14 +25,14 @@ export class Score extends BaseEntity {
   user: Subject;
 
   @Field()
-  @Column({default: 0})
+  @Column()
   queued: number;
 
   @Field()
-  @Column({default: 0})
+  @Column()
   correct: number;
 
   @Field()
-  @Column({default: 0})
+  @Column()
   incorrect: number;
 }
