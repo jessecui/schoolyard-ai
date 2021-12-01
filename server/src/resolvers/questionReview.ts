@@ -38,12 +38,20 @@ export class QuestionReviewResolver {
     return questionReview;
   }
 
-  @Mutation(() => QuestionReview)
+  @Mutation(() => QuestionReview, { nullable: true })
   async createQuestionReview(
     @Arg("questionId", () => Int) questionId: number,
     @Arg("reviewStatus", () => ReviewStatus) reviewStatus: ReviewStatus,
     @Ctx() { req }: MyContext
   ) {
+    const existingQuestionReview = await QuestionReview.findOne({
+      questionId,
+      userId: req.session.userId,
+    });
+    if (existingQuestionReview) {
+      return null;
+    }
+
     const today = new Date();
     let tomorrow = new Date();
     tomorrow.setUTCDate(today.getUTCDate() + 1);
@@ -77,7 +85,7 @@ export class QuestionReviewResolver {
         skip: 0,
         take: 10,
       });
-      const subjects = questionSubjects.map((subject) => subject.subjectName);      
+      const subjects = questionSubjects.map((subject) => subject.subjectName);
       if (subjects) {
         await Promise.all(
           subjects.map(async (subject) => {
@@ -102,7 +110,7 @@ export class QuestionReviewResolver {
               await manager
                 .createQueryBuilder()
                 .update(Score)
-                .where({subjectName: subject, userId: req.session.userId})
+                .where({ subjectName: subject, userId: req.session.userId })
                 .set(
                   reviewStatus == ReviewStatus.QUEUED
                     ? { queued: () => "queued + 1" }
@@ -137,7 +145,7 @@ export class QuestionReviewResolver {
       ) {
         return null;
       }
-      let correctStreak;
+      let correctStreak: number;
       let dateNextAvailable = new Date();
       if (reviewStatus == ReviewStatus.CORRECT) {
         correctStreak = existingReview.correctStreak + 1;
@@ -153,21 +161,59 @@ export class QuestionReviewResolver {
         return null;
       }
 
-      const review = await getConnection()
-        .createQueryBuilder()
-        .update(QuestionReview)
-        .set({
-          reviewStatus,
-          correctStreak,
-          dateNextAvailable,
-        })
-        .where("userId = :userId and questionId = :questionId", {
-          userId: req.session.userId,
-          questionId,
-        })
-        .returning("*")
-        .execute();
-      return review.raw[0];
+      await getConnection().transaction(async (manager) => {
+        const review = await getConnection()
+          .createQueryBuilder()
+          .update(QuestionReview)
+          .set({
+            reviewStatus,
+            correctStreak,
+            dateNextAvailable,
+          })
+          .where("userId = :userId and questionId = :questionId", {
+            userId: req.session.userId,
+            questionId,
+          })
+          .returning("*")
+          .execute();
+
+        const questionSubjects = await QuestionSubject.find({
+          where: { questionId },
+          skip: 0,
+          take: 10,
+        });
+        const subjects = questionSubjects.map((subject) => subject.subjectName);
+        if (subjects && existingReview.reviewStatus != reviewStatus) {
+          await Promise.all(
+            subjects.map(async (subject) => {
+              await manager
+                .createQueryBuilder()
+                .update(Score)
+                .where({ subjectName: subject, userId: req.session.userId })
+                .set({
+                  queued:
+                    existingReview.reviewStatus == ReviewStatus.QUEUED
+                      ? () => "queued - 1"
+                      : () => "queued",
+                  correct:
+                    existingReview.reviewStatus == ReviewStatus.CORRECT
+                      ? () => "correct - 1"
+                      : reviewStatus == ReviewStatus.CORRECT
+                      ? () => "correct + 1"
+                      : () => "correct",
+                  incorrect:
+                    existingReview.reviewStatus == ReviewStatus.INCORRECT
+                      ? () => "incorrect - 1"
+                      : reviewStatus == ReviewStatus.INCORRECT
+                      ? () => "incorrect + 1"
+                      : () => "incorrect",
+                })
+                .execute();
+            })
+          );
+        }
+        return review.raw[0];
+      });
     }
     return null;
   }
@@ -191,12 +237,12 @@ export class QuestionReviewResolver {
         .where({ userId: req.session.userId, questionId })
         .execute();
 
-        const questionSubjects = await QuestionSubject.find({
-          where: { questionId },
-          skip: 0,
-          take: 10,
-        });
-        const subjects = questionSubjects.map((subject) => subject.subjectName);
+      const questionSubjects = await QuestionSubject.find({
+        where: { questionId },
+        skip: 0,
+        take: 10,
+      });
+      const subjects = questionSubjects.map((subject) => subject.subjectName);
 
       if (subjects) {
         await Promise.all(
@@ -222,12 +268,12 @@ export class QuestionReviewResolver {
 
               if (key) {
                 const existingScoreValue = score[key];
-                if (existingScoreValue > 0) {                  
+                if (existingScoreValue > 0) {
                   // If so, decremement column
                   const newScoreResult = await manager
                     .createQueryBuilder()
                     .update(Score)
-                    .where({subjectName: subject, userId: req.session.userId})
+                    .where({ subjectName: subject, userId: req.session.userId })
                     .set(
                       reviewStatus == ReviewStatus.QUEUED
                         ? { queued: () => "queued - 1" }

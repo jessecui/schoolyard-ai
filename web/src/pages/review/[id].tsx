@@ -25,7 +25,7 @@ import {
   RadioGroup,
   Spacer,
   Stack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import NextLink from "next/link";
@@ -38,7 +38,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine
+  RiThumbUpLine,
 } from "react-icons/ri";
 import {
   AddQuestionVoteMutation,
@@ -60,7 +60,7 @@ import {
   useQuestionQuery,
   useQuestionReviewQuery,
   useUpdateQuestionReviewMutation,
-  VoteType
+  VoteType,
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -344,9 +344,13 @@ const Review: React.FC<{}> = ({}) => {
                 </Button>
 
                 {props.status === "correct" ? (
-                  <Text color="green" fontSize="md">Correct Answer!</Text>
+                  <Text color="green" fontSize="md">
+                    Correct Answer!
+                  </Text>
                 ) : props.status === "incorrect" ? (
-                  <Text color="red" fontSize="md">Incorrect Answer.</Text>
+                  <Text color="red" fontSize="md">
+                    Incorrect Answer.
+                  </Text>
                 ) : null}
               </HStack>
             </Form>
@@ -451,9 +455,13 @@ const Review: React.FC<{}> = ({}) => {
                 </Button>
 
                 {props.status === "correct" ? (
-                  <Text color="green" fontSize="md">Correct Answer!</Text>
+                  <Text color="green" fontSize="md">
+                    Correct Answer!
+                  </Text>
                 ) : props.status === "incorrect" ? (
-                  <Text color="red" fontSize="md">Incorrect Answer.</Text>
+                  <Text color="red" fontSize="md">
+                    Incorrect Answer.
+                  </Text>
                 ) : null}
               </HStack>
             </Form>
@@ -562,9 +570,13 @@ const Review: React.FC<{}> = ({}) => {
                 </Button>
 
                 {props.status === "correct" ? (
-                  <Text color="green" fontSize="md">Correct Answer!</Text>
+                  <Text color="green" fontSize="md">
+                    Correct Answer!
+                  </Text>
                 ) : props.status === "incorrect" ? (
-                  <Text color="red" fontSize="md">Incorrect Answer.</Text>
+                  <Text color="red" fontSize="md">
+                    Incorrect Answer.
+                  </Text>
                 ) : null}
               </HStack>
             </Form>
@@ -847,196 +859,195 @@ const Review: React.FC<{}> = ({}) => {
           </Button>
         )}
       </Box>
-      {data.question.sentence &&
-        questionIsLocked && (
-          <Box
-            border="2px"
-            borderColor="grayLight"
-            borderRadius="md"
-            bg="White"
-            p={4}
-            mt={2}
-          >
-            <Text fontWeight="bold" color="grayMain" fontSize="md" pb={2}>
-              Learn Again
-            </Text>
-            <Flex>
-              <Flex align="center" width="80%">
-                <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
-                <Box>
-                  <Text fontWeight="bold" fontSize="md">
-                    {data.question.sentence.teacher.firstName}{" "}
-                    {data.question.sentence.teacher.lastName}
-                  </Text>
-                  <HStack spacing="6px">
-                    {data.question.sentence.subjects.map((subject) => (
-                      <Flex align="center" key={subject}>
-                        <Circle
-                          mr="4px"
-                          size={4}
-                          bg="grayMain" // TODO make these the colors from before using router params
-                        />
-                        <Text fontSize="sm" whiteSpace="nowrap">
-                          {"#" + subject.toLowerCase()}
-                        </Text>
-                      </Flex>
-                    ))}
-                  </HStack>
-                </Box>
-              </Flex>
+      {data.question.sentence && questionIsLocked && (
+        <Box
+          border="2px"
+          borderColor="grayLight"
+          borderRadius="md"
+          bg="White"
+          p={4}
+          mt={2}
+        >
+          <Text fontWeight="bold" color="grayMain" fontSize="md" pb={2}>
+            Learn Again
+          </Text>
+          <Flex>
+            <Flex align="center" width="80%">
+              <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+              <Box>
+                <Text fontWeight="bold" fontSize="md">
+                  {data.question.sentence.teacher.firstName}{" "}
+                  {data.question.sentence.teacher.lastName}
+                </Text>
+                <HStack spacing="6px">
+                  {data.question.sentence.subjects.map((subject) => (
+                    <Flex align="center" key={subject}>
+                      <Circle
+                        mr="4px"
+                        size={4}
+                        bg="grayMain" // TODO make these the colors from before using router params
+                      />
+                      <Text fontSize="sm" whiteSpace="nowrap">
+                        {"#" + subject.toLowerCase()}
+                      </Text>
+                    </Flex>
+                  ))}
+                </HStack>
+              </Box>
             </Flex>
-            <Text my={2} fontWeight="bold" fontSize="xl">
-              {data.question.sentence.text}
-            </Text>
-            <Text my={2} fontSize="lg">
-              {data.question.sentence.children
-                ? data.question.sentence.children
-                    .map((child) => child.text)
-                    .join(" ")
-                : null}
-            </Text>
-            <HStack spacing={4}>
-              {!meLoading && meData?.me ? (
-                <>
-                  <Text color="grayMain" fontSize="sm">
-                    <IconButton
-                      mr={1}
-                      minWidth="24px"
-                      height="24px"
-                      isRound={true}
-                      size="lg"
-                      bg="none"
-                      _focus={{
-                        boxShadow: "none",
-                      }}
-                      _hover={{
-                        bg: "grayLight",
-                      }}
-                      onClick={async () => {
-                        await addSentenceVote({
-                          variables: {
-                            sentenceId: data.question!.sentence!.id,
-                            voteType: VoteType.Up,
-                          },
-                          update: (cache, { data: responseData }) => {
-                            const votedSentence = responseData?.addSentenceVote;
-                            updateAfterVote(
-                              cache,
-                              data.question!.sentence!.id,
-                              votedSentence!.userVoteType as VoteType | null,
-                              votedSentence!.upVoteCount,
-                              votedSentence!.downVoteCount
-                            );
-                          },
-                        });
-                      }}
-                      aria-label="Up Vote Sentence"
-                      icon={
-                        data.question.sentence.userVoteType == VoteType.Up ? (
-                          <RiThumbUpFill />
-                        ) : (
-                          <RiThumbUpLine />
-                        )
-                      }
-                    />
-                    {data.question.sentence.upVoteCount}
-                  </Text>
-                  <Text color="grayMain" fontSize="sm">
-                    <IconButton
-                      mr={1}
-                      minWidth="24px"
-                      height="24px"
-                      isRound={true}
-                      size="lg"
-                      bg="none"
-                      _focus={{
-                        boxShadow: "none",
-                      }}
-                      _hover={{
-                        bg: "grayLight",
-                      }}
-                      onClick={async () => {
-                        await addSentenceVote({
-                          variables: {
-                            sentenceId: data.question!.sentence!.id,
-                            voteType: VoteType.Down,
-                          },
-                          update: (cache, { data: responseData }) => {
-                            const votedSentence = responseData?.addSentenceVote;
-                            updateAfterVote(
-                              cache,
-                              data.question!.sentence!.id,
-                              votedSentence!.userVoteType as VoteType | null,
-                              votedSentence!.upVoteCount,
-                              votedSentence!.downVoteCount
-                            );
-                          },
-                        });
-                      }}
-                      aria-label="Down Vote Sentence"
-                      icon={
-                        data.question.sentence.userVoteType == VoteType.Down ? (
-                          <RiThumbDownFill />
-                        ) : (
-                          <RiThumbDownLine />
-                        )
-                      }
-                    />
-                    {data.question.sentence.downVoteCount}
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text color="grayMain" fontSize="sm">
-                    <Icon
-                      mx="4px"
-                      height="24px"
-                      as={RiThumbUpLine}
-                      h="18px"
-                      w="18px"
-                    />
-                    {data.question.sentence.upVoteCount}
-                  </Text>
-                  <Text color="grayMain" fontSize="sm">
-                    <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
-                    {data.question.sentence.downVoteCount}
-                  </Text>
-                </>
-              )}
+          </Flex>
+          <Text my={2} fontWeight="bold" fontSize="xl">
+            {data.question.sentence.text}
+          </Text>
+          <Text my={2} fontSize="lg">
+            {data.question.sentence.children
+              ? data.question.sentence.children
+                  .map((child) => child.text)
+                  .join(" ")
+              : null}
+          </Text>
+          <HStack spacing={4}>
+            {!meLoading && meData?.me ? (
+              <>
+                <Text color="grayMain" fontSize="sm">
+                  <IconButton
+                    mr={1}
+                    minWidth="24px"
+                    height="24px"
+                    isRound={true}
+                    size="lg"
+                    bg="none"
+                    _focus={{
+                      boxShadow: "none",
+                    }}
+                    _hover={{
+                      bg: "grayLight",
+                    }}
+                    onClick={async () => {
+                      await addSentenceVote({
+                        variables: {
+                          sentenceId: data.question!.sentence!.id,
+                          voteType: VoteType.Up,
+                        },
+                        update: (cache, { data: responseData }) => {
+                          const votedSentence = responseData?.addSentenceVote;
+                          updateAfterVote(
+                            cache,
+                            data.question!.sentence!.id,
+                            votedSentence!.userVoteType as VoteType | null,
+                            votedSentence!.upVoteCount,
+                            votedSentence!.downVoteCount
+                          );
+                        },
+                      });
+                    }}
+                    aria-label="Up Vote Sentence"
+                    icon={
+                      data.question.sentence.userVoteType == VoteType.Up ? (
+                        <RiThumbUpFill />
+                      ) : (
+                        <RiThumbUpLine />
+                      )
+                    }
+                  />
+                  {data.question.sentence.upVoteCount}
+                </Text>
+                <Text color="grayMain" fontSize="sm">
+                  <IconButton
+                    mr={1}
+                    minWidth="24px"
+                    height="24px"
+                    isRound={true}
+                    size="lg"
+                    bg="none"
+                    _focus={{
+                      boxShadow: "none",
+                    }}
+                    _hover={{
+                      bg: "grayLight",
+                    }}
+                    onClick={async () => {
+                      await addSentenceVote({
+                        variables: {
+                          sentenceId: data.question!.sentence!.id,
+                          voteType: VoteType.Down,
+                        },
+                        update: (cache, { data: responseData }) => {
+                          const votedSentence = responseData?.addSentenceVote;
+                          updateAfterVote(
+                            cache,
+                            data.question!.sentence!.id,
+                            votedSentence!.userVoteType as VoteType | null,
+                            votedSentence!.upVoteCount,
+                            votedSentence!.downVoteCount
+                          );
+                        },
+                      });
+                    }}
+                    aria-label="Down Vote Sentence"
+                    icon={
+                      data.question.sentence.userVoteType == VoteType.Down ? (
+                        <RiThumbDownFill />
+                      ) : (
+                        <RiThumbDownLine />
+                      )
+                    }
+                  />
+                  {data.question.sentence.downVoteCount}
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text color="grayMain" fontSize="sm">
+                  <Icon
+                    mx="4px"
+                    height="24px"
+                    as={RiThumbUpLine}
+                    h="18px"
+                    w="18px"
+                  />
+                  {data.question.sentence.upVoteCount}
+                </Text>
+                <Text color="grayMain" fontSize="sm">
+                  <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
+                  {data.question.sentence.downVoteCount}
+                </Text>
+              </>
+            )}
 
-              <Text color="grayMain" fontSize="sm">
-                <Icon as={IoPeople} mr={1} w={5} h={5} />
-                {data.question.sentence.viewCount +
-                  (data.question.sentence.viewCount == 1 ? " view" : " views")}
-              </Text>
-              <Text color="grayMain" fontSize="sm">
-                <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
-                {new Date(data.question.sentence.createdAt).toLocaleString(
-                  "default",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  }
-                )}
-              </Text>
-            </HStack>
-            <Box mt={3}>
-              <NextLink href={"/learn/" + data.question.sentence.id}>
-                <Link
-                  color="iris"
-                  _hover={{ color: "irisDark" }}
-                  href={"/learn/" + data.question.sentence.id}
-                >
-                  <Icon as={BiZoomIn} w="24px" height="24px" />
-                  <Text ml={1} as="span" fontWeight="bold" fontSize="md">
-                    zoom in
-                  </Text>
-                </Link>
-              </NextLink>
-            </Box>
+            <Text color="grayMain" fontSize="sm">
+              <Icon as={IoPeople} mr={1} w={5} h={5} />
+              {data.question.sentence.viewCount +
+                (data.question.sentence.viewCount == 1 ? " view" : " views")}
+            </Text>
+            <Text color="grayMain" fontSize="sm">
+              <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
+              {new Date(data.question.sentence.createdAt).toLocaleString(
+                "default",
+                {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }
+              )}
+            </Text>
+          </HStack>
+          <Box mt={3}>
+            <NextLink href={"/learn/" + data.question.sentence.id}>
+              <Link
+                color="iris"
+                _hover={{ color: "irisDark" }}
+                href={"/learn/" + data.question.sentence.id}
+              >
+                <Icon as={BiZoomIn} w="24px" height="24px" />
+                <Text ml={1} as="span" fontWeight="bold" fontSize="md">
+                  zoom in
+                </Text>
+              </Link>
+            </NextLink>
           </Box>
-        )}
+        </Box>
+      )}
     </>
   ) : null;
 };
