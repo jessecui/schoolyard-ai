@@ -163,10 +163,8 @@ export class QuestionReviewResolver {
       return null;
     }
 
-    console.log("HERE A");
     let review: QuestionReview | null = null;
     await getConnection().transaction(async (manager) => {
-      console.log("HERE B");
       const reviewResult = await getConnection()
         .createQueryBuilder()
         .update(QuestionReview)
@@ -182,22 +180,17 @@ export class QuestionReviewResolver {
         .returning("*")
         .execute();
 
-        console.log("HERE C");
       review = reviewResult.raw[0];
-      console.log("HERE D");
 
       const questionSubjects = await QuestionSubject.find({
         where: { questionId },
         skip: 0,
         take: 10,
       });
-      console.log("HERE E");
       const subjects = questionSubjects.map((subject) => subject.subjectName);
       if (subjects && existingReview.reviewStatus != reviewStatus) {
-        console.log("HERE F");
         await Promise.all(
           subjects.map(async (subject) => {
-            console.log("HERE G");
             await manager
               .createQueryBuilder()
               .update(Score)
@@ -221,14 +214,10 @@ export class QuestionReviewResolver {
                     : () => "incorrect",
               })
               .execute();
-              console.log("HERE H");
           })
         );
-        console.log("HERE I");
       }
-      console.log("HERE J");
     });
-    console.log("HERE K");
     return review;
   }
 
