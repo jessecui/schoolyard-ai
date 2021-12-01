@@ -515,7 +515,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                           {...field}
                           border="2px"
                           borderColor="grayLight"
-                          value={field[0]}
+                          value={field.value[0]}
                           onChange={(e) =>
                             props.setFieldValue("correctAnswers", [
                               e.target.value,
