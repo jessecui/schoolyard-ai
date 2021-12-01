@@ -138,84 +138,98 @@ export class QuestionReviewResolver {
     const existingReview = await QuestionReview.findOne({
       where: { userId: req.session.userId, questionId },
     });
-    if (existingReview) {
-      if (
-        new Date().getTime() <
-        new Date(existingReview.dateNextAvailable).getTime()
-      ) {
-        return null;
-      }
-      let correctStreak: number;
-      let dateNextAvailable = new Date();
-      if (reviewStatus == ReviewStatus.CORRECT) {
-        correctStreak = existingReview.correctStreak + 1;
-        dateNextAvailable.setDate(
-          dateNextAvailable.getDate() + correctStreak * 2
-        );
-      } else if (reviewStatus == ReviewStatus.INCORRECT) {
-        correctStreak = 0;
-        dateNextAvailable.setDate(
-          dateNextAvailable.getDate() + correctStreak + 1
-        );
-      } else {
-        return null;
-      }
-
-      await getConnection().transaction(async (manager) => {
-        const review = await getConnection()
-          .createQueryBuilder()
-          .update(QuestionReview)
-          .set({
-            reviewStatus,
-            correctStreak,
-            dateNextAvailable,
-          })
-          .where("userId = :userId and questionId = :questionId", {
-            userId: req.session.userId,
-            questionId,
-          })
-          .returning("*")
-          .execute();
-
-        const questionSubjects = await QuestionSubject.find({
-          where: { questionId },
-          skip: 0,
-          take: 10,
-        });
-        const subjects = questionSubjects.map((subject) => subject.subjectName);
-        if (subjects && existingReview.reviewStatus != reviewStatus) {
-          await Promise.all(
-            subjects.map(async (subject) => {
-              await manager
-                .createQueryBuilder()
-                .update(Score)
-                .where({ subjectName: subject, userId: req.session.userId })
-                .set({
-                  queued:
-                    existingReview.reviewStatus == ReviewStatus.QUEUED
-                      ? () => "queued - 1"
-                      : () => "queued",
-                  correct:
-                    existingReview.reviewStatus == ReviewStatus.CORRECT
-                      ? () => "correct - 1"
-                      : reviewStatus == ReviewStatus.CORRECT
-                      ? () => "correct + 1"
-                      : () => "correct",
-                  incorrect:
-                    existingReview.reviewStatus == ReviewStatus.INCORRECT
-                      ? () => "incorrect - 1"
-                      : reviewStatus == ReviewStatus.INCORRECT
-                      ? () => "incorrect + 1"
-                      : () => "incorrect",
-                })
-                .execute();
-            })
-          );
-        }
-        return review.raw[0];
-      });
+    if (!existingReview) {
+      return null;
     }
-    return null;
+    if (
+      new Date().getTime() <
+      new Date(existingReview.dateNextAvailable).getTime()
+    ) {
+      return null;
+    }
+    let correctStreak: number;
+    let dateNextAvailable = new Date();
+    if (reviewStatus == ReviewStatus.CORRECT) {
+      correctStreak = existingReview.correctStreak + 1;
+      dateNextAvailable.setDate(
+        dateNextAvailable.getDate() + correctStreak * 2
+      );
+    } else if (reviewStatus == ReviewStatus.INCORRECT) {
+      correctStreak = 0;
+      dateNextAvailable.setDate(
+        dateNextAvailable.getDate() + correctStreak + 1
+      );
+    } else {
+      return null;
+    }
+
+    console.log("HERE A");
+    let review: QuestionReview | null = null;
+    await getConnection().transaction(async (manager) => {
+      console.log("HERE B");
+      const reviewResult = await getConnection()
+        .createQueryBuilder()
+        .update(QuestionReview)
+        .set({
+          reviewStatus,
+          correctStreak,
+          dateNextAvailable,
+        })
+        .where("userId = :userId and questionId = :questionId", {
+          userId: req.session.userId,
+          questionId,
+        })
+        .returning("*")
+        .execute();
+
+        console.log("HERE C");
+      review = reviewResult.raw[0];
+      console.log("HERE D");
+
+      const questionSubjects = await QuestionSubject.find({
+        where: { questionId },
+        skip: 0,
+        take: 10,
+      });
+      console.log("HERE E");
+      const subjects = questionSubjects.map((subject) => subject.subjectName);
+      if (subjects && existingReview.reviewStatus != reviewStatus) {
+        console.log("HERE F");
+        await Promise.all(
+          subjects.map(async (subject) => {
+            console.log("HERE G");
+            await manager
+              .createQueryBuilder()
+              .update(Score)
+              .where({ subjectName: subject, userId: req.session.userId })
+              .set({
+                queued:
+                  existingReview.reviewStatus == ReviewStatus.QUEUED
+                    ? () => "queued - 1"
+                    : () => "queued",
+                correct:
+                  existingReview.reviewStatus == ReviewStatus.CORRECT
+                    ? () => "correct - 1"
+                    : reviewStatus == ReviewStatus.CORRECT
+                    ? () => "correct + 1"
+                    : () => "correct",
+                incorrect:
+                  existingReview.reviewStatus == ReviewStatus.INCORRECT
+                    ? () => "incorrect - 1"
+                    : reviewStatus == ReviewStatus.INCORRECT
+                    ? () => "incorrect + 1"
+                    : () => "incorrect",
+              })
+              .execute();
+              console.log("HERE H");
+          })
+        );
+        console.log("HERE I");
+      }
+      console.log("HERE J");
+    });
+    console.log("HERE K");
+    return review;
   }
 
   @Mutation(() => Boolean)

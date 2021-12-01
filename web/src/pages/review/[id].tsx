@@ -195,7 +195,7 @@ const Review: React.FC<{}> = ({}) => {
   const updateQuestionReviewCache = (
     question: Question,
     cache: ApolloCache<UpdateQuestionReviewMutation>,
-    responseData: UpdateQuestionReviewMutation
+    updatedQuestionReview: QuestionReview
   ) => {
     let updatedQuestionReviews = meData!.me!.questionReviews.map((review) => {
       if (review.questionId != question.id) {
@@ -203,9 +203,9 @@ const Review: React.FC<{}> = ({}) => {
       } else {
         let updatedReview = Object.assign({}, review);
         updatedReview.dateNextAvailable =
-          responseData?.updateQuestionReview?.dateNextAvailable;
-        updatedReview.reviewStatus = responseData?.updateQuestionReview
-          ?.reviewStatus as ReviewStatus;
+          updatedQuestionReview?.dateNextAvailable;
+        updatedReview.reviewStatus =
+          updatedQuestionReview?.reviewStatus as ReviewStatus;
         return updatedReview;
       }
     });
@@ -220,17 +220,10 @@ const Review: React.FC<{}> = ({}) => {
         questionReviews: updatedQuestionReviews,
       },
     });
-
-    let updatedReview = Object.assign({}, reviewData?.questionReview);
-    updatedReview.dateNextAvailable =
-      responseData?.updateQuestionReview?.dateNextAvailable;
-    updatedReview.reviewStatus = responseData?.updateQuestionReview
-      ?.reviewStatus as ReviewStatus;
-
     cache.writeQuery<QuestionReviewQuery>({
       query: QuestionReviewDocument,
       data: {
-        questionReview: updatedReview,
+        questionReview: updatedQuestionReview,
       },
       variables: {
         questionId: question.id,
@@ -289,8 +282,12 @@ const Review: React.FC<{}> = ({}) => {
                 reviewStatus,
               },
               update: (cache, { data: responseData }) => {
-                if (responseData) {
-                  updateQuestionReviewCache(question, cache, responseData);
+                if (responseData?.updateQuestionReview) {
+                  updateQuestionReviewCache(
+                    question,
+                    cache,
+                    responseData.updateQuestionReview as QuestionReview
+                  );
                 }
               },
             });
@@ -383,8 +380,12 @@ const Review: React.FC<{}> = ({}) => {
                 reviewStatus,
               },
               update: (cache, { data: responseData }) => {
-                if (responseData) {
-                  updateQuestionReviewCache(question, cache, responseData);
+                if (responseData?.updateQuestionReview) {
+                  updateQuestionReviewCache(
+                    question,
+                    cache,
+                    responseData.updateQuestionReview as QuestionReview
+                  );
                 }
               },
             });
@@ -501,8 +502,12 @@ const Review: React.FC<{}> = ({}) => {
                 reviewStatus,
               },
               update: (cache, { data: responseData }) => {
-                if (responseData) {
-                  updateQuestionReviewCache(question, cache, responseData);
+                if (responseData?.updateQuestionReview) {
+                  updateQuestionReviewCache(
+                    question,
+                    cache,
+                    responseData.updateQuestionReview as QuestionReview
+                  );
                 }
               },
             });
