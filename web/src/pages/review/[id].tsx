@@ -1,5 +1,5 @@
 import { ApolloCache, gql } from "@apollo/client";
-import { DeleteIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -25,11 +25,12 @@ import {
   RadioGroup,
   Spacer,
   Stack,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BiDotsHorizontalRounded, BiZoomIn } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
@@ -37,7 +38,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine,
+  RiThumbUpLine
 } from "react-icons/ri";
 import {
   AddQuestionVoteMutation,
@@ -52,7 +53,6 @@ import {
   UpdateQuestionReviewMutation,
   useAddQuestionViewMutation,
   useAddQuestionVoteMutation,
-  useAddSentenceViewMutation,
   useAddSentenceVoteMutation,
   useCreateQuestionReviewMutation,
   useDeleteQuestionReviewMutation,
@@ -60,10 +60,9 @@ import {
   useQuestionQuery,
   useQuestionReviewQuery,
   useUpdateQuestionReviewMutation,
-  VoteType,
+  VoteType
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
-import NextLink from "next/link";
 
 const Review: React.FC<{}> = ({}) => {
   const router = useRouter();

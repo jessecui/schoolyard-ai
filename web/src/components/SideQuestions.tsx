@@ -1,13 +1,25 @@
 import { StarIcon } from "@chakra-ui/icons";
 import {
-  Box, Button, Circle, Flex, HStack, Icon, Stack, Text
+  Box,
+  Button,
+  Circle,
+  Flex,
+  HStack,
+  Icon,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
 import router from "next/router";
 import React from "react";
 import { GoChecklist } from "react-icons/go";
 import {
-  MeDocument, MeQuery, Question,
-  QuestionReview, ReviewStatus, useCreateQuestionReviewMutation, useMeQuery
+  MeDocument,
+  MeQuery,
+  Question,
+  QuestionReview,
+  ReviewStatus,
+  useCreateQuestionReviewMutation,
+  useMeQuery,
 } from "../generated/graphql";
 
 export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
@@ -39,6 +51,31 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
         )
       : [];
   }
+
+  const getTimeDifferenceString = (earlierDate: Date, laterDate: Date) => {
+    const secTimeDiff = (laterDate.getTime() - earlierDate.getTime()) / 1000;    
+    let months = Math.floor(secTimeDiff / (30 * 86400));
+    let timeString = "";
+    if (months) {
+      timeString = months + (months === 1 ? " month" : " months");
+    }
+    let days = Math.floor(secTimeDiff / 86400);
+    if (!months && days) {
+      timeString = days + (days === 1 ? " day" : " days");
+    }
+    let hours = Math.floor(secTimeDiff / 3600);
+    if (!days && hours) {
+      timeString = hours + (hours === 1 ? " hour" : " hours");
+    }
+    let minutes = Math.floor(secTimeDiff / 60);
+    if (!hours && minutes) {
+      timeString = minutes + (minutes === 1 ? " minute" : " minutes");
+    }
+    if (timeString) {
+      return "added " + timeString + " ago";
+    }
+    return "added just now";
+  };
 
   return meData?.me?.id ? (
     <Stack spacing={2}>
@@ -135,20 +172,35 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
               <Text fontWeight="bold" fontSize="lg">
                 {questionReview.question.question}
               </Text>
-              <Button
-                mt={1}
-                bg="iris"
-                color="white"
-                size="xs"
-                onClick={() =>
-                  router.push("/review/" + questionReview.questionId)
-                }
-              >
-                <Icon as={GoChecklist} />
-                <Text ml={2} as="span" fontSize="xs">
-                  answer
-                </Text>
-              </Button>
+              <HStack mt={1}>
+                <Button
+                  bg={
+                    new Date().getTime() >=
+                    new Date(questionReview.dateNextAvailable).getTime()
+                      ? "iris"
+                      : "grayMain"
+                  }
+                  color="white"
+                  size="xs"
+                  onClick={() =>
+                    router.push("/review/" + questionReview.questionId)
+                  }
+                >
+                  <Icon as={GoChecklist} />
+                  <Text ml={2} as="span" fontSize="xs">
+                    answer
+                  </Text>
+                </Button>
+                <Box>
+                  <StarIcon fontSize="sm" color="grayMain" mr={2} />
+                  <Text fontSize="sm" color="grayMain" as="span">
+                    {getTimeDifferenceString(
+                      new Date(questionReview.dateCreated),
+                      new Date()
+                    )}
+                  </Text>
+                </Box>
+              </HStack>
             </Box>
           ))}
         </Stack>
