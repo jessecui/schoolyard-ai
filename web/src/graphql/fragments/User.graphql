@@ -14,4 +14,11 @@ fragment User on User {
       subjects
     }
   }  
+  scores {
+    subjectName
+    queued
+    correct
+    incorrect
+  }
+  subjectColors
 }

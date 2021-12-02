@@ -316,6 +316,11 @@ export const Create: React.FC<{}> = ({}) => {
     </Stack>
   );
 
+  let subjectToColors: Record<string, string> = {};
+  if (meData?.me?.subjectColors) {
+    subjectToColors = JSON.parse(meData.me.subjectColors);
+  }
+
   return (
     <Box>
       <Box
@@ -642,7 +647,15 @@ export const Create: React.FC<{}> = ({}) => {
                             subject = subject.trim();
                             return subject ? (
                               <Flex align="center" key={subject}>
-                                <Circle mr="4px" size={4} bg="grayMain" />
+                                <Circle
+                                  mr="4px"
+                                  size={4}
+                                  bg={
+                                    subjectToColors[subject]
+                                      ? subjectToColors[subject]
+                                      : "grayMain"
+                                  }
+                                />
                                 <Text fontSize="sm">
                                   {"#" + subject.toLowerCase()}
                                 </Text>
@@ -928,7 +941,15 @@ export const Create: React.FC<{}> = ({}) => {
                             subject = subject.trim();
                             return subject ? (
                               <Flex align="center" key={subject}>
-                                <Circle mr="4px" size={4} bg="grayMain" />
+                                <Circle
+                                  mr="4px"
+                                  size={4}
+                                  bg={
+                                    subjectToColors[subject]
+                                      ? subjectToColors[subject]
+                                      : "grayMain"
+                                  }
+                                />
                                 <Text fontSize="sm">
                                   {"#" + subject.toLowerCase()}
                                 </Text>

@@ -331,6 +331,11 @@ export const EditQuestion: React.FC<{}> = ({}) => {
   const onClose = () => setIsOpen(false);
   const deleteRef = useRef();
 
+  let subjectToColors: Record<string, string> = {};
+  if (meData?.me?.subjectColors) {
+    subjectToColors = JSON.parse(meData.me.subjectColors);
+  }
+
   return questionData?.question ? (
     <Box>
       <Box
@@ -359,14 +364,15 @@ export const EditQuestion: React.FC<{}> = ({}) => {
             icon={<ArrowBackIcon />}
             onClick={() => router.push("/review/")}
           />
-        <Text
-          fontSize="g"
-          fontWeight="bold"
-          textAlign="center"
-          color="grayMain"
-        >
-          Update Question
-        </Text></Grid>
+          <Text
+            fontSize="g"
+            fontWeight="bold"
+            textAlign="center"
+            color="grayMain"
+          >
+            Update Question
+          </Text>
+        </Grid>
       </Box>
       <Formik
         initialValues={{
@@ -581,7 +587,15 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                           subject = subject.trim();
                           return subject ? (
                             <Flex align="center" key={subject}>
-                              <Circle mr="4px" size={4} bg="grayMain" />
+                              <Circle
+                                mr="4px"
+                                size={4}
+                                bg={
+                                  subjectToColors[subject]
+                                    ? subjectToColors[subject]
+                                    : "grayMain"
+                                }
+                              />
                               <Text size="sm">
                                 {"#" + subject.toLowerCase()}
                               </Text>

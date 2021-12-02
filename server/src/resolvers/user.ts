@@ -20,6 +20,7 @@ import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
 import { isAuth } from "../middleware/isAuth";
 import { QuestionReview } from "../entities/QuestionReview";
+import { Score } from "../entities/Score";
 
 @ObjectType()
 class FieldError {
@@ -55,9 +56,62 @@ export class UserResolver {
       where: { userId: req.session.userId },
       skip: 0,
       order: {
-        dateCreated: "DESC"
-      }
+        dateCreated: "DESC",
+      },
     });
+  }
+
+  @FieldResolver(() => [Score])
+  async scores(@Root() _: User, @Ctx() { req }: MyContext) {
+    let scores = await Score.find({
+      where: { userId: req.session.userId },
+    });
+    scores.sort(
+      (a, b) =>
+        b.queued +
+        b.correct +
+        b.incorrect -
+        (a.queued + a.correct + a.incorrect)
+    );
+    return scores;
+  }
+
+  @FieldResolver(() => String)
+  async subjectColors(@Root() _: User, @Ctx() { req }: MyContext) {
+    const colors = [
+      "red.500",
+      "orange.400",
+      "yellow.300",
+      "green.500",
+      "teal.400",      
+      "cyan.400",
+      "blue.600",
+      "purple.400",
+      "pink.400",
+      "brown",
+    ];
+
+    let scores = await Score.find({
+      where: { userId: req.session.userId },
+    });
+    scores.sort(
+      (a, b) =>
+        b.queued +
+        b.correct +
+        b.incorrect -
+        (a.queued + a.correct + a.incorrect)
+    );
+    
+    const subjectToColor : Record<string, string> = {};
+
+    scores.forEach((score, index) => {
+      if (index < colors.length) {
+        subjectToColor[score.subjectName] = colors[index]
+      } else {
+        subjectToColor[score.subjectName] = "grayMain"
+      }
+    })
+    return JSON.stringify(subjectToColor);
   }
 
   @Mutation(() => UserResponse)

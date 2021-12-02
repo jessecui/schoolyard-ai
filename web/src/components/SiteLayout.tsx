@@ -1,7 +1,4 @@
 import { Container, Grid, GridItem } from "@chakra-ui/layout";
-import {
-  Box, Text
-} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, {
   cloneElement,
@@ -10,14 +7,14 @@ import React, {
   useState
 } from "react";
 import {
-  Question, useMeQuery
+  Question
 } from "../generated/graphql";
 import { Navbar } from "./Navbar";
+import { ScoreCard } from "./ScoreCard";
 import { SideQuestions } from "./SideQuestions";
 
 export const SiteLayout: React.FC<{}> = ({ children }) => {
-  const router = useRouter();
-  const { data: meData, loading: meLoading } = useMeQuery();
+  const router = useRouter();  
   const [availableQuestions, setAvailableQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
@@ -41,19 +38,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
             </Container>
           </GridItem>
           <GridItem colSpan={3}>
-            {meData?.me?.id && (
-              <Box
-                border="2px"
-                borderColor="grayLight"
-                borderRadius="md"
-                bg="White"
-                p={4}
-              >
-                <Text fontWeight="bold" color="grayMain" fontSize="md">
-                  Performance Scorecard
-                </Text>
-              </Box>
-            )}
+            <ScoreCard/>
           </GridItem>
         </Grid>
       </Container>
