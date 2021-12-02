@@ -65,6 +65,9 @@ export class User extends BaseEntity {
   @OneToMany(() => Score, (score) => score.user)
   scores: Score[];
 
+  @Field()
+  subjectColors: string
+
   @Field(() => Date)
   @CreateDateColumn()
   createdAt: Date;
