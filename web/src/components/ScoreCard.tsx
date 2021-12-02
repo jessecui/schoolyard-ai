@@ -10,7 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Score, useMeQuery } from "../generated/graphql";
+import { ReviewStatus, Score, useMeQuery } from "../generated/graphql";
 import { ChangedSubject } from "./SiteLayout";
 
 export const ScoreCard: React.FC<{
@@ -27,15 +27,24 @@ export const ScoreCard: React.FC<{
   const { data: meData, loading: meLoading } = useMeQuery();
 
   let subjectToColors: Record<string, string> = {};
-  let activeScore: Score | null = null;
+  let activeScores: Score[] = [];
   if (meData?.me) {
     subjectToColors = JSON.parse(meData.me.subjectColors);
-    if (activeScoreSubjects && activeScoreSubjects.length == 1) {
-      activeScore = meData.me.scores.find(
-        (score) => score.subjectName == activeScoreSubjects[0]
-      ) as Score;
+    if (activeScoreSubjects && activeScoreSubjects.length) {
+      activeScores = activeScoreSubjects.map((subject) => {
+        return meData.me!.scores.find(
+          (score) => score.subjectName == subject
+        ) as Score;
+      });
     }
   }
+
+  const getNewStatus = (subject: string) => {
+    const filteredSubjects = changedSubjects.filter(
+      (s) => s.subject == subject
+    );
+    return filteredSubjects.length ? filteredSubjects[0].newStatus : null;
+  };
 
   return meData?.me ? (
     <Box
@@ -50,7 +59,7 @@ export const ScoreCard: React.FC<{
       </Text>
       {meData.me.scores.length > 0 && (
         <Box>
-          {activeScoreSubjects && activeScoreSubjects.length > 0 ? (
+          {activeScoreSubjects && activeScoreSubjects.length ? (
             <Button
               onClick={() => {
                 setActiveScoreSubjects([]);
@@ -88,41 +97,86 @@ export const ScoreCard: React.FC<{
               ))}
             </Select>
           )}
-          {activeScoreSubjects &&
-          activeScoreSubjects.length == 1 &&
-          activeScore ? (
-            <Box>
-              <Flex align="center" mb={2}>
-                <Circle
-                  mr="4px"
-                  size={4}
-                  bg={
-                    subjectToColors[activeScoreSubjects[0]]
-                      ? subjectToColors[activeScoreSubjects[0]]
-                      : "grayMain"
-                  }
-                />
-                <Text fontSize="md" whiteSpace="nowrap" fontWeight="bold">
-                  {"#" + activeScoreSubjects[0]}
-                </Text>
-              </Flex>
-              <Flex color="blue" fontSize="md">
-                Unanswered <Spacer /> {activeScore.queued}
-              </Flex>
-              <Flex color="red" fontSize="md">
-                Incorrect <Spacer /> {activeScore.incorrect}
-              </Flex>
-              <Flex color="green" fontSize="md">
-                Correct <Spacer /> {activeScore.correct}
-              </Flex>
-              <Divider my={2} border="1px" color="grayMain" />
-              <Flex fontSize="md">
-                Total: <Spacer />{" "}
-                {activeScore.queued +
-                  activeScore.incorrect +
-                  activeScore.correct}
-              </Flex>
-            </Box>
+          {activeScoreSubjects && activeScoreSubjects.length > 0 ? (
+            <Stack spacing={4}>
+              {activeScoreSubjects.map(
+                (subject, index) =>
+                  activeScores[index] && (
+                    <Box key={subject}>
+                      <Flex align="center" mb={2}>
+                        <Circle
+                          mr="4px"
+                          size={4}
+                          bg={
+                            subjectToColors[subject]
+                              ? subjectToColors[subject]
+                              : "grayMain"
+                          }
+                        />
+                        <Text
+                          fontSize="md"
+                          whiteSpace="nowrap"
+                          fontWeight="bold"
+                        >
+                          {"#" + subject}
+                        </Text>
+                      </Flex>
+                      <Flex
+                        color="blue"
+                        fontSize={
+                          getNewStatus(subject) == ReviewStatus.Queued
+                            ? "xl"
+                            : "md"
+                        }
+                        fontWeight={
+                          getNewStatus(subject) == ReviewStatus.Queued
+                            ? "bold"
+                            : "normal"
+                        }
+                      >
+                        Unanswered <Spacer /> {activeScores[index].queued}
+                      </Flex>
+                      <Flex
+                        color="red"
+                        fontSize={
+                          getNewStatus(subject) == ReviewStatus.Incorrect
+                            ? "xl"
+                            : "md"
+                        }
+                        fontWeight={
+                          getNewStatus(subject) == ReviewStatus.Incorrect
+                            ? "bold"
+                            : "normal"
+                        }
+                      >
+                        Incorrect <Spacer /> {activeScores[index].incorrect}
+                      </Flex>
+                      <Flex
+                        color="green"
+                        fontSize={
+                          getNewStatus(subject) == ReviewStatus.Correct
+                            ? "xl"
+                            : "md"
+                        }
+                        fontWeight={
+                          getNewStatus(subject) == ReviewStatus.Correct
+                            ? "bold"
+                            : "normal"
+                        }
+                      >
+                        Correct <Spacer /> {activeScores[index].correct}
+                      </Flex>
+                      <Divider my={2} border="1px" color="grayMain" />
+                      <Flex fontSize="md">
+                        Total: <Spacer />{" "}
+                        {activeScores[index].queued +
+                          activeScores[index].incorrect +
+                          activeScores[index].correct}
+                      </Flex>
+                    </Box>
+                  )
+              )}
+            </Stack>
           ) : (
             <Stack spacing={1}>
               <Flex align="center">
@@ -148,7 +202,14 @@ export const ScoreCard: React.FC<{
                         }
                       />
                       <Text
-                        fontSize="sm"
+                        fontSize={
+                          changedSubjects &&
+                          changedSubjects.some(
+                            (s) => s.subject === score.subjectName
+                          )
+                            ? "lg"
+                            : "sm"
+                        }
                         whiteSpace="nowrap"
                         fontWeight={
                           changedSubjects &&
@@ -171,7 +232,14 @@ export const ScoreCard: React.FC<{
                       </Text>
                       <Spacer />
                       <Text
-                        fontSize="sm"
+                        fontSize={
+                          changedSubjects &&
+                          changedSubjects.some(
+                            (s) => s.subject === score.subjectName
+                          )
+                            ? "lg"
+                            : "sm"
+                        }
                         whiteSpace="nowrap"
                         fontWeight={
                           changedSubjects &&
