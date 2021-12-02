@@ -33,7 +33,7 @@ export type Mutation = {
   changeProfile: UserResponse;
   createParagraph: Sentence;
   createQuestion: Question;
-  createQuestionReview: QuestionReview;
+  createQuestionReview?: Maybe<QuestionReview>;
   deleteParagraph: Scalars['Boolean'];
   deleteQuestion: Scalars['Boolean'];
   deleteQuestionReview: Scalars['Boolean'];
@@ -269,6 +269,15 @@ export enum ReviewStatus {
   Queued = 'QUEUED'
 }
 
+export type Score = {
+  __typename?: 'Score';
+  correct: Scalars['Float'];
+  incorrect: Scalars['Float'];
+  queued: Scalars['Float'];
+  subjectName: Scalars['String'];
+  userId: Scalars['Float'];
+};
+
 export type Sentence = {
   __typename?: 'Sentence';
   children?: Maybe<Array<Sentence>>;
@@ -298,6 +307,8 @@ export type User = {
   id: Scalars['Float'];
   lastName: Scalars['String'];
   questionReviews: Array<QuestionReview>;
+  scores: Array<Score>;
+  subjectColors: Scalars['String'];
   updatedAt: Scalars['DateTime'];
 };
 
@@ -314,9 +325,9 @@ export enum VoteType {
 
 export type ErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type UserFragment = { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> };
+export type UserFragment = { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> };
 
-export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined };
+export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
 
 export type AddQuestionViewMutationVariables = Exact<{
   questionId: Scalars['Int'];
@@ -354,7 +365,7 @@ export type ChangePasswordMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type ChangePasswordWithTokenMutationVariables = Exact<{
   token: Scalars['String'];
@@ -362,7 +373,7 @@ export type ChangePasswordWithTokenMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordWithTokenMutation = { __typename?: 'Mutation', changePasswordWithToken: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
+export type ChangePasswordWithTokenMutation = { __typename?: 'Mutation', changePasswordWithToken: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type ChangeProfileMutationVariables = Exact<{
   email: Scalars['String'];
@@ -371,7 +382,7 @@ export type ChangeProfileMutationVariables = Exact<{
 }>;
 
 
-export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
+export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type CreateParagraphMutationVariables = Exact<{
   paragraphInput: ParagraphInput;
@@ -394,7 +405,7 @@ export type CreateQuestionReviewMutationVariables = Exact<{
 }>;
 
 
-export type CreateQuestionReviewMutation = { __typename?: 'Mutation', createQuestionReview: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } };
+export type CreateQuestionReviewMutation = { __typename?: 'Mutation', createQuestionReview?: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } | null | undefined };
 
 export type DeleteParagraphMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -435,7 +446,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -447,7 +458,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type UpdateParagraphMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -476,7 +487,7 @@ export type UpdateQuestionReviewMutation = { __typename?: 'Mutation', updateQues
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }> } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
 
 export type QuestionQueryVariables = Exact<{
   id: Scalars['Int'];
@@ -538,6 +549,13 @@ export const UserFragmentDoc = gql`
       subjects
     }
   }
+  scores {
+    subjectName
+    queued
+    correct
+    incorrect
+  }
+  subjectColors
 }
     `;
 export const UserResponseFragmentDoc = gql`

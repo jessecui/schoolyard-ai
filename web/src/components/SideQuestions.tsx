@@ -72,6 +72,11 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
     return "added just now";
   };
 
+  let subjectToColors: Record<string, string> = {};
+  if (meData?.me?.subjectColors) {
+    subjectToColors = JSON.parse(meData.me.subjectColors);
+  }
+
   return meData?.me?.id ? (
     <Stack spacing={2}>
       {availableQuestionsNotSaved.length > 0 && (
@@ -92,7 +97,15 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                   <HStack spacing="6px">
                     {question.subjects.map((subject) => (
                       <Flex align="center" key={subject}>
-                        <Circle mr="4px" size={4} bg="grayMain" />
+                        <Circle
+                          mr="4px"
+                          size={4}
+                          bg={
+                            subjectToColors[subject]
+                              ? subjectToColors[subject]
+                              : "grayMain"
+                          }
+                        />
                         <Text fontSize="xs">{"#" + subject}</Text>
                       </Flex>
                     ))}
@@ -168,13 +181,21 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                 <HStack spacing="6px">
                   {questionReview.question.subjects.map((subject) => (
                     <Flex align="center" key={subject}>
-                      <Circle mr="4px" size={4} bg="grayMain" />
+                      <Circle
+                        mr="4px"
+                        size={4}
+                        bg={
+                          subjectToColors[subject]
+                            ? subjectToColors[subject]
+                            : "grayMain"
+                        }
+                      />
                       <Text fontSize="xs">{"#" + subject}</Text>
                     </Flex>
                   ))}
                 </HStack>
               </Box>
-              <Text fontWeight="bold" fontSize="lg">
+              <Text fontWeight="bold" fontSize="md">
                 {questionReview.question.question}
               </Text>
               <HStack mt={1}>
@@ -197,7 +218,7 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                   </Text>
                 </Button>
                 <Box>
-                  <StarIcon fontSize="sm" color="grayMain" mr={2} />
+                  <StarIcon fontSize="sm" color="grayMain" mr={2} mb={0.5} />
                   <Text fontSize="sm" color="grayMain" as="span">
                     {getTimeDifferenceString(
                       new Date(questionReview.dateCreated),

@@ -600,6 +600,11 @@ const Review: React.FC<{}> = ({}) => {
     );
   };
 
+  let subjectToColors: Record<string, string> = {};
+  if (meData?.me?.subjectColors) {
+    subjectToColors = JSON.parse(meData.me.subjectColors);
+  }
+
   return data?.question ? (
     <>
       {router.query.questionDeleteSuccess && (
@@ -640,7 +645,15 @@ const Review: React.FC<{}> = ({}) => {
                     align="center"
                     key={String(data.question!.id) + subject}
                   >
-                    <Circle mr="4px" size={4} bg="grayMain" />
+                    <Circle
+                      mr="4px"
+                      size={4}
+                      bg={
+                        subjectToColors[subject]
+                          ? subjectToColors[subject]
+                          : "grayMain"
+                      }
+                    />
                     <Text fontSize="sm">{"#" + subject.toLowerCase()}</Text>
                   </Flex>
                 ))}
@@ -890,7 +903,11 @@ const Review: React.FC<{}> = ({}) => {
                       <Circle
                         mr="4px"
                         size={4}
-                        bg="grayMain" // TODO make these the colors from before using router params
+                        bg={
+                          subjectToColors[subject]
+                            ? subjectToColors[subject]
+                            : "grayMain"
+                        }
                       />
                       <Text fontSize="sm" whiteSpace="nowrap">
                         {"#" + subject.toLowerCase()}

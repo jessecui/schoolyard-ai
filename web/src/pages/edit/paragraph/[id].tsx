@@ -110,6 +110,11 @@ export const EditParagraph: React.FC<{}> = ({}) => {
   const onClose = () => setIsOpen(false);
   const deleteRef = useRef();
 
+  let subjectToColors: Record<string, string> = {};
+  if (meData?.me?.subjectColors) {
+    subjectToColors = JSON.parse(meData.me.subjectColors);
+  }
+
   return sentenceData?.sentence ? (
     <Box>
       <Box
@@ -139,14 +144,14 @@ export const EditParagraph: React.FC<{}> = ({}) => {
             icon={<ArrowBackIcon />}
             onClick={() => router.push("/learn/" + sentenceData.sentence?.id)}
           />
-        <Text
-          fontSize="md"
-          fontWeight="bold"
-          textAlign="center"
-          color="grayMain"
-        >
-          Update Paragraph
-        </Text>
+          <Text
+            fontSize="md"
+            fontWeight="bold"
+            textAlign="center"
+            color="grayMain"
+          >
+            Update Paragraph
+          </Text>
         </Grid>
       </Box>
       <Formik
@@ -397,7 +402,15 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                             subject = subject.trim();
                             return subject ? (
                               <Flex align="center" key={subject}>
-                                <Circle mr="4px" size={4} bg="grayMain" />
+                                <Circle
+                                  mr="4px"
+                                  size={4}
+                                  bg={
+                                    subjectToColors[subject]
+                                      ? subjectToColors[subject]
+                                      : "grayMain"
+                                  }
+                                />
                                 <Text fontSize="sm">
                                   {"#" + subject.toLowerCase()}
                                 </Text>

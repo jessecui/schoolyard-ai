@@ -87,6 +87,11 @@ const Index: React.FC<{}> = ({}) => {
     }
   };
 
+  let subjectToColors: Record<string, string> = {};
+  if (meData?.me?.subjectColors) {
+    subjectToColors = JSON.parse(meData.me.subjectColors);
+  }
+
   return sentenceData?.sentences.sentences ? (
     <Box>
       {router.query.deleteSuccess && (
@@ -141,7 +146,11 @@ const Index: React.FC<{}> = ({}) => {
                           <Circle
                             mr="4px"
                             size={4}
-                            bg="grayMain" // TODO make these the colors from before using router params
+                            bg={
+                              subjectToColors[subject]
+                                ? subjectToColors[subject]
+                                : "grayMain"
+                            }
                           />
                           <Text fontSize="sm" whiteSpace="nowrap">
                             {"#" + subject.toLowerCase()}

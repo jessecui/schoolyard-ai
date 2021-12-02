@@ -73,7 +73,7 @@ const Learn: React.FC<{
       ? data.sentence.clones.map((clone) => clone.questions).flat(1)
       : ([] as Question[]);
 
-    setAvailableQuestions(availableQuestions as Question[]);    
+    setAvailableQuestions(availableQuestions as Question[]);
   }, [data?.sentence?.clones]);
 
   const [viewedIds, setViewedIds] = useState<number[]>([]);
@@ -196,6 +196,11 @@ const Learn: React.FC<{
       self.findIndex((p) => p.parent!.id === parent.parent!.id) === index
   );
 
+  let subjectToColors: Record<string, string> = {};
+  if (meData?.me?.subjectColors) {
+    subjectToColors = JSON.parse(meData.me.subjectColors);
+  }
+
   return activeSentence ? (
     <>
       <Box
@@ -219,7 +224,11 @@ const Learn: React.FC<{
                     <Circle
                       mr="4px"
                       size={4}
-                      bg="grayMain" // TODO make these the colors from before using router params
+                      bg={
+                        subjectToColors[subject]
+                          ? subjectToColors[subject]
+                          : "grayMain"
+                      }
                     />
                     <Text fontSize="sm" whiteSpace="nowrap">
                       {"#" + subject.toLowerCase()}
