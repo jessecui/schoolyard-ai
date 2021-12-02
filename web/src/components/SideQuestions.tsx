@@ -90,7 +90,7 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
           <Text fontWeight="bold" color="grayMain" fontSize="md">
             Available Questions
           </Text>
-          <Stack spacing={6}>
+          <Stack spacing={4}>
             {availableQuestionsNotSaved.map((question) => (
               <Box key={question.id} mt={2}>
                 <Box>
@@ -174,7 +174,7 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
         <Text fontWeight="bold" color="grayMain" fontSize="md">
           Recently Saved Questions
         </Text>
-        <Stack spacing={6}>
+        <Stack spacing={4}>
           {meData.me.questionReviews.slice(0, 5).map((questionReview) => (
             <Box key={questionReview.questionId} mt={2}>
               <Box>
