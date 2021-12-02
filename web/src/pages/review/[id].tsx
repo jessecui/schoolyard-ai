@@ -92,6 +92,12 @@ const Review: React.FC<{
     }
   });
 
+  useEffect(() => {
+    if (data?.question) {
+      setActiveScoreSubjects(data.question.subjects);
+    }
+  }, [data?.question]);
+
   const createQuestionReviewAndUpdateCache = async () => {
     await createQuestionReview({
       variables: {
@@ -100,7 +106,9 @@ const Review: React.FC<{
       },
       update: (cache, { data: responseData }) => {
         if (meData?.me && responseData?.createQuestionReview) {
-          setActiveScoreSubjects([]);
+          setActiveScoreSubjects(
+            responseData.createQuestionReview.question.subjects
+          );
           const cachedMeQuery = cache.readQuery<MeQuery>({
             query: MeDocument,
           });
@@ -700,17 +708,17 @@ const Review: React.FC<{
     newStatus: ReviewStatus
   ) => {
     if (meData?.me) {
-      // setActiveScoreSubjects(subjects);
+      setActiveScoreSubjects(subjects);
 
-      // setChangedSubjects(
-      //   subjects.map((subject) => {
-      //     return {
-      //       subject,
-      //       oldStatus,
-      //       newStatus,
-      //     };
-      //   })
-      // );
+      setChangedSubjects(
+        subjects.map((subject) => {
+          return {
+            subject,
+            oldStatus,
+            newStatus,
+          };
+        })
+      );
 
       const cachedMeQuery = cache.readQuery<MeQuery>({
         query: MeDocument,
