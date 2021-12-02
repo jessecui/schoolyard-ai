@@ -7,11 +7,12 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { useMeQuery } from "../generated/graphql";
 
 export const ScoreCard: React.FC<{}> = ({}) => {
   const { data: meData, loading: meLoading } = useMeQuery();
+  const [activeSubject, setActiveSubject] = useState("");
 
   let subjectToColors: Record<string, string> = {};
   if (meData?.me?.subjectColors) {

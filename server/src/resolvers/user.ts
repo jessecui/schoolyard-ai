@@ -79,13 +79,13 @@ export class UserResolver {
   @FieldResolver(() => String)
   async subjectColors(@Root() _: User, @Ctx() { req }: MyContext) {
     const colors = [
-      "red.500",
-      "orange.400",
+      "red.400",
+      "orange.300",
       "yellow.300",
       "green.500",
       "teal.400",      
       "cyan.400",
-      "blue.600",
+      "blue.500",
       "purple.400",
       "pink.400",
       "brown",
