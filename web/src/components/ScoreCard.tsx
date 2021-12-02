@@ -11,21 +11,30 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Score, useMeQuery } from "../generated/graphql";
+import { ChangedSubject } from "./SiteLayout";
 
 export const ScoreCard: React.FC<{
-  activeScoreSubject: string;
-  setActiveScoreSubject: React.Dispatch<React.SetStateAction<string>>;
-  changedSubjects: string[];
-}> = ({ activeScoreSubject, setActiveScoreSubject, changedSubjects }) => {
+  activeScoreSubjects: string[];
+  setActiveScoreSubjects: React.Dispatch<React.SetStateAction<string[]>>;
+  changedSubjects: ChangedSubject[];
+  setChangedSubjects: React.Dispatch<React.SetStateAction<ChangedSubject[]>>;
+}> = ({
+  activeScoreSubjects,
+  setActiveScoreSubjects,
+  changedSubjects,
+  setChangedSubjects,
+}) => {
   const { data: meData, loading: meLoading } = useMeQuery();
 
   let subjectToColors: Record<string, string> = {};
   let activeScore: Score | null = null;
   if (meData?.me) {
     subjectToColors = JSON.parse(meData.me.subjectColors);
-    activeScore = meData.me.scores.find(
-      (score) => score.subjectName == activeScoreSubject
-    ) as Score;
+    if (activeScoreSubjects && activeScoreSubjects.length == 1) {
+      activeScore = meData.me.scores.find(
+        (score) => score.subjectName == activeScoreSubjects[0]
+      ) as Score;
+    }
   }
 
   return meData?.me ? (
@@ -41,14 +50,18 @@ export const ScoreCard: React.FC<{
       </Text>
       {meData.me.scores.length > 0 && (
         <Box>
-          {activeScoreSubject ? (
+          {activeScoreSubjects && activeScoreSubjects.length > 0 ? (
             <Button
-              onClick={() => setActiveScoreSubject("")}
+              onClick={() => {
+                setActiveScoreSubjects([]);
+                setChangedSubjects([]);
+              }}
               bg="none"
               color="iris"
               _hover={{ bg: "none", color: "irisDark" }}
               p={0}
               fontSize="sm"
+              fontWeight="normal"
             >
               Back to all subjects
             </Button>
@@ -58,8 +71,15 @@ export const ScoreCard: React.FC<{
               size="sm"
               mt={2}
               mb={3}
-              value={activeScoreSubject}
-              onChange={(e) => setActiveScoreSubject(e.target.value)}
+              value={
+                activeScoreSubjects && activeScoreSubjects.length == 1
+                  ? activeScoreSubjects[0]
+                  : ""
+              }
+              onChange={(e) => {
+                setActiveScoreSubjects([e.target.value]);
+                setChangedSubjects([]);
+              }}
             >
               {meData.me.scores.map((score) => (
                 <option key={score.subjectName} value={score.subjectName}>
@@ -68,20 +88,22 @@ export const ScoreCard: React.FC<{
               ))}
             </Select>
           )}
-          {activeScoreSubject && activeScore ? (
+          {activeScoreSubjects &&
+          activeScoreSubjects.length == 1 &&
+          activeScore ? (
             <Box>
               <Flex align="center" mb={2}>
                 <Circle
                   mr="4px"
                   size={4}
                   bg={
-                    subjectToColors[activeScoreSubject]
-                      ? subjectToColors[activeScoreSubject]
+                    subjectToColors[activeScoreSubjects[0]]
+                      ? subjectToColors[activeScoreSubjects[0]]
                       : "grayMain"
                   }
                 />
                 <Text fontSize="md" whiteSpace="nowrap" fontWeight="bold">
-                  {"#" + activeScoreSubject}
+                  {"#" + activeScoreSubjects[0]}
                 </Text>
               </Flex>
               <Flex color="blue" fontSize="md">
@@ -130,13 +152,17 @@ export const ScoreCard: React.FC<{
                         whiteSpace="nowrap"
                         fontWeight={
                           changedSubjects &&
-                          changedSubjects.includes(score.subjectName)
+                          changedSubjects.some(
+                            (s) => s.subject === score.subjectName
+                          )
                             ? "bold"
                             : "normal"
                         }
                         color={
                           changedSubjects &&
-                          changedSubjects.includes(score.subjectName)
+                          changedSubjects.some(
+                            (s) => s.subject === score.subjectName
+                          )
                             ? "green"
                             : "black"
                         }
@@ -149,13 +175,17 @@ export const ScoreCard: React.FC<{
                         whiteSpace="nowrap"
                         fontWeight={
                           changedSubjects &&
-                          changedSubjects.includes(score.subjectName)
+                          changedSubjects.some(
+                            (s) => s.subject === score.subjectName
+                          )
                             ? "bold"
                             : "normal"
                         }
                         color={
                           changedSubjects &&
-                          changedSubjects.includes(score.subjectName)
+                          changedSubjects.some(
+                            (s) => s.subject === score.subjectName
+                          )
                             ? "green"
                             : "black"
                         }
