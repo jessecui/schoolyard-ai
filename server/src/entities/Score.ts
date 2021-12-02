@@ -1,5 +1,12 @@
 import { Field, ObjectType } from "type-graphql";
-import { Entity, BaseEntity, PrimaryColumn, ManyToOne, Column } from "typeorm";
+import {
+  Entity,
+  BaseEntity,
+  PrimaryColumn,
+  ManyToOne,
+  Column,
+  JoinColumn,
+} from "typeorm";
 import { Subject } from "./Subject";
 import { User } from "./User";
 
@@ -13,6 +20,7 @@ export class Score extends BaseEntity {
   @ManyToOne(() => Subject, (subject) => subject.scores, {
     onDelete: "CASCADE",
   })
+  @JoinColumn({ name: "subjectName" })
   subject: Subject;
 
   @Field()

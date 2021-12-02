@@ -1,5 +1,5 @@
 import { ObjectType, Field } from "type-graphql";
-import { Entity, BaseEntity, PrimaryColumn, OneToMany } from "typeorm";
+import { Entity, BaseEntity, PrimaryColumn, OneToMany, JoinColumn } from "typeorm";
 import { QuestionSubject } from "./QuestionSubject";
 import { Score } from "./Score";
 import { SentenceSubject } from "./SentenceSubject";
@@ -16,19 +16,13 @@ export class Subject extends BaseEntity {
 
   @OneToMany(
     () => SentenceSubject,
-    (sentenceSubject) => sentenceSubject.subject,
-    {
-      onDelete: "CASCADE",
-    }
+    (sentenceSubject) => sentenceSubject.subject,    
   )
   sentenceSubjects: SentenceSubject[];
 
   @OneToMany(
     () => QuestionSubject,
-    (questionSubject) => questionSubject.subject,
-    {
-      onDelete: "CASCADE",
-    }
+    (questionSubject) => questionSubject.subject,    
   )
   questionSubjects: QuestionSubject[];
 }

@@ -177,9 +177,11 @@ export const EditParagraph: React.FC<{}> = ({}) => {
               id: Number(router.query.id),
               paragraphInput: {
                 text: values.summarySentence.trim(),
-                childrenText: values.explanationSentences.map(
-                  (sentence: string) => sentence.trim()
-                ),
+                childrenText: values.explanationSentences
+                  ? values.explanationSentences.map((sentence: string) =>
+                      sentence.trim()
+                    )
+                  : [],
                 subjects: subjectsArray,
               },
             },
@@ -399,7 +401,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                     <HStack spacing="6px">
                       {props.values.subjects
                         ? props.values.subjects.split(",").map((subject) => {
-                            subject = subject.trim();
+                            subject = subject.trim().toLowerCase();
                             return subject ? (
                               <Flex align="center" key={subject}>
                                 <Circle
