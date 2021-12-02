@@ -1,5 +1,11 @@
 import { Box } from "@chakra-ui/layout";
-import { Skeleton, SkeletonCircle, SkeletonText, Stack, Text } from "@chakra-ui/react";
+import {
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { useMeQuery } from "../generated/graphql";
@@ -11,9 +17,15 @@ const Review: React.FC<{}> = ({}) => {
 
   if (meData?.me?.questionReviews && meData.me.questionReviews.length > 0) {
     router.push("/review/" + meData.me.questionReviews[0].questionId);
+    return (
+      <Stack>
+        <SkeletonCircle size="10" />
+        <SkeletonText mt="4" noOfLines={5} spacing="4" />
+      </Stack>
+    );
   }
 
-  return !meLoading && !meData?.me?.questionReviews ? (
+  return (
     <Box
       border="2px"
       borderColor="grayLight"
@@ -23,11 +35,6 @@ const Review: React.FC<{}> = ({}) => {
     >
       <Text fontSize="md">You don't have any questions for review.</Text>
     </Box>
-  ) : (
-    <Stack>
-      <SkeletonCircle size='10' />
-      <SkeletonText mt='4' noOfLines={5} spacing='4' />      
-    </Stack>
   );
 };
 
