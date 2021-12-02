@@ -11,10 +11,10 @@ import { Navbar } from "./Navbar";
 import { ScoreCard } from "./ScoreCard";
 import { SideQuestions } from "./SideQuestions";
 
-export interface ChangedSubject  {
+export interface ChangedSubject {
   subject: string;
-  oldStatus: ReviewStatus
-  newStatus: ReviewStatus
+  oldStatus: ReviewStatus;
+  newStatus: ReviewStatus;
 }
 
 export const SiteLayout: React.FC<{}> = ({ children }) => {
@@ -45,7 +45,11 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
           <GridItem colSpan={4}>
             <Container maxW="container.sm">
               {isValidElement(children) &&
-                cloneElement(children, { setAvailableQuestions })}
+                cloneElement(children, {
+                  setAvailableQuestions,
+                  setChangedSubjects,
+                  setActiveScoreSubjects,
+                })}
             </Container>
           </GridItem>
           <GridItem colSpan={3}>

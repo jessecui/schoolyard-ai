@@ -40,6 +40,7 @@ import {
   RiThumbUpFill,
   RiThumbUpLine,
 } from "react-icons/ri";
+import { ChangedSubject } from "../../components/SiteLayout";
 import {
   AddQuestionVoteMutation,
   AddSentenceVoteMutation,
@@ -50,6 +51,7 @@ import {
   QuestionReviewDocument,
   QuestionReviewQuery,
   ReviewStatus,
+  Score,
   UpdateQuestionReviewMutation,
   useAddQuestionViewMutation,
   useAddQuestionVoteMutation,
@@ -59,12 +61,16 @@ import {
   useMeQuery,
   useQuestionQuery,
   useQuestionReviewQuery,
+  User,
   useUpdateQuestionReviewMutation,
   VoteType,
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
-const Review: React.FC<{}> = ({}) => {
+const Review: React.FC<{
+  setActiveScoreSubjects: React.Dispatch<React.SetStateAction<string[]>>;
+  setChangedSubjects: React.Dispatch<React.SetStateAction<ChangedSubject[]>>;
+}> = ({ setActiveScoreSubjects, setChangedSubjects }) => {
   const router = useRouter();
   const { data, loading } = useQuestionQuery({
     variables: { id: router.query.id ? Number(router.query.id) : -1 },
@@ -87,7 +93,12 @@ const Review: React.FC<{}> = ({}) => {
   });
 
   useEffect(() => {
-    if (router.query.id && !reviewLoading && !reviewData?.questionReview) {
+    if (
+      meData?.me &&
+      router.query.id &&
+      !reviewLoading &&
+      !reviewData?.questionReview
+    ) {
       createQuestionReview({
         variables: {
           questionId: Number(router.query.id),
@@ -95,23 +106,76 @@ const Review: React.FC<{}> = ({}) => {
         },
         update: (cache, { data: responseData }) => {
           if (meData?.me && responseData?.createQuestionReview) {
-            let updatedMeData = Object.assign({}, meData.me);
-            updatedMeData.questionReviews = [
-              ...updatedMeData.questionReviews,
-              responseData.createQuestionReview,
-            ];
-            cache.writeQuery<MeQuery>({
+            setActiveScoreSubjects([]);
+            const cachedMeQuery = cache.readQuery<MeQuery>({
               query: MeDocument,
-              data: {
-                __typename: "Query",
-                me: updatedMeData,
-              },
             });
+
+            const updatedMeData = Object.assign({}, cachedMeQuery?.me) as User;
+
+            if (updatedMeData) {
+              updatedMeData.questionReviews = [
+                responseData.createQuestionReview as QuestionReview,
+                ...updatedMeData.questionReviews,
+              ];
+
+              const updatedScores = Object.assign(
+                [],
+                updatedMeData.scores
+              ) as Score[];
+
+              const newScores: Score[] = [];
+
+              setChangedSubjects(
+                responseData.createQuestionReview.question.subjects.map(
+                  (subject) => {
+                    return {
+                      subject: subject,
+                      oldStatus: ReviewStatus.Queued,
+                      newStatus: ReviewStatus.Queued,
+                    };
+                  }
+                )
+              );
+
+              responseData.createQuestionReview.question.subjects.forEach(
+                (subject) => {
+                  const scoreIndex = updatedMeData.scores.findIndex(
+                    (score) => score.subjectName == subject
+                  );
+                  if (scoreIndex >= 0) {
+                    const updatedScore = Object.assign(
+                      {},
+                      updatedScores[scoreIndex]
+                    );
+                    updatedScore.queued = updatedScore.queued + 1;
+                    updatedScores[scoreIndex] = updatedScore;
+                  } else {
+                    newScores.push({
+                      __typename: "Score",
+                      subjectName: subject,
+                      queued: 1,
+                      incorrect: 0,
+                      correct: 0,
+                    } as Score);
+                  }
+                }
+              );
+              updatedMeData.scores = updatedScores.concat(newScores);
+
+              cache.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  __typename: "Query",
+                  me: updatedMeData,
+                },
+              });
+            }
           }
         },
       });
     }
-  }, [router.query.id]);
+  }, [router.query.id, reviewLoading, meData?.me]);
 
   let otherQuestions: QuestionReview[] = [];
   let otherAvailableQuestions: QuestionReview[] = [];
@@ -260,7 +324,7 @@ const Review: React.FC<{}> = ({}) => {
           validateOnChange={false}
           validateOnBlur={false}
           onSubmit={async (values: any, { setStatus }) => {
-            let reviewStatus;
+            let reviewStatus: ReviewStatus;
             if (
               values.answerBox.toLowerCase() ===
               question.answer[0].toLowerCase()
@@ -288,6 +352,14 @@ const Review: React.FC<{}> = ({}) => {
                     cache,
                     responseData.updateQuestionReview as QuestionReview
                   );
+                  if (reviewData?.questionReview?.reviewStatus) {
+                    updateScorecardAfterUpdateQuestionReview(
+                      cache,
+                      responseData.updateQuestionReview.question.subjects,
+                      reviewData.questionReview.reviewStatus,
+                      reviewStatus
+                    );
+                  }
                 }
               },
             });
@@ -361,7 +433,7 @@ const Review: React.FC<{}> = ({}) => {
           validateOnChange={false}
           validateOnBlur={false}
           onSubmit={async (values: any, { setStatus }) => {
-            let reviewStatus;
+            let reviewStatus: ReviewStatus;
             if (values.radioGroup === question.answer[0]) {
               setStatus("correct");
               reviewStatus = ReviewStatus.Correct;
@@ -386,6 +458,14 @@ const Review: React.FC<{}> = ({}) => {
                     cache,
                     responseData.updateQuestionReview as QuestionReview
                   );
+                  if (reviewData?.questionReview?.reviewStatus) {
+                    updateScorecardAfterUpdateQuestionReview(
+                      cache,
+                      responseData.updateQuestionReview.question.subjects,
+                      reviewData.questionReview.reviewStatus,
+                      reviewStatus
+                    );
+                  }
                 }
               },
             });
@@ -481,7 +561,7 @@ const Review: React.FC<{}> = ({}) => {
               for (var a of as) if (!bs.has(a)) return false;
               return true;
             };
-            let reviewStatus;
+            let reviewStatus: ReviewStatus;
             if (
               eqSet(new Set(values.checkboxGroup), new Set(question.answer))
             ) {
@@ -508,6 +588,14 @@ const Review: React.FC<{}> = ({}) => {
                     cache,
                     responseData.updateQuestionReview as QuestionReview
                   );
+                  if (reviewData?.questionReview?.reviewStatus) {
+                    updateScorecardAfterUpdateQuestionReview(
+                      cache,
+                      responseData.updateQuestionReview.question.subjects,
+                      reviewData.questionReview.reviewStatus,
+                      reviewStatus
+                    );
+                  }
                 }
               },
             });
@@ -604,6 +692,75 @@ const Review: React.FC<{}> = ({}) => {
   if (meData?.me?.subjectColors) {
     subjectToColors = JSON.parse(meData.me.subjectColors);
   }
+
+  const updateScorecardAfterUpdateQuestionReview = (
+    cache: ApolloCache<UpdateQuestionReviewMutation>,
+    subjects: string[],
+    oldStatus: ReviewStatus,
+    newStatus: ReviewStatus
+  ) => {
+    if (meData?.me) {
+      // setActiveScoreSubjects(subjects);
+
+      // setChangedSubjects(
+      //   subjects.map((subject) => {
+      //     return {
+      //       subject,
+      //       oldStatus,
+      //       newStatus,
+      //     };
+      //   })
+      // );
+
+      const cachedMeQuery = cache.readQuery<MeQuery>({
+        query: MeDocument,
+      });
+      const updatedMeData = Object.assign({}, cachedMeQuery?.me) as User;
+
+      if (updatedMeData) {
+        const updatedScores = Object.assign(
+          [],
+          updatedMeData.scores
+        ) as Score[];
+
+        subjects.forEach((subject) => {
+          const scoreIndex = updatedMeData.scores.findIndex(
+            (score) => score.subjectName == subject
+          );
+          if (scoreIndex >= 0) {
+            const updatedScore = Object.assign({}, updatedScores[scoreIndex]);
+            updatedScore.queued =
+              oldStatus == ReviewStatus.Queued
+                ? updatedScore.queued - 1
+                : newStatus == ReviewStatus.Queued
+                ? updatedScore.queued + 1
+                : updatedScore.queued;
+            updatedScore.incorrect =
+              oldStatus == ReviewStatus.Incorrect
+                ? updatedScore.incorrect - 1
+                : newStatus == ReviewStatus.Incorrect
+                ? updatedScore.incorrect + 1
+                : updatedScore.incorrect;
+            updatedScore.correct =
+              oldStatus == ReviewStatus.Correct
+                ? updatedScore.correct - 1
+                : newStatus == ReviewStatus.Correct
+                ? updatedScore.correct + 1
+                : updatedScore.correct;
+            updatedScores[scoreIndex] = updatedScore;
+          }
+        });
+        updatedMeData.scores = updatedScores;
+        cache.writeQuery<MeQuery>({
+          query: MeDocument,
+          data: {
+            __typename: "Query",
+            me: updatedMeData,
+          },
+        });
+      }
+    }
+  };
 
   return data?.question ? (
     <>
