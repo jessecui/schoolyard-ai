@@ -1,5 +1,12 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from "typeorm";
 import { Sentence } from "./Sentence";
 import { Subject } from "./Subject";
 
@@ -19,7 +26,10 @@ export class SentenceSubject extends BaseEntity {
   @PrimaryColumn()
   subjectName: string;
 
-  @ManyToOne(() => Subject, (subject) => subject.sentenceSubjects)
+  @ManyToOne(() => Subject, (subject) => subject.sentenceSubjects, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "subjectName" })
   subject: Subject;
 
   @Field()

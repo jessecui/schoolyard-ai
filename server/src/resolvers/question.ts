@@ -22,6 +22,7 @@ import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
 import { QuestionSubject } from "../entities/QuestionSubject";
 import { Subject } from "../entities/Subject";
+import { SentenceSubject } from "../entities/SentenceSubject";
 
 @InputType()
 class QuestionInput {
@@ -55,10 +56,10 @@ const insertQuestionSubjects = async (
   if (update) {
     await QuestionSubject.delete({ questionId });
   }
-  await getConnection().transaction(async (manager) => {    
+  await getConnection().transaction(async (manager) => {
     await Promise.all(
       subjects.map(async (subjectName, index) => {
-        subjectName = subjectName.trim();        
+        subjectName = subjectName.trim().toLowerCase();
         await manager
           .createQueryBuilder()
           .insert()
@@ -71,10 +72,28 @@ const insertQuestionSubjects = async (
           .insert()
           .into(QuestionSubject)
           .values({ questionId, subjectName, order: index })
+          .orIgnore()
           .execute();
       })
     );
   });
+};
+
+const checkSubjectsAndDelete = async (subjects: string[]) => {
+  await Promise.all(
+    subjects.map(async (subject) => {
+      subject = subject.trim().toLowerCase();
+      const questionCounts = await QuestionSubject.count({
+        subjectName: subject,
+      });
+      const sentenceCounts = await SentenceSubject.count({
+        subjectName: subject,
+      });
+      if (!questionCounts && !sentenceCounts) {
+        await Subject.delete({ subjectName: subject });
+      }
+    })
+  );
 };
 
 @Resolver(Question)
@@ -99,8 +118,8 @@ export class QuestionResolver {
       skip: 0,
       take: 10,
       order: {
-        order: "ASC"
-      }
+        order: "ASC",
+      },
     });
     return subjects.map((subject) => subject.subjectName);
   }
@@ -138,7 +157,7 @@ export class QuestionResolver {
     if (questionInput.questionType == QuestionType.TEXT) {
       questionInput.choices = undefined;
     }
-    const {subjects, ...otherInputs} = questionInput;
+    const { subjects, ...otherInputs } = questionInput;
     const rawResult = await getConnection()
       .createQueryBuilder()
       .insert()
@@ -207,7 +226,7 @@ export class QuestionResolver {
     if (questionInput.questionType == QuestionType.TEXT) {
       questionInput.choices = undefined;
     }
-    const {subjects, ...otherInputs} = questionInput;
+    const { subjects, ...otherInputs } = questionInput;
     const rawResult = await getConnection()
       .createQueryBuilder()
       .update(Question)
@@ -217,8 +236,8 @@ export class QuestionResolver {
         teacherId: req.session.userId,
       })
       .returning("*")
-      .execute();    
-      
+      .execute();
+
     const result = rawResult.raw[0] as Question;
     insertQuestionSubjects(subjects, result.id, true);
     return result;
@@ -230,7 +249,16 @@ export class QuestionResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    await Question.delete({ id, teacherId: req.session.userId });
+    // Retrieve subjects
+    const subjectsToCheck = (
+      await QuestionSubject.find({
+        where: { questionId: id },
+        skip: 0,
+        take: 10,
+      })
+    ).map((questionSubject) => questionSubject.subjectName);    
+    await Question.delete({ id, teacherId: req.session.userId });    
+    await checkSubjectsAndDelete(subjectsToCheck);
     return true;
   }
 

@@ -23,6 +23,7 @@ import {
 import { Cloning } from "../entities/Cloning";
 import { ParentChild } from "../entities/ParentChild";
 import { Question } from "../entities/Question";
+import { QuestionSubject } from "../entities/QuestionSubject";
 import { VoteType } from "../entities/QuestionVote";
 import { Sentence } from "../entities/Sentence";
 import { SentenceSubject } from "../entities/SentenceSubject";
@@ -66,7 +67,7 @@ const insertSentenceSubjects = async (
     }
     await Promise.all(
       subjects.map(async (subjectName, index) => {
-        subjectName = subjectName.trim();        
+        subjectName = subjectName.trim().toLowerCase();
         await manager
           .createQueryBuilder()
           .insert()
@@ -79,10 +80,28 @@ const insertSentenceSubjects = async (
           .insert()
           .into(SentenceSubject)
           .values({ sentenceId, subjectName, order: index })
+          .orIgnore()
           .execute();
       })
     );
   });
+};
+
+const checkSubjectsAndDelete = async (subjects: string[]) => {
+  await Promise.all(
+    subjects.map(async (subject) => {
+      subject = subject.trim().toLowerCase();
+      const questionCounts = await QuestionSubject.count({
+        subjectName: subject,
+      });
+      const sentenceCounts = await SentenceSubject.count({
+        subjectName: subject,
+      });
+      if (!questionCounts && !sentenceCounts) {
+        await Subject.delete({ subjectName: subject });
+      }
+    })
+  );
 };
 
 const bfsClones = async (
@@ -211,8 +230,8 @@ export class SentenceResolver {
       skip: 0,
       take: 10,
       order: {
-        order: "ASC"
-      }
+        order: "ASC",
+      },
     });
     return subjects.map((subject) => subject.subjectName);
   }
@@ -638,7 +657,20 @@ export class SentenceResolver {
       return element !== undefined;
     });
 
+    let subjectsToCheck: Set<string> = new Set();
+
     children.forEach(async (child) => {
+      // Retrieve the child's subjects
+      (
+        await SentenceSubject.find({
+          where: { sentenceId: child!.id },
+          skip: 0,
+          take: 10,
+        })
+      )
+        .map((sentenceSubject) => sentenceSubject.subjectName)
+        .forEach((subject) => subjectsToCheck.add(subject));
+
       // Before deleting children, connect the child's clones
       let olderCloneRelation = await Cloning.findOne({
         where: { youngerCloneId: child!.id },
@@ -698,8 +730,23 @@ export class SentenceResolver {
       }
     }
 
+    // Retrieve subjects
+    (
+      await SentenceSubject.find({
+        where: { sentenceId: id },
+        skip: 0,
+        take: 10,
+      })
+    )
+      .map((sentenceSubject) => sentenceSubject.subjectName)
+      .forEach((subject) => subjectsToCheck.add(subject));
+
     // Delete parent
     await Sentence.delete({ id, teacherId: req.session.userId });
+
+    // Delete subjects if necessary
+    await checkSubjectsAndDelete(Array.from(subjectsToCheck));
+
     return true;
   }
 

@@ -584,7 +584,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                   <HStack spacing="6px">
                     {props.values.subjects
                       ? props.values.subjects.split(",").map((subject) => {
-                          subject = subject.trim();
+                          subject = subject.trim().toLowerCase();
                           return subject ? (
                             <Flex align="center" key={subject}>
                               <Circle
