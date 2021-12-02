@@ -12,16 +12,19 @@ import {
 import React, { useState } from "react";
 import { Score, useMeQuery } from "../generated/graphql";
 
-export const ScoreCard: React.FC<{}> = ({}) => {
+export const ScoreCard: React.FC<{
+  activeScoreSubject: string;
+  setActiveScoreSubject: React.Dispatch<React.SetStateAction<string>>;
+  changedSubjects: string[];
+}> = ({ activeScoreSubject, setActiveScoreSubject, changedSubjects }) => {
   const { data: meData, loading: meLoading } = useMeQuery();
-  const [activeSubject, setActiveSubject] = useState("");
 
   let subjectToColors: Record<string, string> = {};
   let activeScore: Score | null = null;
   if (meData?.me) {
     subjectToColors = JSON.parse(meData.me.subjectColors);
     activeScore = meData.me.scores.find(
-      (score) => score.subjectName == activeSubject
+      (score) => score.subjectName == activeScoreSubject
     ) as Score;
   }
 
@@ -38,9 +41,9 @@ export const ScoreCard: React.FC<{}> = ({}) => {
       </Text>
       {meData.me.scores.length > 0 && (
         <Box>
-          {activeSubject ? (
+          {activeScoreSubject ? (
             <Button
-              onClick={() => setActiveSubject("")}
+              onClick={() => setActiveScoreSubject("")}
               bg="none"
               color="iris"
               _hover={{ bg: "none", color: "irisDark" }}
@@ -55,8 +58,8 @@ export const ScoreCard: React.FC<{}> = ({}) => {
               size="sm"
               mt={2}
               mb={3}
-              value={activeSubject}
-              onChange={(e) => setActiveSubject(e.target.value)}
+              value={activeScoreSubject}
+              onChange={(e) => setActiveScoreSubject(e.target.value)}
             >
               {meData.me.scores.map((score) => (
                 <option key={score.subjectName} value={score.subjectName}>
@@ -65,20 +68,20 @@ export const ScoreCard: React.FC<{}> = ({}) => {
               ))}
             </Select>
           )}
-          {activeSubject && activeScore ? (
+          {activeScoreSubject && activeScore ? (
             <Box>
               <Flex align="center" mb={2}>
                 <Circle
                   mr="4px"
                   size={4}
                   bg={
-                    subjectToColors[activeSubject]
-                      ? subjectToColors[activeSubject]
+                    subjectToColors[activeScoreSubject]
+                      ? subjectToColors[activeScoreSubject]
                       : "grayMain"
                   }
                 />
                 <Text fontSize="md" whiteSpace="nowrap" fontWeight="bold">
-                  {"#" + activeSubject}
+                  {"#" + activeScoreSubject}
                 </Text>
               </Flex>
               <Flex color="blue" fontSize="md">
@@ -122,11 +125,41 @@ export const ScoreCard: React.FC<{}> = ({}) => {
                             : "grayMain"
                         }
                       />
-                      <Text fontSize="sm" whiteSpace="nowrap">
+                      <Text
+                        fontSize="sm"
+                        whiteSpace="nowrap"
+                        fontWeight={
+                          changedSubjects &&
+                          changedSubjects.includes(score.subjectName)
+                            ? "bold"
+                            : "normal"
+                        }
+                        color={
+                          changedSubjects &&
+                          changedSubjects.includes(score.subjectName)
+                            ? "green"
+                            : "black"
+                        }
+                      >
                         {"#" + score.subjectName.toLowerCase()}
                       </Text>
                       <Spacer />
-                      <Text fontSize="sm" whiteSpace="nowrap">
+                      <Text
+                        fontSize="sm"
+                        whiteSpace="nowrap"
+                        fontWeight={
+                          changedSubjects &&
+                          changedSubjects.includes(score.subjectName)
+                            ? "bold"
+                            : "normal"
+                        }
+                        color={
+                          changedSubjects &&
+                          changedSubjects.includes(score.subjectName)
+                            ? "green"
+                            : "black"
+                        }
+                      >
                         {score.queued + score.correct + score.incorrect}
                       </Text>
                     </Flex>

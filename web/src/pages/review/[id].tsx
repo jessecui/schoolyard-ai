@@ -610,7 +610,7 @@ const Review: React.FC<{}> = ({}) => {
       {router.query.questionDeleteSuccess && (
         <Alert status="success" mb={2}>
           <AlertIcon />
-          Question successfully deleted
+          <Text fontSize="lg">Question successfully deleted</Text>
           <CloseButton
             position="absolute"
             right="8px"
