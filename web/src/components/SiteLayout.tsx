@@ -6,16 +6,22 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Question } from "../generated/graphql";
+import { Question, ReviewStatus } from "../generated/graphql";
 import { Navbar } from "./Navbar";
 import { ScoreCard } from "./ScoreCard";
 import { SideQuestions } from "./SideQuestions";
 
+export interface ChangedSubject  {
+  subject: string;
+  oldStatus: ReviewStatus
+  newStatus: ReviewStatus
+}
+
 export const SiteLayout: React.FC<{}> = ({ children }) => {
   const router = useRouter();
   const [availableQuestions, setAvailableQuestions] = useState<Question[]>([]);
-  const [activeScoreSubject, setActiveScoreSubject] = useState("");
-  const [changedSubjects, setChangedSubjects] = useState<string[]>([]);
+  const [activeScoreSubjects, setActiveScoreSubjects] = useState<string[]>([]);
+  const [changedSubjects, setChangedSubjects] = useState<ChangedSubject[]>([]);
 
   useEffect(() => {
     if (router.pathname !== "/learn/[id]") {
@@ -32,7 +38,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
           <GridItem colSpan={3}>
             <SideQuestions
               availableQuestions={availableQuestions}
-              setActiveScoreSubject={setActiveScoreSubject}
+              setActiveScoreSubjects={setActiveScoreSubjects}
               setChangedSubjects={setChangedSubjects}
             />
           </GridItem>
@@ -44,9 +50,10 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
           </GridItem>
           <GridItem colSpan={3}>
             <ScoreCard
-              activeScoreSubject={activeScoreSubject}
-              setActiveScoreSubject={setActiveScoreSubject}
+              activeScoreSubjects={activeScoreSubjects}
+              setActiveScoreSubjects={setActiveScoreSubjects}
               changedSubjects={changedSubjects}
+              setChangedSubjects={setChangedSubjects}
             />
           </GridItem>
         </Grid>

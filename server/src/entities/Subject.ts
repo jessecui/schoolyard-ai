@@ -1,5 +1,5 @@
 import { ObjectType, Field } from "type-graphql";
-import { Entity, BaseEntity, PrimaryColumn, OneToMany, JoinColumn } from "typeorm";
+import { Entity, BaseEntity, PrimaryColumn, OneToMany } from "typeorm";
 import { QuestionSubject } from "./QuestionSubject";
 import { Score } from "./Score";
 import { SentenceSubject } from "./SentenceSubject";

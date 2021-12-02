@@ -24,12 +24,13 @@ import {
   useMeQuery,
   User,
 } from "../generated/graphql";
+import { ChangedSubject } from "./SiteLayout";
 
 export const SideQuestions: React.FC<{
   availableQuestions: Question[];
-  setActiveScoreSubject: React.Dispatch<React.SetStateAction<string>>;
-  setChangedSubjects: React.Dispatch<React.SetStateAction<string[]>>;
-}> = ({ availableQuestions, setActiveScoreSubject, setChangedSubjects }) => {
+  setActiveScoreSubjects: React.Dispatch<React.SetStateAction<string[]>>;
+  setChangedSubjects: React.Dispatch<React.SetStateAction<ChangedSubject[]>>;
+}> = ({ availableQuestions, setActiveScoreSubjects, setChangedSubjects }) => {
   const { data: meData, loading: meLoading } = useMeQuery();
   const [createQuestionReview] = useCreateQuestionReviewMutation();
 
@@ -131,7 +132,7 @@ export const SideQuestions: React.FC<{
                       },
                       update: (cache, { data: responseData }) => {
                         if (meData.me && responseData?.createQuestionReview) {
-                          setActiveScoreSubject("");
+                          setActiveScoreSubjects([]);
                           const cachedMeQuery = cache.readQuery<MeQuery>({
                             query: MeDocument,
                           });
@@ -155,8 +156,15 @@ export const SideQuestions: React.FC<{
                             const newScores: Score[] = [];
 
                             setChangedSubjects(
-                              responseData.createQuestionReview.question
-                                .subjects
+                              responseData.createQuestionReview.question.subjects.map(
+                                (subject) => {
+                                  return {
+                                    subject: subject,
+                                    oldStatus: ReviewStatus.Queued,
+                                    newStatus: ReviewStatus.Queued,
+                                  };
+                                }
+                              )
                             );
 
                             responseData.createQuestionReview.question.subjects.forEach(
