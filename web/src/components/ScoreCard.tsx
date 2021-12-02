@@ -101,11 +101,11 @@ export const ScoreCard: React.FC<{}> = ({}) => {
           ) : (
             <Stack spacing={1}>
               <Flex align="center">
-                <Text fontSize="sm" fontWeight="bold">
+                <Text fontSize="md" fontWeight="bold">
                   Top Subjects
                 </Text>
                 <Spacer />
-                <Text fontSize="sm" fontWeight="bold">
+                <Text fontSize="md" fontWeight="bold">
                   Explored
                 </Text>
               </Flex>
