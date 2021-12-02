@@ -6,10 +6,11 @@ import {
   Flex,
   HStack,
   Icon,
+  Link,
   Stack,
-  Text,
+  Text
 } from "@chakra-ui/react";
-import router from "next/router";
+import NextLink from "next/link";
 import React from "react";
 import { GoChecklist } from "react-icons/go";
 import {
@@ -20,7 +21,7 @@ import {
   ReviewStatus,
   useCreateQuestionReviewMutation,
   useMeQuery,
-  User,
+  User
 } from "../generated/graphql";
 
 export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
@@ -199,24 +200,24 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                 {questionReview.question.question}
               </Text>
               <HStack mt={1}>
-                <Button
-                  bg={
-                    new Date().getTime() >=
-                    new Date(questionReview.dateNextAvailable).getTime()
-                      ? "iris"
-                      : "grayMain"
-                  }
-                  color="white"
-                  size="xs"
-                  onClick={() =>
-                    router.push("/review/" + questionReview.questionId)
-                  }
-                >
-                  <Icon as={GoChecklist} />
-                  <Text ml={2} as="span" fontSize="xs">
-                    answer
-                  </Text>
-                </Button>
+                <NextLink href={"/review/" + questionReview.questionId}>
+                  <Link
+                    color={new Date().getTime() >=
+                      new Date(questionReview.dateNextAvailable).getTime()
+                        ? "iris"
+                        : "grayMain"}
+                    _hover={{ color: new Date().getTime() >=
+                      new Date(questionReview.dateNextAvailable).getTime()
+                        ? "irisDark"
+                        : "gray.800" }}
+                    href={"/review/" + questionReview.questionId}
+                  >
+                    <Icon as={GoChecklist} w="16px" height="16px" />
+                    <Text ml={1} as="span" fontWeight="bold" fontSize="md">
+                      answer
+                    </Text>
+                  </Link>
+                </NextLink>
                 <Box>
                   <StarIcon fontSize="sm" color="grayMain" mr={2} mb={0.5} />
                   <Text fontSize="sm" color="grayMain" as="span">
