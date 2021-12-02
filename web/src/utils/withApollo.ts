@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { createWithApollo } from "./createWithApollo";
 import { NextPageContext } from "next";
-import { PaginatedSentences } from "../generated/graphql";
+import { PaginatedSentences, Score } from "../generated/graphql";
 
 const createClient = (ctx: NextPageContext) =>
   new ApolloClient({
@@ -31,9 +31,16 @@ const createClient = (ctx: NextPageContext) =>
                   ],
                 };
               },
-            },
+            },            
           },
         },
+        User: {
+          fields: {
+            scores: {
+              merge: false
+            }
+          }
+        }
       },
     }),
   });

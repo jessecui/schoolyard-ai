@@ -1,5 +1,5 @@
 import { ApolloCache, gql } from "@apollo/client";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -30,7 +30,7 @@ import {
 import { Field, Form, Formik } from "formik";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BiDotsHorizontalRounded, BiZoomIn } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
@@ -92,90 +92,84 @@ const Review: React.FC<{
     }
   });
 
-  useEffect(() => {
-    if (
-      meData?.me &&
-      router.query.id &&
-      !reviewLoading &&
-      !reviewData?.questionReview
-    ) {
-      createQuestionReview({
-        variables: {
-          questionId: Number(router.query.id),
-          reviewStatus: ReviewStatus.Queued,
-        },
-        update: (cache, { data: responseData }) => {
-          if (meData?.me && responseData?.createQuestionReview) {
-            setActiveScoreSubjects([]);
-            const cachedMeQuery = cache.readQuery<MeQuery>({
-              query: MeDocument,
-            });
+  const createQuestionReviewAndUpdateCache = async () => {
+    await createQuestionReview({
+      variables: {
+        questionId: Number(router.query.id),
+        reviewStatus: ReviewStatus.Queued,
+      },
+      update: (cache, { data: responseData }) => {
+        if (meData?.me && responseData?.createQuestionReview) {
+          setActiveScoreSubjects([]);
+          const cachedMeQuery = cache.readQuery<MeQuery>({
+            query: MeDocument,
+          });
 
-            const updatedMeData = Object.assign({}, cachedMeQuery?.me) as User;
+          const updatedMeData = Object.assign({}, cachedMeQuery?.me) as User;
 
-            if (updatedMeData) {
-              updatedMeData.questionReviews = [
-                responseData.createQuestionReview as QuestionReview,
-                ...updatedMeData.questionReviews,
-              ];
+          if (updatedMeData) {
+            updatedMeData.questionReviews = [
+              responseData.createQuestionReview as QuestionReview,
+              ...updatedMeData.questionReviews,
+            ];
 
-              const updatedScores = Object.assign(
-                [],
-                updatedMeData.scores
-              ) as Score[];
+            const updatedScores = Object.assign(
+              [],
+              updatedMeData.scores
+            ) as Score[];
 
-              const newScores: Score[] = [];
+            const newScores: Score[] = [];
 
-              setChangedSubjects(
-                responseData.createQuestionReview.question.subjects.map(
-                  (subject) => {
-                    return {
-                      subject: subject,
-                      oldStatus: ReviewStatus.Queued,
-                      newStatus: ReviewStatus.Queued,
-                    };
-                  }
-                )
-              );
-
-              responseData.createQuestionReview.question.subjects.forEach(
+            setChangedSubjects(
+              responseData.createQuestionReview.question.subjects.map(
                 (subject) => {
-                  const scoreIndex = updatedMeData.scores.findIndex(
-                    (score) => score.subjectName == subject
-                  );
-                  if (scoreIndex >= 0) {
-                    const updatedScore = Object.assign(
-                      {},
-                      updatedScores[scoreIndex]
-                    );
-                    updatedScore.queued = updatedScore.queued + 1;
-                    updatedScores[scoreIndex] = updatedScore;
-                  } else {
-                    newScores.push({
-                      __typename: "Score",
-                      subjectName: subject,
-                      queued: 1,
-                      incorrect: 0,
-                      correct: 0,
-                    } as Score);
-                  }
+                  return {
+                    subject: subject,
+                    oldStatus: ReviewStatus.Queued,
+                    newStatus: ReviewStatus.Queued,
+                  };
                 }
-              );
-              updatedMeData.scores = updatedScores.concat(newScores);
+              )
+            );
 
-              cache.writeQuery<MeQuery>({
-                query: MeDocument,
-                data: {
-                  __typename: "Query",
-                  me: updatedMeData,
-                },
-              });
-            }
+            responseData.createQuestionReview.question.subjects.forEach(
+              (subject) => {
+                const scoreIndex = updatedMeData.scores.findIndex(
+                  (score) => score.subjectName == subject
+                );
+                if (scoreIndex >= 0) {
+                  const updatedScore = Object.assign(
+                    {},
+                    updatedScores[scoreIndex]
+                  );
+                  updatedScore.queued = updatedScore.queued + 1;
+                  updatedScores[scoreIndex] = updatedScore;
+                } else {
+                  newScores.push({
+                    __typename: "Score",
+                    subjectName: subject,
+                    queued: 1,
+                    incorrect: 0,
+                    correct: 0,
+                  } as Score);
+                }
+              }
+            );
+            updatedMeData.scores = updatedScores.concat(newScores);
+
+            cache.writeQuery<MeQuery>({
+              query: MeDocument,
+              data: {
+                __typename: "Query",
+                me: updatedMeData,
+              },
+            });
           }
-        },
-      });
-    }
-  }, [router.query.id, reviewLoading, meData?.me]);
+        }
+      },
+      refetchQueries: [QuestionReviewDocument],
+    });
+  };
 
   let otherQuestions: QuestionReview[] = [];
   let otherAvailableQuestions: QuestionReview[] = [];
@@ -378,6 +372,7 @@ const Review: React.FC<{
                       border="2px"
                       borderColor="grayLight"
                       isDisabled={
+                        !reviewData?.questionReview ||
                         questionIsLocked ||
                         props.status === "correct" ||
                         props.status === "incorrect"
@@ -391,6 +386,7 @@ const Review: React.FC<{
                 <Button
                   isLoading={props.isSubmitting}
                   isDisabled={
+                    !reviewData?.questionReview ||
                     questionIsLocked ||
                     props.status === "correct" ||
                     props.status === "incorrect"
@@ -492,6 +488,7 @@ const Review: React.FC<{
                             value={choice}
                             my="4px"
                             isDisabled={
+                              !reviewData?.questionReview ||
                               questionIsLocked ||
                               props.status === "correct" ||
                               props.status === "incorrect"
@@ -514,6 +511,7 @@ const Review: React.FC<{
                 <Button
                   isLoading={props.isSubmitting}
                   isDisabled={
+                    !reviewData?.questionReview ||
                     questionIsLocked ||
                     props.status === "correct" ||
                     props.status === "incorrect"
@@ -620,6 +618,7 @@ const Review: React.FC<{
                           key={String(question.id) + choice}
                           value={choice}
                           isDisabled={
+                            !reviewData?.questionReview ||
                             questionIsLocked ||
                             props.status === "correct" ||
                             props.status === "incorrect"
@@ -641,6 +640,7 @@ const Review: React.FC<{
                 <Button
                   isLoading={props.isSubmitting}
                   isDisabled={
+                    !reviewData?.questionReview ||
                     questionIsLocked ||
                     props.status === "correct" ||
                     props.status === "incorrect"
@@ -842,6 +842,8 @@ const Review: React.FC<{
                         meData!.me!.questionReviews.filter(
                           (review) => review.questionId != data.question?.id
                         );
+
+                      // Delete from question review cache
                       cache.writeFragment({
                         id: "User:" + meData?.me?.id,
                         fragment: gql`
@@ -853,6 +855,63 @@ const Review: React.FC<{
                           questionReviews: updatedQuestionReviews,
                         },
                       });
+
+                      // Delete from scores cache
+                      const cachedMeQuery = cache.readQuery<MeQuery>({
+                        query: MeDocument,
+                      });
+                      const updatedMeData = Object.assign(
+                        {},
+                        cachedMeQuery?.me
+                      ) as User;
+
+                      if (updatedMeData) {
+                        let updatedScores = Object.assign(
+                          [],
+                          updatedMeData.scores
+                        ) as Score[];
+
+                        data.question!.subjects.forEach((subject) => {
+                          const scoreIndex = updatedMeData.scores.findIndex(
+                            (score) => score.subjectName == subject
+                          );
+                          if (scoreIndex >= 0) {
+                            const updatedScore = Object.assign(
+                              {},
+                              updatedScores[scoreIndex]
+                            );
+                            updatedScore.queued =
+                              reviewData?.questionReview?.reviewStatus ==
+                              ReviewStatus.Queued
+                                ? updatedScore.queued - 1
+                                : updatedScore.queued;
+                            updatedScore.incorrect =
+                              reviewData?.questionReview?.reviewStatus ==
+                              ReviewStatus.Incorrect
+                                ? updatedScore.incorrect - 1
+                                : updatedScore.incorrect;
+                            updatedScore.correct =
+                              reviewData?.questionReview?.reviewStatus ==
+                              ReviewStatus.Correct
+                                ? updatedScore.correct - 1
+                                : updatedScore.correct;
+                            updatedScores[scoreIndex] = updatedScore;
+                          }
+                        });
+                        updatedScores = updatedScores.filter(
+                          (score) =>
+                            score.queued || score.incorrect || score.correct
+                        );
+                        updatedMeData.scores = updatedScores;
+
+                        cache.writeQuery<MeQuery>({
+                          query: MeDocument,
+                          data: {
+                            __typename: "Query",
+                            me: updatedMeData,
+                          },
+                        });
+                      }
                     },
                   });
                   if (otherQuestions.length > 0) {
@@ -1034,6 +1093,33 @@ const Review: React.FC<{
           </Button>
         )}
       </Box>
+      {!reviewData?.questionReview && (
+        <Box
+          border="2px"
+          borderColor="grayLight"
+          borderRadius="md"
+          bg="White"
+          p={4}
+          mt={2}
+        >
+          <Text fontSize="lg">
+            You have not saved this question yet. This question can be answered
+            once you save it.
+          </Text>
+          <Button
+            mt={1}
+            bg="mint"
+            color="white"
+            size="sm"
+            onClick={() => createQuestionReviewAndUpdateCache()}
+          >
+            <StarIcon mr={2} />
+            <Text as="span" fontSize="lg">
+              save question
+            </Text>
+          </Button>
+        </Box>
+      )}
       {data.question.sentence && questionIsLocked && (
         <Box
           border="2px"
