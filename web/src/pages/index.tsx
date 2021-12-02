@@ -97,7 +97,7 @@ const Index: React.FC<{}> = ({}) => {
       {router.query.deleteSuccess && (
         <Alert status="success" mb={2}>
           <AlertIcon />
-          Sentence successfully deleted
+          <Text fontSize="lg">Sentence successfully deleted</Text>
           <CloseButton
             position="absolute"
             right="8px"

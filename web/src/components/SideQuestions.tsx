@@ -8,7 +8,7 @@ import {
   Icon,
   Link,
   Stack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React from "react";
@@ -19,14 +19,17 @@ import {
   Question,
   QuestionReview,
   ReviewStatus,
+  Score,
   useCreateQuestionReviewMutation,
   useMeQuery,
-  User
+  User,
 } from "../generated/graphql";
 
-export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
-  availableQuestions,
-}) => {
+export const SideQuestions: React.FC<{
+  availableQuestions: Question[];
+  setActiveScoreSubject: React.Dispatch<React.SetStateAction<string>>;
+  setChangedSubjects: React.Dispatch<React.SetStateAction<string[]>>;
+}> = ({ availableQuestions, setActiveScoreSubject, setChangedSubjects }) => {
   const { data: meData, loading: meLoading } = useMeQuery();
   const [createQuestionReview] = useCreateQuestionReviewMutation();
 
@@ -128,6 +131,7 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                       },
                       update: (cache, { data: responseData }) => {
                         if (meData.me && responseData?.createQuestionReview) {
+                          setActiveScoreSubject("");
                           const cachedMeQuery = cache.readQuery<MeQuery>({
                             query: MeDocument,
                           });
@@ -142,6 +146,46 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
                               responseData.createQuestionReview as QuestionReview,
                               ...updatedMeData.questionReviews,
                             ];
+
+                            const updatedScores = Object.assign(
+                              [],
+                              updatedMeData.scores
+                            ) as Score[];
+
+                            const newScores: Score[] = [];
+
+                            setChangedSubjects(
+                              responseData.createQuestionReview.question
+                                .subjects
+                            );
+
+                            responseData.createQuestionReview.question.subjects.forEach(
+                              (subject) => {
+                                const scoreIndex =
+                                  updatedMeData.scores.findIndex(
+                                    (score) => score.subjectName == subject
+                                  );
+                                if (scoreIndex >= 0) {
+                                  const updatedScore = Object.assign(
+                                    {},
+                                    updatedScores[scoreIndex]
+                                  );
+                                  updatedScore.queued = updatedScore.queued + 1;
+                                  updatedScores[scoreIndex] = updatedScore;
+                                } else {
+                                  newScores.push({
+                                    __typename: "Score",
+                                    subjectName: subject,
+                                    queued: 1,
+                                    incorrect: 0,
+                                    correct: 0,
+                                  } as Score);
+                                }
+                              }
+                            );
+                            updatedMeData.scores =
+                              updatedScores.concat(newScores);
+
                             cache.writeQuery<MeQuery>({
                               query: MeDocument,
                               data: {
@@ -202,14 +246,19 @@ export const SideQuestions: React.FC<{ availableQuestions: Question[] }> = ({
               <HStack mt={1}>
                 <NextLink href={"/review/" + questionReview.questionId}>
                   <Link
-                    color={new Date().getTime() >=
+                    color={
+                      new Date().getTime() >=
                       new Date(questionReview.dateNextAvailable).getTime()
                         ? "iris"
-                        : "grayMain"}
-                    _hover={{ color: new Date().getTime() >=
-                      new Date(questionReview.dateNextAvailable).getTime()
-                        ? "irisDark"
-                        : "gray.800" }}
+                        : "grayMain"
+                    }
+                    _hover={{
+                      color:
+                        new Date().getTime() >=
+                        new Date(questionReview.dateNextAvailable).getTime()
+                          ? "irisDark"
+                          : "gray.800",
+                    }}
                     href={"/review/" + questionReview.questionId}
                   >
                     <Icon as={GoChecklist} w="16px" height="16px" />
