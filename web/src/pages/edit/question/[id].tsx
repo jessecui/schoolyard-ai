@@ -95,7 +95,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
   ) => (
     <Stack spacing={4} mt={4}>
       <Box>
-        <Text fontWeight="bold" color="grayMain">
+        <Text fontWeight="bold" color="grayMain" fontSize="sm">
           Answer Options
         </Text>
         <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -365,7 +365,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
             onClick={() => router.push("/review/")}
           />
           <Text
-            fontSize="g"
+            fontSize="md"
             fontWeight="bold"
             textAlign="center"
             color="grayMain"
@@ -432,15 +432,15 @@ export const EditQuestion: React.FC<{}> = ({}) => {
             >
               {questionData?.question?.sentence?.text && (
                 <Box mb={4}>
-                  <Text fontWeight="bold" color="grayMain">
+                  <Text fontWeight="bold" color="grayMain" fontSize="sm">
                     Sentence Being Linked
                   </Text>
                   <Divider borderColor="grayLight" border="1px" mb={2} />
-                  <Text>{questionData.question?.sentence.text}</Text>
+                  <Text fontSize="md">{questionData.question?.sentence.text}</Text>
                 </Box>
               )}
               <Box>
-                <Text fontWeight="bold" color="grayMain">
+                <Text fontWeight="bold" color="grayMain" fontSize="sm">
                   Question
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -462,7 +462,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                 </Field>
               </Box>
               <Box mt={4}>
-                <Text fontWeight="bold" color="grayMain">
+                <Text fontWeight="bold" color="grayMain" fontSize="sm">
                   Question Type
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -498,7 +498,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                 answerBoxes(props)}
               {props.values.questionType == QuestionType.Text && (
                 <Box>
-                  <Text fontWeight="bold" color="grayMain" mt={4}>
+                  <Text fontWeight="bold" color="grayMain" mt={4} fontSize="sm">
                     Answer
                   </Text>
                   <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -537,7 +537,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                 </Box>
               )}
               <Box mt={4}>
-                <Text fontWeight="bold" color="grayMain">
+                <Text fontWeight="bold" color="grayMain" fontSize="sm">
                   Subjects
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
@@ -571,14 +571,14 @@ export const EditQuestion: React.FC<{}> = ({}) => {
               p={4}
               my={2}
             >
-              <Text fontWeight="bold" color="grayMain">
+              <Text fontWeight="bold" color="grayMain" fontSize="sm">
                 Preview
               </Text>
               <Divider borderColor="grayLight" border="1px" mb={2} />
               <Flex align="center">
                 <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
                 <Box>
-                  <Text fontWeight="bold" fontSize="lg">
+                  <Text fontWeight="bold" fontSize="md">
                     {meData?.me?.firstName} {meData?.me?.lastName}
                   </Text>
                   <HStack spacing="6px">
@@ -596,7 +596,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                                     : "grayMain"
                                 }
                               />
-                              <Text size="sm">
+                              <Text fontSize="sm">
                                 {"#" + subject.toLowerCase()}
                               </Text>
                             </Flex>
@@ -646,7 +646,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                             props.values.correctAnswers as string[]
                           ).includes(option)}
                         >
-                          <Text ml={2} fontSize="16px">
+                          <Text ml={2} fontSize="lg">
                             {option}
                           </Text>
                         </Checkbox>
