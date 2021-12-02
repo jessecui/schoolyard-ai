@@ -52,6 +52,11 @@ export class QuestionReviewResolver {
       return null;
     }
 
+    const existingQuestion = await Question.findOne(questionId);
+    if (!existingQuestion) {
+      return null;
+    }
+
     const today = new Date();
     let tomorrow = new Date();
     tomorrow.setUTCDate(today.getUTCDate() + 1);
