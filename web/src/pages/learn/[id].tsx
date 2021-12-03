@@ -453,36 +453,56 @@ const Learn: React.FC<{
             </>
           ) : (
             <>
-              <Text color="grayMain" fontSize="sm">
+              <Center>
                 <Icon
                   mx="4px"
                   height="24px"
                   as={RiThumbUpLine}
+                  color="grayMain"
                   h="18px"
                   w="18px"
                 />
-                {activeSentence.upVoteCount}
-              </Text>
-              <Text color="grayMain" fontSize="sm">
-                <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
-                {activeSentence.downVoteCount}
-              </Text>
+                <Text color="grayMain" fontSize="sm">
+                  {activeSentence.upVoteCount}
+                </Text>
+              </Center>
+              <Center>
+                <Icon
+                  mx="4px"
+                  as={RiThumbDownLine}
+                  color="grayMain"
+                  h="18px"
+                  w="18px"
+                />
+                <Text color="grayMain" fontSize="sm">
+                  {activeSentence.downVoteCount}
+                </Text>
+              </Center>
             </>
           )}
-
-          <Text color="grayMain" fontSize="sm">
-            <Icon as={IoPeople} mr={1} w={5} h={5} />
-            {activeSentence.viewCount +
-              (activeSentence.viewCount == 1 ? " view" : " views")}
-          </Text>
-          <Text color="grayMain" fontSize="sm">
-            <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
-            {new Date(activeSentence.createdAt).toLocaleString("default", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </Text>
+          <Center>
+            <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
+            <Text color="grayMain" fontSize="sm">
+              {activeSentence.viewCount +
+                (activeSentence.viewCount == 1 ? " view" : " views")}
+            </Text>
+          </Center>
+          <Center>
+            <Icon
+              as={RiCalendarEventFill}
+              color="grayMain"
+              mr={1}
+              w={5}
+              h={5}
+            />
+            <Text color="grayMain" fontSize="sm">
+              {new Date(activeSentence.createdAt).toLocaleString("default", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </Text>
+          </Center>
         </HStack>
       </Box>
 
@@ -752,10 +772,12 @@ const Learn: React.FC<{
                       _hover={{ color: "irisDark" }}
                       href={"/learn/" + p.parent?.id}
                     >
-                      <Icon as={IoExpand} w="20px" height="20px" />
-                      <Text ml={1} display="inline" fontSize="sm">
-                        expand
-                      </Text>
+                      <Center justifyContent="left">
+                        <Icon as={IoExpand} w="20px" height="20px" />
+                        <Text ml={1} display="inline" fontSize="sm">
+                          expand
+                        </Text>
+                      </Center>
                     </Link>
                   </NextLink>
                 </Box>

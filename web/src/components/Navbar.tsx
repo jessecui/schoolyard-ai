@@ -7,7 +7,7 @@ import {
   Grid,
   Heading,
   HStack,
-  Link
+  Link,
 } from "@chakra-ui/layout";
 import {
   Container,
@@ -17,15 +17,16 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
   IoListCircle,
-  IoLogOut, IoPersonCircle,
-  IoSettings
+  IoLogOut,
+  IoPersonCircle,
+  IoSettings,
 } from "react-icons/io5";
 import LogoImage from "../../public/images/schoolyard_logo.png";
 import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
@@ -93,7 +94,11 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         <Menu>
           <MenuButton
             as={Button}
-            leftIcon={<Icon color="white" as={IoPersonCircle} w="32px" h="32px" />}
+            leftIcon={
+              <Center>
+                <Icon color="white" as={IoPersonCircle} w="32px" h="32px" />
+              </Center>
+            }
             aria-label="View Profile Options"
             borderRadius="full"
             size="md"
@@ -109,7 +114,9 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
           <MenuList borderColor="grayLight">
             <MenuItem
               icon={
-                <Icon color="grayMain" as={IoListCircle} w="20px" h="20px" />
+                <Center>
+                  <Icon color="grayMain" as={IoListCircle} w="20px" h="20px" />
+                </Center>
               }
             >
               <Text fontSize="md">Activity Log</Text>
@@ -121,13 +128,20 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               >
                 <MenuItem
                   icon={
-                    <Icon color="grayMain" as={IoSettings} w="20px" h="20px" />
+                    <Center>
+                      <Icon
+                        color="grayMain"
+                        as={IoSettings}
+                        w="20px"
+                        h="20px"
+                      />
+                    </Center>
                   }
                 >
                   <Text fontSize="md">Account Settings</Text>
                 </MenuItem>
               </Link>
-            </NextLink>            
+            </NextLink>
             <MenuItem
               icon={<Icon color="grayMain" as={IoLogOut} w="20px" h="20px" />}
               onClick={async () => {
@@ -137,19 +151,14 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               }}
             >
               <Text fontSize="md">Log Out</Text>
-            </MenuItem>            
+            </MenuItem>
           </MenuList>
         </Menu>
       </Flex>
     );
   }
   return (
-    <Flex
-      h="72px"
-      bg="white"      
-      borderBottom="4px solid #ccc"
-      align="center"
-    >
+    <Flex h="72px" bg="white" borderBottom="4px solid #ccc" align="center">
       <Container maxW="container.xl">
         <Grid templateColumns="repeat(3, 1fr)" gap={6}>
           <Flex align="center">

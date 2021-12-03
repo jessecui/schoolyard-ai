@@ -2,6 +2,7 @@ import { StarIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
+  Center,
   Circle,
   Flex,
   HStack,
@@ -269,21 +270,23 @@ export const SideQuestions: React.FC<{
                     }}
                     href={"/review/" + questionReview.questionId}
                   >
-                    <Icon as={GoChecklist} w="16px" height="16px" />
-                    <Text ml={1} as="span" fontWeight="bold" fontSize="md">
-                      answer
-                    </Text>
+                    <Center>
+                      <Icon as={GoChecklist} w="16px" height="16px" />
+                      <Text ml={1} as="span" fontWeight="bold" fontSize="sm">
+                        answer
+                      </Text>
+                    </Center>
                   </Link>
                 </NextLink>
-                <Box>
-                  <StarIcon fontSize="sm" color="grayMain" mr={1.5} mb={0.5} />
+                <Center>
+                  <StarIcon fontSize="sm" color="grayMain" mr={1.5} />
                   <Text fontSize="sm" color="grayMain" as="span">
                     {getTimeDifferenceString(
                       new Date(questionReview.dateCreated),
                       new Date()
                     )}
                   </Text>
-                </Box>
+                </Center>
               </HStack>
             </Box>
           ))}
