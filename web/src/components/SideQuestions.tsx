@@ -104,7 +104,7 @@ export const SideQuestions: React.FC<{
                       <Flex align="center" key={subject}>
                         <Circle
                           mr="4px"
-                          size={4}
+                          size="12px"
                           bg={
                             subjectToColors[subject]
                               ? subjectToColors[subject]
@@ -236,7 +236,7 @@ export const SideQuestions: React.FC<{
                     <Flex align="center" key={subject}>
                       <Circle
                         mr="4px"
-                        size={4}
+                        size="12px"
                         bg={
                           subjectToColors[subject]
                             ? subjectToColors[subject]
@@ -276,7 +276,7 @@ export const SideQuestions: React.FC<{
                   </Link>
                 </NextLink>
                 <Box>
-                  <StarIcon fontSize="sm" color="grayMain" mr={2} mb={0.5} />
+                  <StarIcon fontSize="sm" color="grayMain" mr={1.5} mb={0.5} />
                   <Text fontSize="sm" color="grayMain" as="span">
                     {getTimeDifferenceString(
                       new Date(questionReview.dateCreated),

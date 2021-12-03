@@ -223,7 +223,7 @@ const Learn: React.FC<{
                   <Flex align="center" key={subject}>
                     <Circle
                       mr="4px"
-                      size={4}
+                      size="12px"
                       bg={
                         subjectToColors[subject]
                           ? subjectToColors[subject]

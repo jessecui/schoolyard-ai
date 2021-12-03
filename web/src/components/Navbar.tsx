@@ -7,8 +7,7 @@ import {
   Grid,
   Heading,
   HStack,
-  Link,
-  Spacer,
+  Link
 } from "@chakra-ui/layout";
 import {
   Container,
@@ -16,20 +15,17 @@ import {
   Image,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
   IoListCircle,
-  IoLogOut,
-  IoMail,
-  IoPersonCircle,
-  IoSettings,
+  IoLogOut, IoPersonCircle,
+  IoSettings
 } from "react-icons/io5";
 import LogoImage from "../../public/images/schoolyard_logo.png";
 import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
@@ -97,10 +93,10 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         <Menu>
           <MenuButton
             as={Button}
-            leftIcon={<Icon color="white" as={IoPersonCircle} w={8} h={8} />}
+            leftIcon={<Icon color="white" as={IoPersonCircle} w="32px" h="32px" />}
             aria-label="View Profile Options"
             borderRadius="full"
-            size="lg"
+            size="md"
             bg="iris"
             _hover={{
               bg: "irisDark",
@@ -116,7 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 <Icon color="grayMain" as={IoListCircle} w="20px" h="20px" />
               }
             >
-              <Text fontSize="md">History Log</Text>
+              <Text fontSize="md">Activity Log</Text>
             </MenuItem>
             <NextLink href="/account-settings">
               <Link
@@ -131,12 +127,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   <Text fontSize="md">Account Settings</Text>
                 </MenuItem>
               </Link>
-            </NextLink>
-            <MenuItem
-              icon={<Icon color="grayMain" as={IoMail} w="20px" h="20px" />}
-            >
-              <Text fontSize="md">Contact</Text>
-            </MenuItem>
+            </NextLink>            
             <MenuItem
               icon={<Icon color="grayMain" as={IoLogOut} w="20px" h="20px" />}
               onClick={async () => {
@@ -146,15 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               }}
             >
               <Text fontSize="md">Log Out</Text>
-            </MenuItem>
-            <MenuDivider color="grayLight" />
-            <Flex px={4} color="iris" fontSize="sm">
-              <NextLink href="/terms-of-use">Terms of Use</NextLink>
-              <Spacer />
-              {" | "}
-              <Spacer />
-              <NextLink href="/terms-of-use">Privacy Policy</NextLink>
-            </Flex>
+            </MenuItem>            
           </MenuList>
         </Menu>
       </Flex>
@@ -162,9 +145,8 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   }
   return (
     <Flex
-      h="84px"
-      bg="white"
-      p={4}
+      h="72px"
+      bg="white"      
       borderBottom="4px solid #ccc"
       align="center"
     >
@@ -175,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               <Link href="/">
                 <Image
                   alt="Schoolyard Logo"
-                  htmlWidth={180}
+                  htmlWidth={150}
                   src={LogoImage.src}
                 />
               </Link>

@@ -1,4 +1,4 @@
-import { Container, Grid, GridItem } from "@chakra-ui/layout";
+import { Box, Container, Grid, GridItem } from "@chakra-ui/layout";
 import { useRouter } from "next/router";
 import React, {
   cloneElement,
@@ -32,15 +32,19 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
 
   return (
     <>
-      <Navbar />
+      <Box position="sticky" top={0} zIndex={1}>
+        <Navbar />
+      </Box>
       <Container maxW="container.xl" pt={4}>
         <Grid templateColumns="repeat(10, 1fr)">
           <GridItem colSpan={3}>
-            <SideQuestions
-              availableQuestions={availableQuestions}
-              setActiveScoreSubjects={setActiveScoreSubjects}
-              setChangedSubjects={setChangedSubjects}
-            />
+            <Box position="sticky" top="88px">
+              <SideQuestions
+                availableQuestions={availableQuestions}
+                setActiveScoreSubjects={setActiveScoreSubjects}
+                setChangedSubjects={setChangedSubjects}
+              />
+            </Box>
           </GridItem>
           <GridItem colSpan={4}>
             <Container maxW="container.sm">
@@ -53,12 +57,14 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
             </Container>
           </GridItem>
           <GridItem colSpan={3}>
+          <Box position="sticky" top="88px">
             <ScoreCard
               activeScoreSubjects={activeScoreSubjects}
               setActiveScoreSubjects={setActiveScoreSubjects}
               changedSubjects={changedSubjects}
               setChangedSubjects={setChangedSubjects}
             />
+            </Box>
           </GridItem>
         </Grid>
       </Container>
