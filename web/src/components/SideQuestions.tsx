@@ -156,14 +156,15 @@ export const SideQuestions: React.FC<{
                             const newScores: Score[] = [];
 
                             setChangedSubjects(
-                              responseData.createQuestionReview.question
-                                .subjects.map(subject => {
+                              responseData.createQuestionReview.question.subjects.map(
+                                (subject) => {
                                   return {
                                     subject: subject,
                                     oldStatus: ReviewStatus.Queued,
                                     newStatus: ReviewStatus.Queued,
-                                  }
-                                })
+                                  };
+                                }
+                              )
                             );
 
                             responseData.createQuestionReview.question.subjects.forEach(

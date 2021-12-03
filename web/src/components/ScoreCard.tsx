@@ -227,6 +227,14 @@ export const ScoreCard: React.FC<{
                             ? "green"
                             : "black"
                         }
+                        _hover={{
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                        }}
+                        onClick={() => {
+                          setChangedSubjects([]);
+                          setActiveScoreSubjects([score.subjectName]);
+                        }}
                       >
                         {"#" + score.subjectName.toLowerCase()}
                       </Text>
