@@ -1,5 +1,13 @@
 import { ApolloCache, gql } from "@apollo/client";
-import { Box, Circle, Flex, HStack, Link, Stack } from "@chakra-ui/layout";
+import {
+  Box,
+  Center,
+  Circle,
+  Flex,
+  HStack,
+  Link,
+  Stack,
+} from "@chakra-ui/layout";
 import {
   Alert,
   AlertIcon,
@@ -263,36 +271,57 @@ const Index: React.FC<{}> = ({}) => {
                   </>
                 ) : (
                   <>
-                    <Text color="grayMain" fontSize="sm">
+                    <Center>
                       <Icon
                         mx="4px"
                         height="24px"
                         as={RiThumbUpLine}
+                        color="grayMain"
                         h="18px"
                         w="18px"
                       />
-                      {sentence.upVoteCount}
-                    </Text>
-                    <Text color="grayMain" fontSize="sm">
-                      <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
-                      {sentence.downVoteCount}
-                    </Text>
+                      <Text color="grayMain" fontSize="sm">
+                        {sentence.upVoteCount}
+                      </Text>
+                    </Center>
+                    <Center>
+                      <Icon
+                        mx="4px"
+                        as={RiThumbDownLine}
+                        color="grayMain"
+                        h="18px"
+                        w="18px"
+                      />
+                      <Text color="grayMain" fontSize="sm">
+                        {sentence.downVoteCount}
+                      </Text>
+                    </Center>
                   </>
                 )}
 
-                <Text color="grayMain" fontSize="sm">
-                  <Icon as={IoPeople} mr={1} w={5} h={5} />
-                  {sentence.viewCount +
-                    (sentence.viewCount == 1 ? " view" : " views")}
-                </Text>
-                <Text color="grayMain" fontSize="sm">
-                  <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
-                  {new Date(sentence.createdAt).toLocaleString("default", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </Text>
+                <Center>
+                  <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
+                  <Text color="grayMain" fontSize="sm">
+                    {sentence.viewCount +
+                      (sentence.viewCount == 1 ? " view" : " views")}
+                  </Text>
+                </Center>
+                <Center>
+                  <Icon
+                    as={RiCalendarEventFill}
+                    color="grayMain"
+                    mr={1}
+                    w={5}
+                    h={5}
+                  />
+                  <Text color="grayMain" fontSize="sm">
+                    {new Date(sentence.createdAt).toLocaleString("default", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </Text>
+                </Center>
               </HStack>
               <Box mt={3}>
                 <NextLink href={"/learn/" + sentence.id}>
@@ -301,10 +330,18 @@ const Index: React.FC<{}> = ({}) => {
                     _hover={{ color: "irisDark" }}
                     href={"/learn/" + sentence.id}
                   >
-                    <Icon as={BiZoomIn} w="24px" height="24px" />
-                    <Text ml={1} as="span" fontWeight="bold" fontSize="md">
-                      zoom in
-                    </Text>
+                    <Center alignItems="left" justifyContent="left">
+                      <Icon as={BiZoomIn} w="24px" height="24px" />
+                      <Text
+                        textAlign="left"
+                        ml={1}
+                        as="span"
+                        fontWeight="bold"
+                        fontSize="md"
+                      >
+                        zoom in
+                      </Text>
+                    </Center>
                   </Link>
                 </NextLink>
               </Box>

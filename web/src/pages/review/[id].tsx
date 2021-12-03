@@ -5,6 +5,7 @@ import {
   AlertIcon,
   Box,
   Button,
+  Center,
   Checkbox,
   Circle,
   CloseButton,
@@ -942,7 +943,7 @@ const Review: React.FC<{
           {data.question.question}
         </Text>
         <HStack spacing={4}>
-          {!meLoading && meData ? (
+          {!meLoading && meData && (
             <>
               <Text color="grayMain" fontSize="sm">
                 <IconButton
@@ -1031,38 +1032,31 @@ const Review: React.FC<{
                 {data.question.downVoteCount}
               </Text>
             </>
-          ) : (
-            <>
-              <Text color="grayMain" fontSize="sm">
-                <Icon
-                  mx="4px"
-                  height="24px"
-                  as={RiThumbUpLine}
-                  h="18px"
-                  w="18px"
-                />
-                {data.question.upVoteCount}
-              </Text>
-              <Text color="grayMain" fontSize="sm">
-                <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
-                {data.question.downVoteCount}
-              </Text>
-            </>
           )}
 
-          <Text color="grayMain" fontSize="sm">
-            <Icon as={IoPeople} mr={1} w={5} h={5} />
-            {data.question.viewCount +
-              (data.question.viewCount == 1 ? " view" : " views")}
-          </Text>
-          <Text color="grayMain" fontSize="sm">
-            <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
-            {new Date(data.question.createdAt).toLocaleString("default", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </Text>
+          <Center>
+            <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
+            <Text color="grayMain" fontSize="sm">
+              {data.question.viewCount +
+                (data.question.viewCount == 1 ? " view" : " views")}
+            </Text>
+          </Center>
+          <Center>
+            <Icon
+              as={RiCalendarEventFill}
+              color="grayMain"
+              mr={1}
+              w={5}
+              h={5}
+            />
+            <Text color="grayMain" fontSize="sm">
+              {new Date(data.question.createdAt).toLocaleString("default", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </Text>
+          </Center>
         </HStack>
         <Divider borderColor="grayLight" border="1px" my={3} />
         <Box>{questionForm(data.question as Question)}</Box>
@@ -1180,7 +1174,7 @@ const Review: React.FC<{
               : null}
           </Text>
           <HStack spacing={4}>
-            {!meLoading && meData?.me ? (
+            {!meLoading && meData?.me && (
               <>
                 <Text color="grayMain" fontSize="sm">
                   <IconButton
@@ -1269,41 +1263,35 @@ const Review: React.FC<{
                   {data.question.sentence.downVoteCount}
                 </Text>
               </>
-            ) : (
-              <>
-                <Text color="grayMain" fontSize="sm">
-                  <Icon
-                    mx="4px"
-                    height="24px"
-                    as={RiThumbUpLine}
-                    h="18px"
-                    w="18px"
-                  />
-                  {data.question.sentence.upVoteCount}
-                </Text>
-                <Text color="grayMain" fontSize="sm">
-                  <Icon mx="4px" as={RiThumbDownLine} h="18px" w="18px" />
-                  {data.question.sentence.downVoteCount}
-                </Text>
-              </>
             )}
 
-            <Text color="grayMain" fontSize="sm">
-              <Icon as={IoPeople} mr={1} w={5} h={5} />
-              {data.question.sentence.viewCount +
-                (data.question.sentence.viewCount == 1 ? " view" : " views")}
-            </Text>
-            <Text color="grayMain" fontSize="sm">
-              <Icon as={RiCalendarEventFill} mr={1} w={5} h={5} />
-              {new Date(data.question.sentence.createdAt).toLocaleString(
-                "default",
-                {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                }
-              )}
-            </Text>
+            <Center>
+              <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
+              <Text color="grayMain" fontSize="sm">
+                {data.question.sentence.viewCount +
+                  (data.question.sentence.viewCount == 1 ? " view" : " views")}
+              </Text>
+            </Center>
+
+            <Center>
+              <Icon
+                as={RiCalendarEventFill}
+                color="grayMain"
+                mr={1}
+                w={5}
+                h={5}
+              />
+              <Text color="grayMain" fontSize="sm">
+                {new Date(data.question.sentence.createdAt).toLocaleString(
+                  "default",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  }
+                )}
+              </Text>
+            </Center>
           </HStack>
           <Box mt={3}>
             <NextLink href={"/learn/" + data.question.sentence.id}>
@@ -1312,10 +1300,12 @@ const Review: React.FC<{
                 _hover={{ color: "irisDark" }}
                 href={"/learn/" + data.question.sentence.id}
               >
-                <Icon as={BiZoomIn} w="24px" height="24px" />
-                <Text ml={1} as="span" fontWeight="bold" fontSize="md">
-                  zoom in
-                </Text>
+                <Center justifyContent="left">
+                  <Icon as={BiZoomIn} w="24px" height="24px" />
+                  <Text ml={1} as="span" fontWeight="bold" fontSize="md">
+                    zoom in
+                  </Text>
+                </Center>
               </Link>
             </NextLink>
           </Box>

@@ -6,7 +6,12 @@ import { useRouter } from "next/router";
 import React from "react";
 import LogoImage from "../../public/images/schoolyard_logo.png";
 import { InputField } from "../components/InputField";
-import { MeDocument, MeQuery, useLoginMutation } from "../generated/graphql";
+import {
+  MeDocument,
+  MeQuery,
+  useLoginMutation,
+  useMeQuery,
+} from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";
 import NextLink from "next/link";
@@ -16,6 +21,10 @@ interface loginProps {}
 const LogIn: React.FC<loginProps> = ({}) => {
   const router = useRouter();
   const [login] = useLoginMutation();
+  const { data, loading } = useMeQuery();
+  if (!loading && data?.me) {
+    router.push("/");
+  }
   return (
     <Box>
       <Center>
