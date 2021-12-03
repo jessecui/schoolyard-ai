@@ -106,7 +106,7 @@ export const ScoreCard: React.FC<{
                       <Flex align="center" mb={2}>
                         <Circle
                           mr="4px"
-                          size={4}
+                          size="12px"
                           bg={
                             subjectToColors[subject]
                               ? subjectToColors[subject]
@@ -194,7 +194,7 @@ export const ScoreCard: React.FC<{
                     <Flex align="center" key={score.subjectName}>
                       <Circle
                         mr="4px"
-                        size={4}
+                        size="12px"
                         bg={
                           subjectToColors[score.subjectName]
                             ? subjectToColors[score.subjectName]
