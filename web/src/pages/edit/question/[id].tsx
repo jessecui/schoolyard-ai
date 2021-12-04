@@ -362,7 +362,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
               bg: "grayLight",
             }}
             icon={<ArrowBackIcon />}
-            onClick={() => router.push("/review/")}
+            onClick={() => router.back()}
           />
           <Text
             fontSize="md"

@@ -27,6 +27,7 @@ import {
   RiEditBoxFill,
   RiArrowLeftSLine,
   RiArrowRightSLine,
+  RiEditBoxLine,
 } from "react-icons/ri";
 import { MdLibraryAdd } from "react-icons/md";
 
@@ -240,42 +241,6 @@ const Learn: React.FC<{
           </Flex>
           <Spacer />
           <HStack spacing={2}>
-            {userData?.me?.id == activeSentence.teacherId && (
-              <NextLink href={"/edit/paragraph/" + activeSentence.id}>
-                <Link href={"/edit/paragraph/" + activeSentence.id}>
-                  <Icon
-                    as={RiEditBoxFill}
-                    w="28px"
-                    height="28px"
-                    color="red.300"
-                    _hover={{ color: "red.500" }}
-                  />
-                </Link>
-              </NextLink>
-            )}
-            {userData?.me && (
-              <NextLink
-                href={
-                  "/create" +
-                  (activeSentence ? "?parent=" + activeSentence.id : "")
-                }
-              >
-                <Link
-                  href={
-                    "/create" +
-                    (activeSentence ? "?parent=" + activeSentence.id : "")
-                  }
-                >
-                  <Icon
-                    as={MdLibraryAdd}
-                    w="28px"
-                    height="28px"
-                    color="mint"
-                    _hover={{ color: "green.500" }}
-                  />
-                </Link>
-              </NextLink>
-            )}
             <IconButton
               aria-label="Previous Clone"
               size="xs"
@@ -503,6 +468,64 @@ const Learn: React.FC<{
               })}
             </Text>
           </Center>
+        </HStack>
+        <HStack mt={3} spacing={4}>
+          {userData?.me && (
+            <NextLink
+              href={
+                "/create" +
+                (activeSentence ? "?parent=" + activeSentence.id : "")
+              }
+            >
+              <Link
+              color="mint"
+              _hover={{ color: "green.500" }}
+                href={
+                  "/create" +
+                  (activeSentence ? "?parent=" + activeSentence.id : "")
+                }
+              >
+                <Center alignItems="left" justifyContent="left">
+                <Icon
+                  as={MdLibraryAdd}
+                  w="24px"
+                  height="24px"                  
+                />
+                 <Text
+                    textAlign="left"
+                    ml={1}
+                    as="span"
+                    fontWeight="bold"
+                    fontSize="md"
+                  >
+                    create
+                  </Text>
+                </Center>
+              </Link>
+            </NextLink>
+          )}
+          {userData?.me?.id == activeSentence.teacherId && (
+            <NextLink href={"/edit/paragraph/" + activeSentence.id}>
+              <Link
+                color="red.400"
+                _hover={{ color: "red.800" }}
+                href={"/edit/paragraph/" + activeSentence.id}
+              >
+                <Center alignItems="left" justifyContent="left">
+                  <Icon as={RiEditBoxLine} w="24px" height="24px" />
+                  <Text
+                    textAlign="left"
+                    ml={1}
+                    as="span"
+                    fontWeight="bold"
+                    fontSize="md"
+                  >
+                    edit
+                  </Text>
+                </Center>
+              </Link>
+            </NextLink>
+          )}
         </HStack>
       </Box>
 

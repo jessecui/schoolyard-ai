@@ -1,4 +1,4 @@
-import { ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -23,6 +23,7 @@ export class SentenceView extends BaseEntity {
   @PrimaryColumn()
   sentenceId: number;  
 
+  // @Field()
   @ManyToOne(() => Sentence, (sentence) => sentence.votes, {
     onDelete: 'CASCADE',
   })
@@ -30,4 +31,8 @@ export class SentenceView extends BaseEntity {
 
   @Column()
   userViewCount: number;
+
+  // @Field(() => Date)
+  // @Column({type: "timestamptz"})
+  // lastViewed: Date;
 }

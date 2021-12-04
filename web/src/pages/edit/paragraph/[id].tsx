@@ -142,7 +142,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
               bg: "grayLight",
             }}
             icon={<ArrowBackIcon />}
-            onClick={() => router.push("/learn/" + sentenceData.sentence?.id)}
+            onClick={() => router.back()}
           />
           <Text
             fontSize="md"

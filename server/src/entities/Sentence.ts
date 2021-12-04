@@ -35,7 +35,7 @@ export class Sentence extends BaseEntity {
   teacherId: number;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.sentences, {
+  @ManyToOne(() => User, (user) => user.createdParagraphs, {
     onDelete: "CASCADE",
   })
   teacher: User;

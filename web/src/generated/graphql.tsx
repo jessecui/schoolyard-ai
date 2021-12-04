@@ -302,6 +302,8 @@ export type Sentence = {
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTime'];
+  createdParagraphs: Array<Sentence>;
+  createdQuestions: Array<Question>;
   email: Scalars['String'];
   firstName: Scalars['String'];
   id: Scalars['Float'];
@@ -483,6 +485,11 @@ export type UpdateQuestionReviewMutationVariables = Exact<{
 
 
 export type UpdateQuestionReviewMutation = { __typename?: 'Mutation', updateQuestionReview?: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } | null | undefined };
+
+export type CreatedContentQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreatedContentQuery = { __typename?: 'Query', me?: { __typename?: 'User', createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any }> } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1327,6 +1334,69 @@ export function useUpdateQuestionReviewMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateQuestionReviewMutationHookResult = ReturnType<typeof useUpdateQuestionReviewMutation>;
 export type UpdateQuestionReviewMutationResult = Apollo.MutationResult<UpdateQuestionReviewMutation>;
 export type UpdateQuestionReviewMutationOptions = Apollo.BaseMutationOptions<UpdateQuestionReviewMutation, UpdateQuestionReviewMutationVariables>;
+export const CreatedContentDocument = gql`
+    query CreatedContent {
+  me {
+    createdParagraphs {
+      id
+      text
+      subjects
+      children {
+        text
+      }
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+      teacher {
+        firstName
+        lastName
+      }
+    }
+    createdQuestions {
+      id
+      question
+      questionType
+      choices
+      answer
+      subjects
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useCreatedContentQuery__
+ *
+ * To run a query within a React component, call `useCreatedContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreatedContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreatedContentQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreatedContentQuery(baseOptions?: Apollo.QueryHookOptions<CreatedContentQuery, CreatedContentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CreatedContentQuery, CreatedContentQueryVariables>(CreatedContentDocument, options);
+      }
+export function useCreatedContentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CreatedContentQuery, CreatedContentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CreatedContentQuery, CreatedContentQueryVariables>(CreatedContentDocument, options);
+        }
+export type CreatedContentQueryHookResult = ReturnType<typeof useCreatedContentQuery>;
+export type CreatedContentLazyQueryHookResult = ReturnType<typeof useCreatedContentLazyQuery>;
+export type CreatedContentQueryResult = Apollo.QueryResult<CreatedContentQuery, CreatedContentQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
