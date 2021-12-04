@@ -5,13 +5,14 @@ import {
   Box,
   Center,
   Circle,
+  Divider,
   Flex,
   Heading,
   HStack,
   Link,
   Text,
 } from "@chakra-ui/layout";
-import { Checkbox, Divider, Input, Radio, Stack } from "@chakra-ui/react";
+import { Checkbox, Input, Radio, Stack } from "@chakra-ui/react";
 import gql from "graphql-tag";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -28,9 +29,11 @@ import {
   RiThumbUpLine,
 } from "react-icons/ri";
 import {
+  AddQuestionVoteMutation,
   AddSentenceVoteMutation,
   Question,
   QuestionType,
+  useAddQuestionVoteMutation,
   useAddSentenceVoteMutation,
   useCreatedContentQuery,
   useMeQuery,
@@ -51,9 +54,10 @@ const AccountSettings: React.FC<{}> = ({}) => {
     useCreatedContentQuery();
   const { data: meData, loading: meLoading } = useMeQuery();
 
-  const [addVote] = useAddSentenceVoteMutation();
+  const [addSentenceVote] = useAddSentenceVoteMutation();
+  const [addQuestionVote] = useAddQuestionVoteMutation();
 
-  const updateAfterVote = (
+  const updateAfterSentenceVote = (
     cache: ApolloCache<AddSentenceVoteMutation>,
     sentenceId: number,
     newUserVoteType: VoteType | null,
@@ -65,6 +69,32 @@ const AccountSettings: React.FC<{}> = ({}) => {
         id: "Sentence:" + sentenceId,
         fragment: gql`
           fragment __ on Sentence {
+            upVoteCount
+            downVoteCount
+            userVoteType
+          }
+        `,
+        data: {
+          upVoteCount: newUpVoteCount,
+          downVoteCount: newDownVoteCount,
+          userVoteType: newUserVoteType,
+        },
+      });
+    }
+  };
+
+  const updateAfterQuestionVote = (
+    cache: ApolloCache<AddQuestionVoteMutation>,
+    questionId: number,
+    newUserVoteType: VoteType | null,
+    newUpVoteCount: number,
+    newDownVoteCount: number
+  ) => {
+    if (createdData) {
+      cache.writeFragment({
+        id: "Question:" + questionId,
+        fragment: gql`
+          fragment __ on Question {
             upVoteCount
             downVoteCount
             userVoteType
@@ -125,6 +155,123 @@ const AccountSettings: React.FC<{}> = ({}) => {
       <Text my={2} fontWeight="bold" fontSize="xl">
         {question.question}
       </Text>
+      <HStack spacing={4}>
+          {!meLoading && meData && (
+            <>
+              <Text color="grayMain" fontSize="sm">
+                <IconButton
+                  mr={1}
+                  minWidth="24px"
+                  height="24px"
+                  isRound={true}
+                  size="lg"
+                  bg="none"
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                  _hover={{
+                    bg: "grayLight",
+                  }}
+                  onClick={async () => {
+                    await addQuestionVote({
+                      variables: {
+                        questionId: question!.id,
+                        voteType: VoteType.Up,
+                      },
+                      update: (cache, { data: responseData }) => {
+                        const votedQuestion = responseData?.addQuestionVote;
+                        updateAfterQuestionVote(
+                          cache,
+                          question!.id,
+                          votedQuestion!.userVoteType as VoteType | null,
+                          votedQuestion!.upVoteCount,
+                          votedQuestion!.downVoteCount
+                        );
+                      },
+                    });
+                  }}
+                  aria-label="Up Vote Question"
+                  icon={
+                    question.userVoteType == VoteType.Up ? (
+                      <RiThumbUpFill />
+                    ) : (
+                      <RiThumbUpLine />
+                    )
+                  }
+                />
+                {question.upVoteCount}
+              </Text>
+              <Text color="grayMain" fontSize="sm">
+                <IconButton
+                  mr={1}
+                  minWidth="24px"
+                  height="24px"
+                  isRound={true}
+                  size="lg"
+                  bg="none"
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                  _hover={{
+                    bg: "grayLight",
+                  }}
+                  onClick={async () => {
+                    await addQuestionVote({
+                      variables: {
+                        questionId: question!.id,
+                        voteType: VoteType.Down,
+                      },
+                      update: (cache, { data: responseData }) => {
+                        const votedQuestion = responseData?.addQuestionVote;
+                        updateAfterQuestionVote(
+                          cache,
+                          question!.id,
+                          votedQuestion!.userVoteType as VoteType | null,
+                          votedQuestion!.upVoteCount,
+                          votedQuestion!.downVoteCount
+                        );
+                      },
+                    });
+                  }}
+                  aria-label="Down Vote Question"
+                  icon={
+                    question.userVoteType == VoteType.Down ? (
+                      <RiThumbDownFill />
+                    ) : (
+                      <RiThumbDownLine />
+                    )
+                  }
+                />
+                {question.downVoteCount}
+              </Text>
+            </>
+          )}
+
+          <Center>
+            <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
+            <Text color="grayMain" fontSize="sm">
+              {question.viewCount +
+                (question.viewCount == 1 ? " view" : " views")}
+            </Text>
+          </Center>
+          <Center>
+            <Icon
+              as={RiCalendarEventFill}
+              color="grayMain"
+              mr={1}
+              w={5}
+              h={5}
+            />
+            <Text color="grayMain" fontSize="sm">
+              {new Date(question.createdAt).toLocaleString("default", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </Text>
+          </Center>
+        </HStack>
+        <Divider borderColor="grayLight" border="1px" my={3} />
       <Text color="grayMain" fontSize="sm" mb={2}>
         {question.questionType == QuestionType.Single &&
           "Select the correct answer"}
@@ -294,14 +441,14 @@ const AccountSettings: React.FC<{}> = ({}) => {
                       bg: "grayLight",
                     }}
                     onClick={async () => {
-                      await addVote({
+                      await addSentenceVote({
                         variables: {
                           sentenceId: sentence!.id,
                           voteType: VoteType.Up,
                         },
                         update: (cache, { data: responseData }) => {
                           const votedSentence = responseData?.addSentenceVote;
-                          updateAfterVote(
+                          updateAfterSentenceVote(
                             cache,
                             sentence!.id,
                             votedSentence!.userVoteType as VoteType | null,
@@ -337,14 +484,14 @@ const AccountSettings: React.FC<{}> = ({}) => {
                       bg: "grayLight",
                     }}
                     onClick={async () => {
-                      await addVote({
+                      await addSentenceVote({
                         variables: {
                           sentenceId: sentence!.id,
                           voteType: VoteType.Down,
                         },
                         update: (cache, { data: responseData }) => {
                           const votedSentence = responseData?.addSentenceVote;
-                          updateAfterVote(
+                          updateAfterSentenceVote(
                             cache,
                             sentence!.id,
                             votedSentence!.userVoteType as VoteType | null,
