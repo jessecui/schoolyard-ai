@@ -15,7 +15,7 @@ const Review: React.FC<{}> = ({}) => {
   const router = useRouter();
   const { data: meData, loading: meLoading } = useMeQuery();
 
-  if (meData?.me?.questionReviews) {
+  if (meData?.me?.questionReviews.length) {
     const reviewableQuestions = meData?.me?.questionReviews.filter(
       (review) =>
         new Date().getTime() >= new Date(review.dateNextAvailable).getTime()
