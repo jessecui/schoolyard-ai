@@ -11,11 +11,13 @@ import {
   Link,
   Text,
 } from "@chakra-ui/layout";
+import { Checkbox, Divider, Input, Radio, Stack } from "@chakra-ui/react";
 import gql from "graphql-tag";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiZoomIn } from "react-icons/bi";
+import { GoChecklist } from "react-icons/go";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
   RiCalendarEventFill,
@@ -27,6 +29,8 @@ import {
 } from "react-icons/ri";
 import {
   AddSentenceVoteMutation,
+  Question,
+  QuestionType,
   useAddSentenceVoteMutation,
   useCreatedContentQuery,
   useMeQuery,
@@ -79,6 +83,144 @@ const AccountSettings: React.FC<{}> = ({}) => {
   if (meData?.me?.subjectColors) {
     subjectToColors = JSON.parse(meData.me.subjectColors);
   }
+
+  const getQuestionComponent = (question: Question) => (
+    <Box
+      border="2px"
+      borderColor="grayLight"
+      borderRadius="md"
+      bg="White"
+      p={4}
+      my={2}
+    >
+      <Flex align="center">
+        <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+        <Box>
+          <Text fontWeight="bold" fontSize="md">
+            {meData?.me?.firstName} {meData?.me?.lastName}
+          </Text>
+          <HStack spacing="6px">
+            {question.subjects
+              ? question.subjects.map((subject) => {
+                  subject = subject.trim().toLowerCase();
+                  return subject ? (
+                    <Flex align="center" key={subject}>
+                      <Circle
+                        mr="4px"
+                        size="12px"
+                        bg={
+                          subjectToColors[subject]
+                            ? subjectToColors[subject]
+                            : "grayMain"
+                        }
+                      />
+                      <Text fontSize="sm">{"#" + subject.toLowerCase()}</Text>
+                    </Flex>
+                  ) : null;
+                })
+              : null}
+          </HStack>
+        </Box>
+      </Flex>
+      <Text my={2} fontWeight="bold" fontSize="xl">
+        {question.question}
+      </Text>
+      <Text color="grayMain" fontSize="sm" mb={2}>
+        {question.questionType == QuestionType.Single &&
+          "Select the correct answer"}
+        {question.questionType == QuestionType.Multiple &&
+          "Select all that apply"}
+        {question.questionType == QuestionType.Text &&
+          "Type the correct answer"}
+      </Text>
+      {(question.questionType == QuestionType.Single ||
+        question.questionType == QuestionType.Multiple) && (
+        <Stack>
+          {question.choices &&
+            question.choices.map((option, index) => (
+              <Box key={index}>
+                {question.questionType == QuestionType.Single && (
+                  <Radio
+                    size="lg"
+                    my="4px"
+                    borderColor="grayMain"
+                    colorScheme="gray"
+                    isChecked={question.answer.includes(option)}
+                  >
+                    <Text fontSize="md">{option}</Text>
+                  </Radio>
+                )}
+
+                {question.questionType == QuestionType.Multiple && (
+                  <Checkbox
+                    size="lg"
+                    my="4px"
+                    borderColor="grayMain"
+                    colorScheme="gray"
+                    isChecked={question.answer.includes(option)}
+                  >
+                    <Text ml={2} fontSize="md">
+                      {option}
+                    </Text>
+                  </Checkbox>
+                )}
+              </Box>
+            ))}
+        </Stack>
+      )}
+      {question.questionType == QuestionType.Text && (
+        <Input
+          size="sm"
+          border="2px"
+          borderColor="grayLight"
+          value={question.answer[0] ? question.answer[0] : ""}
+          readOnly={true}
+        />
+      )}
+      <HStack mt={3} spacing={4}>
+        <NextLink href={"/review/" + question.id}>
+          <Link
+            color="iris"
+            _hover={{ color: "irisDark" }}
+            href={"/review/" + question.id}
+          >
+            <Center alignItems="left" justifyContent="left">
+              <Icon as={GoChecklist} w="24px" height="24px" />
+              <Text
+                textAlign="left"
+                ml={1}
+                as="span"
+                fontWeight="bold"
+                fontSize="md"
+              >
+                see question
+              </Text>
+            </Center>
+          </Link>
+        </NextLink>
+        <NextLink href={"/edit/question/" + question.id}>
+          <Link
+            color="red.400"
+            _hover={{ color: "red.800" }}
+            href={"/edit/question/" + question.id}
+          >
+            <Center alignItems="left" justifyContent="left">
+              <Icon as={RiEditBoxLine} w="24px" height="24px" />
+              <Text
+                textAlign="left"
+                ml={1}
+                as="span"
+                fontWeight="bold"
+                fontSize="md"
+              >
+                edit
+              </Text>
+            </Center>
+          </Link>
+        </NextLink>
+      </HStack>
+    </Box>
+  );
 
   const getContentList = () => {
     let contentList = null;
@@ -327,9 +469,9 @@ const AccountSettings: React.FC<{}> = ({}) => {
       createdData?.me?.createdQuestions &&
       createdData?.me?.createdQuestions.length
     ) {
-      contentList = createdData?.me?.createdQuestions.map((question) => (
-        <Box key={question.id}>{question.question}</Box>
-      ));
+      contentList = createdData?.me?.createdQuestions.map((question) =>
+        getQuestionComponent(question as Question)
+      );
     }
     return contentList ? <Box mt={2}>{contentList}</Box> : null;
   };

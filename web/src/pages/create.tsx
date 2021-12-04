@@ -996,7 +996,7 @@ export const Create: React.FC<{}> = ({}) => {
                               option
                             )}
                           >
-                            <Text ml={2} fontSize="16px">
+                            <Text ml={2} fontSize="md">
                               {option}
                             </Text>
                           </Checkbox>
