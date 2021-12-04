@@ -212,7 +212,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                           Sentence Being Linked
                         </Text>
                         <Divider borderColor="grayLight" border="1px" mb={2} />
-                        <Text fontSize="md">
+                        <Text fontSize="lg">
                           {
                             getSentenceParent(
                               sentenceData.sentence as Sentence

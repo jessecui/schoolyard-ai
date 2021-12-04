@@ -470,40 +470,38 @@ const Learn: React.FC<{
           </Center>
         </HStack>
         <HStack mt={3} spacing={4}>
-          {userData?.me && (
-            <NextLink
-              href={
-                "/create" +
-                (activeSentence ? "?parent=" + activeSentence.id : "")
-              }
-            >
-              <Link
-              color="mint"
-              _hover={{ color: "green.500" }}
+          {userData?.me &&
+            (userData?.me?.id != activeSentence.teacherId ||
+              !activeSentence.children?.length) && (
+              <NextLink
                 href={
                   "/create" +
                   (activeSentence ? "?parent=" + activeSentence.id : "")
                 }
               >
-                <Center alignItems="left" justifyContent="left">
-                <Icon
-                  as={MdLibraryAdd}
-                  w="24px"
-                  height="24px"                  
-                />
-                 <Text
-                    textAlign="left"
-                    ml={1}
-                    as="span"
-                    fontWeight="bold"
-                    fontSize="md"
-                  >
-                    create
-                  </Text>
-                </Center>
-              </Link>
-            </NextLink>
-          )}
+                <Link
+                  color="mint"
+                  _hover={{ color: "green.500" }}
+                  href={
+                    "/create" +
+                    (activeSentence ? "?parent=" + activeSentence.id : "")
+                  }
+                >
+                  <Center alignItems="left" justifyContent="left">
+                    <Icon as={MdLibraryAdd} w="24px" height="24px" />
+                    <Text
+                      textAlign="left"
+                      ml={1}
+                      as="span"
+                      fontWeight="bold"
+                      fontSize="md"
+                    >
+                      create
+                    </Text>
+                  </Center>
+                </Link>
+              </NextLink>
+            )}
           {userData?.me?.id == activeSentence.teacherId && (
             <NextLink href={"/edit/paragraph/" + activeSentence.id}>
               <Link
