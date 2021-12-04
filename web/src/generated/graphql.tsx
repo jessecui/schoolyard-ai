@@ -496,7 +496,7 @@ export type UpdateQuestionReviewMutation = { __typename?: 'Mutation', updateQues
 export type ActivityLogQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User', sentenceViews: Array<{ __typename?: 'SentenceView', lastViewed: any, sentence: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, questionReviews: Array<{ __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateUpdated: any, question: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any }> } | null | undefined };
+export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User', sentenceViews: Array<{ __typename?: 'SentenceView', lastViewed: any, sentence: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, questionReviews: Array<{ __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateUpdated: any, question: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any }> } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1397,6 +1397,7 @@ export const ActivityLogDocument = gql`
       userVoteType
       viewCount
       createdAt
+      updatedAt
       teacher {
         firstName
         lastName
@@ -1414,6 +1415,7 @@ export const ActivityLogDocument = gql`
       userVoteType
       viewCount
       createdAt
+      updatedAt
     }
   }
 }
