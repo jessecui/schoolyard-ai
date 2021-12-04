@@ -1058,7 +1058,6 @@ const Review: React.FC<{
             </Text>
           </Center>
         </HStack>
-        <Divider borderColor="grayLight" border="1px" my={3} />
         <Box>{questionForm(data.question as Question)}</Box>
         {reviewData?.questionReview && questionIsLocked && (
           <Box mt={2}>

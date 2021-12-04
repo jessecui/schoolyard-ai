@@ -10,7 +10,7 @@ import {
   Heading,
   HStack,
   Link,
-  Text,
+  Text
 } from "@chakra-ui/layout";
 import { Checkbox, Input, Radio, Stack } from "@chakra-ui/react";
 import gql from "graphql-tag";
@@ -26,7 +26,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine,
+  RiThumbUpLine
 } from "react-icons/ri";
 import {
   AddQuestionVoteMutation,
@@ -37,7 +37,7 @@ import {
   useAddQuestionVoteMutation,
   useAddSentenceVoteMutation,
   useMeQuery,
-  VoteType,
+  VoteType
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -264,8 +264,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           </Text>
         </Center>
       </HStack>
-      <Divider borderColor="grayLight" border="1px" my={3} />
-      <Text color="grayMain" fontSize="sm" mb={2}>
+      <Text color="grayMain" fontSize="sm" my={2}>
         {question.questionType == QuestionType.Single &&
           "Select the correct answer"}
         {question.questionType == QuestionType.Multiple &&
@@ -359,6 +358,10 @@ const AccountSettings: React.FC<{}> = ({}) => {
           </Link>
         </NextLink>
       </HStack>
+      <Divider borderColor="grayLight" border="1px" my={3} />
+      <Text fontSize="sm" color="grey" mt={4}>
+        created on {new Date(question.createdAt).toLocaleString()}
+      </Text>
     </Box>
   );
 
@@ -827,6 +830,10 @@ const AccountSettings: React.FC<{}> = ({}) => {
               </Link>
             </NextLink>
           </HStack>
+          <Divider borderColor="grayLight" border="1px" my={3} />
+          <Text fontSize="sm" color="grey" mt={4}>
+            created on {new Date(sentence.createdAt).toLocaleString()}
+          </Text>
         </Box>
       ));
     } else if (

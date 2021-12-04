@@ -15,8 +15,17 @@ const Review: React.FC<{}> = ({}) => {
   const router = useRouter();
   const { data: meData, loading: meLoading } = useMeQuery();
 
-  if (meData?.me?.questionReviews && meData.me.questionReviews.length > 0) {
-    router.push("/review/" + meData.me.questionReviews[0].questionId);
+  if (meData?.me?.questionReviews) {
+    const reviewableQuestions = meData?.me?.questionReviews.filter(
+      (review) =>
+        new Date().getTime() >= new Date(review.dateNextAvailable).getTime()
+    );
+    if (reviewableQuestions?.length) {
+      router.push("/review/" + reviewableQuestions[0].questionId);
+      
+    } else if (meData.me.questionReviews.length) {
+      router.push("/review/" + meData.me.questionReviews[0].questionId);      
+    }
     return (
       <Stack>
         <SkeletonCircle size="10" />
@@ -24,7 +33,6 @@ const Review: React.FC<{}> = ({}) => {
       </Stack>
     );
   }
-
   return (
     <Box
       border="2px"
