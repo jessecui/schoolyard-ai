@@ -21,8 +21,12 @@ import { IoExpand, IoPeople, IoPersonCircle } from "react-icons/io5";
 import { MdLibraryAdd } from "react-icons/md";
 import {
   RiArrowLeftSLine,
-  RiArrowRightSLine, RiCalendarEventFill, RiEditBoxLine, RiThumbDownFill,
-  RiThumbDownLine, RiThumbUpFill,
+  RiArrowRightSLine,
+  RiCalendarEventFill,
+  RiEditBoxLine,
+  RiThumbDownFill,
+  RiThumbDownLine,
+  RiThumbUpFill,
   RiThumbUpLine
 } from "react-icons/ri";
 import {
@@ -38,7 +42,6 @@ import {
   VoteType
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
-
 
 const Learn: React.FC<{
   setAvailableQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
@@ -466,35 +469,35 @@ const Learn: React.FC<{
         </HStack>
         <HStack mt={3} spacing={4}>
           {userData?.me && (
-              <NextLink
+            <NextLink
+              href={
+                "/create" +
+                (activeSentence ? "?parent=" + activeSentence.id : "")
+              }
+            >
+              <Link
+                color="mint"
+                _hover={{ color: "green.500" }}
                 href={
                   "/create" +
                   (activeSentence ? "?parent=" + activeSentence.id : "")
                 }
               >
-                <Link
-                  color="mint"
-                  _hover={{ color: "green.500" }}
-                  href={
-                    "/create" +
-                    (activeSentence ? "?parent=" + activeSentence.id : "")
-                  }
-                >
-                  <Center alignItems="left" justifyContent="left">
-                    <Icon as={MdLibraryAdd} w="24px" height="24px" />
-                    <Text
-                      textAlign="left"
-                      ml={1}
-                      as="span"
-                      fontWeight="bold"
-                      fontSize="md"
-                    >
-                      create
-                    </Text>
-                  </Center>
-                </Link>
-              </NextLink>
-            )}
+                <Center alignItems="left" justifyContent="left">
+                  <Icon as={MdLibraryAdd} w="24px" height="24px" />
+                  <Text
+                    textAlign="left"
+                    ml={1}
+                    as="span"
+                    fontWeight="bold"
+                    fontSize="md"
+                  >
+                    create
+                  </Text>
+                </Center>
+              </Link>
+            </NextLink>
+          )}
           {userData?.me?.id == activeSentence.teacherId && (
             <NextLink href={"/edit/paragraph/" + activeSentence.id}>
               <Link
@@ -668,13 +671,15 @@ const Learn: React.FC<{
                               ].id)
                           }
                         >
-                          <Icon
-                            as={BiZoomIn}
-                            w="24px"
-                            height="24px"
-                            color="iris"
-                            _hover={{ color: "irisDark" }}
-                          />
+                          <Center>
+                            <Icon
+                              as={BiZoomIn}
+                              w="24px"
+                              height="24px"
+                              color="iris"
+                              _hover={{ color: "irisDark" }}
+                            />
+                          </Center>
                         </Link>
                       </NextLink>
                       <IconButton
