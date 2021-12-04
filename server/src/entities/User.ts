@@ -46,6 +46,7 @@ export class User extends BaseEntity {
   @OneToMany(() => SentenceVote, (vote) => vote.user)
   sentenceVotes: SentenceVote[];
 
+  @Field(() => [SentenceView])
   @OneToMany(() => SentenceView, (view) => view.user)
   sentenceViews: SentenceView[];
 
