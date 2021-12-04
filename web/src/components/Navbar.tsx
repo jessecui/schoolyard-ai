@@ -7,7 +7,7 @@ import {
   Grid,
   Heading,
   HStack,
-  Link,
+  Link
 } from "@chakra-ui/layout";
 import {
   Container,
@@ -17,7 +17,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -26,7 +26,7 @@ import {
   IoListCircle,
   IoLogOut,
   IoPersonCircle,
-  IoSettings,
+  IoSettings
 } from "react-icons/io5";
 import LogoImage from "../../public/images/schoolyard_logo.png";
 import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
@@ -112,27 +112,6 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             </Box>
           </MenuButton>
           <MenuList borderColor="grayLight">
-            <NextLink href="/activity-log">
-              <Link
-                href="/activity-log"
-                _hover={{ textDecoration: "none" }}
-              >
-                <MenuItem
-                  icon={
-                    <Center>
-                      <Icon
-                        color="grayMain"
-                        as={IoListCircle}
-                        w="20px"
-                        h="20px"
-                      />
-                    </Center>
-                  }
-                >
-                  <Text fontSize="md">Activity Log</Text>
-                </MenuItem>
-              </Link>
-            </NextLink>
             <NextLink href="/account-settings">
               <Link
                 href="/account-settings"
@@ -151,6 +130,24 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   }
                 >
                   <Text fontSize="md">Account Settings</Text>
+                </MenuItem>
+              </Link>
+            </NextLink>
+            <NextLink href="/activity-log">
+              <Link href="/activity-log" _hover={{ textDecoration: "none" }}>
+                <MenuItem
+                  icon={
+                    <Center>
+                      <Icon
+                        color="grayMain"
+                        as={IoListCircle}
+                        w="20px"
+                        h="20px"
+                      />
+                    </Center>
+                  }
+                >
+                  <Text fontSize="md">Activity Log</Text>
                 </MenuItem>
               </Link>
             </NextLink>

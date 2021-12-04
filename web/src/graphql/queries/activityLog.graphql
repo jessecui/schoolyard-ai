@@ -1,0 +1,75 @@
+query ActivityLog {
+  me {
+    sentenceViews {
+      sentence {
+        id
+        text
+        subjects
+        children {
+          text
+        }
+        upVoteCount
+        downVoteCount
+        userVoteType
+        viewCount
+        createdAt
+        teacher {
+          firstName
+          lastName
+        }
+      }
+      lastViewed
+    }
+    questionReviews {
+      question {
+        id
+        question
+        questionType
+        choices
+        answer
+        subjects
+        upVoteCount
+        downVoteCount
+        userVoteType
+        viewCount
+        createdAt
+        teacher {
+          firstName
+          lastName
+        }
+      }
+      reviewStatus
+      dateUpdated
+    }
+    createdParagraphs {
+      id
+      text
+      subjects
+      children {
+        text
+      }
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+      teacher {
+        firstName
+        lastName
+      }
+    }
+    createdQuestions {
+      id
+      question
+      questionType
+      choices
+      answer
+      subjects
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+    }
+  }
+}
