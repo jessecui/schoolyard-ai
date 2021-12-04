@@ -21,6 +21,9 @@ import { sendEmail } from "../utils/sendEmail";
 import { isAuth } from "../middleware/isAuth";
 import { QuestionReview } from "../entities/QuestionReview";
 import { Score } from "../entities/Score";
+import { Sentence } from "../entities/Sentence";
+import { Question } from "../entities/Question";
+import { ParentChild } from "../entities/ParentChild";
 
 @ObjectType()
 class FieldError {
@@ -78,11 +81,11 @@ export class UserResolver {
 
   @FieldResolver(() => String)
   async subjectColors(@Root() _: User, @Ctx() { req }: MyContext) {
-    const colors = [                        
-      "purple.400",      
+    const colors = [
+      "purple.400",
       "blue.500",
       "cyan.400",
-      "teal.400", 
+      "teal.400",
       "green.500",
       "yellow.300",
       "orange.300",
@@ -101,17 +104,49 @@ export class UserResolver {
         b.incorrect -
         (a.queued + a.correct + a.incorrect)
     );
-    
-    const subjectToColor : Record<string, string> = {};
+
+    const subjectToColor: Record<string, string> = {};
 
     scores.forEach((score, index) => {
       if (index < colors.length) {
-        subjectToColor[score.subjectName] = colors[index]
+        subjectToColor[score.subjectName] = colors[index];
       } else {
-        subjectToColor[score.subjectName] = "grayMain"
+        subjectToColor[score.subjectName] = "grayMain";
       }
-    })
+    });
     return JSON.stringify(subjectToColor);
+  }
+
+  @FieldResolver(() => [Sentence])
+  async createdParagraphs(@Root() _: User, @Ctx() { req }: MyContext) {
+    const sentences = await Sentence.find({
+      where: { teacherId: req.session.userId },
+      take: 100,
+      skip: 0,
+      order: {
+        createdAt: "DESC",
+      },
+    });
+    return (
+      await Promise.all(
+        sentences.map(async (sentence) => {
+          const asParent = await ParentChild.find({ parentId: sentence.id });
+          return asParent.length ? sentence : null;
+        })
+      )
+    ).filter((sentence) => sentence);
+  }
+
+  @FieldResolver(() => [Question])
+  async createdQuestions(@Root() _: User, @Ctx() { req }: MyContext) {
+    return await Question.find({
+      where: { teacherId: req.session.userId },
+      take: 100,
+      skip: 0,
+      order: {
+        createdAt: "DESC",
+      },
+    });
   }
 
   @Mutation(() => UserResponse)

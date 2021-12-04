@@ -1,0 +1,34 @@
+query CreatedContent {
+  me {
+    createdParagraphs {
+      id
+      text
+      subjects
+      children {
+        text
+      }
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+      teacher {
+        firstName
+        lastName
+      }
+    }
+    createdQuestions {
+      id
+      question
+      questionType
+      choices
+      answer
+      subjects
+      upVoteCount
+      downVoteCount
+      userVoteType
+      viewCount
+      createdAt
+    }
+  }
+}

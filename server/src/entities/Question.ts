@@ -37,7 +37,7 @@ export class Question extends BaseEntity {
   teacherId: number;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.questions, {
+  @ManyToOne(() => User, (user) => user.createdQuestions, {
     onDelete: "CASCADE",
   })
   teacher: User;

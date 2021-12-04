@@ -17,6 +17,9 @@ const createClient = (ctx: NextPageContext) =>
       typePolicies: {
         Query: {
           fields: {
+            me: {
+              merge: false
+            },
             sentences: {
               keyArgs: false,
               merge(

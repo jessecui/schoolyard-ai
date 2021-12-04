@@ -112,15 +112,27 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             </Box>
           </MenuButton>
           <MenuList borderColor="grayLight">
-            <MenuItem
-              icon={
-                <Center>
-                  <Icon color="grayMain" as={IoListCircle} w="20px" h="20px" />
-                </Center>
-              }
-            >
-              <Text fontSize="md">Activity Log</Text>
-            </MenuItem>
+            <NextLink href="/activity-log">
+              <Link
+                href="/activity-log"
+                _hover={{ textDecoration: "none" }}
+              >
+                <MenuItem
+                  icon={
+                    <Center>
+                      <Icon
+                        color="grayMain"
+                        as={IoListCircle}
+                        w="20px"
+                        h="20px"
+                      />
+                    </Center>
+                  }
+                >
+                  <Text fontSize="md">Activity Log</Text>
+                </MenuItem>
+              </Link>
+            </NextLink>
             <NextLink href="/account-settings">
               <Link
                 href="/account-settings"
@@ -143,7 +155,11 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               </Link>
             </NextLink>
             <MenuItem
-              icon={<Icon color="grayMain" as={IoLogOut} w="20px" h="20px" />}
+              icon={
+                <Center>
+                  <Icon color="grayMain" as={IoLogOut} w="20px" h="20px" />
+                </Center>
+              }
               onClick={async () => {
                 await logout();
                 await apolloClient.resetStore();

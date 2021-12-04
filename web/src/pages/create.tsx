@@ -349,11 +349,7 @@ export const Create: React.FC<{}> = ({}) => {
             }}
             icon={<ArrowBackIcon />}
             onClick={() => {
-              if (parentData?.sentence?.id) {
-                router.push("/learn/" + parentData.sentence.id);
-              } else {
-                router.back();
-              }
+              router.back();
             }}
           />
           <Text
