@@ -11,26 +11,20 @@ import {
   Link,
   Spacer,
   Stack,
-  Text,
+  Text
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { IoExpand, IoPeople, IoPersonCircle } from "react-icons/io5";
 import { BiZoomIn } from "react-icons/bi";
-import {
-  RiThumbUpFill,
-  RiThumbUpLine,
-  RiThumbDownFill,
-  RiThumbDownLine,
-  RiCalendarEventFill,
-  RiEditBoxFill,
-  RiArrowLeftSLine,
-  RiArrowRightSLine,
-  RiEditBoxLine,
-} from "react-icons/ri";
+import { IoExpand, IoPeople, IoPersonCircle } from "react-icons/io5";
 import { MdLibraryAdd } from "react-icons/md";
-
+import {
+  RiArrowLeftSLine,
+  RiArrowRightSLine, RiCalendarEventFill, RiEditBoxLine, RiThumbDownFill,
+  RiThumbDownLine, RiThumbUpFill,
+  RiThumbUpLine
+} from "react-icons/ri";
 import {
   AddSentenceVoteMutation,
   MeQuery,
@@ -41,9 +35,10 @@ import {
   useAddSentenceVoteMutation,
   useMeQuery,
   useSentenceQuery,
-  VoteType,
+  VoteType
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
+
 
 const Learn: React.FC<{
   setAvailableQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
@@ -470,9 +465,7 @@ const Learn: React.FC<{
           </Center>
         </HStack>
         <HStack mt={3} spacing={4}>
-          {userData?.me &&
-            (userData?.me?.id != activeSentence.teacherId ||
-              !activeSentence.children?.length) && (
+          {userData?.me && (
               <NextLink
                 href={
                   "/create" +
