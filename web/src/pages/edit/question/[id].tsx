@@ -436,7 +436,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                     Sentence Being Linked
                   </Text>
                   <Divider borderColor="grayLight" border="1px" mb={2} />
-                  <Text fontSize="md">{questionData.question?.sentence.text}</Text>
+                  <Text fontSize="lg">{questionData.question?.sentence.text}</Text>
                 </Box>
               )}
               <Box>

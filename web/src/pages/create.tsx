@@ -451,7 +451,7 @@ export const Create: React.FC<{}> = ({}) => {
                         Sentence Being Linked
                       </Text>
                       <Divider borderColor="grayLight" border="1px" mb={2} />
-                      <Text>{parentData.sentence?.text}</Text>
+                      <Text fontSize="lg">{parentData.sentence?.text}</Text>
                     </Box>
                   )}
                   <Box>
@@ -777,7 +777,7 @@ export const Create: React.FC<{}> = ({}) => {
                       Sentence Being Linked
                     </Text>
                     <Divider borderColor="grayLight" border="1px" mb={2} />
-                    <Text>{parentData.sentence?.text}</Text>
+                    <Text fontSize="lg">{parentData.sentence?.text}</Text>
                   </Box>
                 )}
                 <Box mt={4}>
