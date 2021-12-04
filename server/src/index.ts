@@ -30,6 +30,7 @@ import { SentenceSubject } from "./entities/SentenceSubject";
 import { Subject } from "./entities/Subject";
 import { Score } from "./entities/Score";
 import { QuestionSubject } from "./entities/QuestionSubject";
+import { SentenceViewResolver } from "./resolvers/sentenceView";
 
 // Update these variables upon adding new entities and resolvers
 const entities = [
@@ -53,6 +54,7 @@ const resolvers = [
   SentenceResolver,
   QuestionResolver,
   QuestionReviewResolver,
+  SentenceViewResolver
 ];
 
 // Also make sure to update MyContext type in types.ts

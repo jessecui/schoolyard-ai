@@ -24,6 +24,7 @@ import { Score } from "../entities/Score";
 import { Sentence } from "../entities/Sentence";
 import { Question } from "../entities/Question";
 import { ParentChild } from "../entities/ParentChild";
+import { SentenceView } from "../entities/SentenceView";
 
 @ObjectType()
 class FieldError {
@@ -57,9 +58,22 @@ export class UserResolver {
   async questionReviews(@Root() _: User, @Ctx() { req }: MyContext) {
     return await QuestionReview.find({
       where: { userId: req.session.userId },
+      take: 100,
       skip: 0,
       order: {
         dateCreated: "DESC",
+      },
+    });
+  }
+
+  @FieldResolver(() => [SentenceView])
+  async sentenceViews(@Root() _: User, @Ctx() { req }: MyContext) {
+    return await SentenceView.find({
+      where: { userId: req.session.userId },
+      take: 100,
+      skip: 0,
+      order: {
+        lastViewed: "DESC",
       },
     });
   }
