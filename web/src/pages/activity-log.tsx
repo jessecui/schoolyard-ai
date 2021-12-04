@@ -638,7 +638,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
         <Flex justifyContent="space-between">
           <Center>
             <Heading
-              size="sm"
+              fontSize="sm"
               color={contentType == "viewed paragraph" ? "mint" : "grayMain"}
               _hover={{ color: "mint", cursor: "pointer" }}
               mr={1}
@@ -653,7 +653,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           </Center>
           <Center>
             <Heading
-              size="sm"
+              fontSize="sm"
               color={contentType == "viewed question" ? "mint" : "grayMain"}
               _hover={{ color: "mint", cursor: "pointer" }}
               mx={1}
@@ -668,7 +668,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           </Center>
           <Center>
             <Heading
-              size="sm"
+              fontSize="sm"
               color={contentType == "created paragraph" ? "mint" : "grayMain"}
               _hover={{ color: "mint", cursor: "pointer" }}
               mx={1}
@@ -683,7 +683,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           </Center>
           <Center>
             <Heading
-              size="sm"
+              fontSize="sm"
               color={contentType == "created question" ? "mint" : "grayMain"}
               _hover={{ color: "mint", cursor: "pointer" }}
               ml={1}
