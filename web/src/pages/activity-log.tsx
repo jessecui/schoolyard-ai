@@ -32,7 +32,9 @@ import {
   AddQuestionVoteMutation,
   AddSentenceVoteMutation,
   Question,
+  QuestionReview,
   QuestionType,
+  ReviewStatus,
   useActivityLogQuery,
   useAddQuestionVoteMutation,
   useAddSentenceVoteMutation,
@@ -55,6 +57,13 @@ const AccountSettings: React.FC<{}> = ({}) => {
 
   const [addSentenceVote] = useAddSentenceVoteMutation();
   const [addQuestionVote] = useAddQuestionVoteMutation();
+
+  const questionReviewsSortedByUpdate = createdData?.me?.questionReviews
+    ? [...createdData?.me?.questionReviews].sort(
+        (a, b) =>
+          new Date(b.dateUpdated).getTime() - new Date(a.dateUpdated).getTime()
+      )
+    : [];
 
   const updateAfterSentenceVote = (
     cache: ApolloCache<AddSentenceVoteMutation>,
@@ -113,7 +122,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
     subjectToColors = JSON.parse(meData.me.subjectColors);
   }
 
-  const getQuestionComponent = (question: Question) => (
+  const getCreatedQuestionComponent = (question: Question) => (
     <Box
       border="2px"
       borderColor="grayLight"
@@ -365,6 +374,251 @@ const AccountSettings: React.FC<{}> = ({}) => {
     </Box>
   );
 
+  const getViewedQuestionComponent = (questionReview: QuestionReview) => (
+    <Box
+      border="2px"
+      borderColor="grayLight"
+      borderRadius="md"
+      bg="White"
+      p={4}
+      my={2}
+    >
+      <Flex align="center">
+        <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+        <Box>
+          <Text fontWeight="bold" fontSize="md">
+            {meData?.me?.firstName} {meData?.me?.lastName}
+          </Text>
+          <HStack spacing="6px">
+            {questionReview.question.subjects
+              ? questionReview.question.subjects.map((subject) => {
+                  subject = subject.trim().toLowerCase();
+                  return subject ? (
+                    <Flex align="center" key={subject}>
+                      <Circle
+                        mr="4px"
+                        size="12px"
+                        bg={
+                          subjectToColors[subject]
+                            ? subjectToColors[subject]
+                            : "grayMain"
+                        }
+                      />
+                      <Text fontSize="sm">{"#" + subject.toLowerCase()}</Text>
+                    </Flex>
+                  ) : null;
+                })
+              : null}
+          </HStack>
+        </Box>
+      </Flex>
+      <Text my={2} fontWeight="bold" fontSize="xl">
+        {questionReview.question.question}
+      </Text>
+      <HStack spacing={4}>
+        {!meLoading && meData && (
+          <>
+            <Text color="grayMain" fontSize="sm">
+              <IconButton
+                mr={1}
+                minWidth="24px"
+                height="24px"
+                isRound={true}
+                size="lg"
+                bg="none"
+                _focus={{
+                  boxShadow: "none",
+                }}
+                _hover={{
+                  bg: "grayLight",
+                }}
+                onClick={async () => {
+                  await addQuestionVote({
+                    variables: {
+                      questionId: questionReview.question!.id,
+                      voteType: VoteType.Up,
+                    },
+                    update: (cache, { data: responseData }) => {
+                      const votedQuestion = responseData?.addQuestionVote;
+                      updateAfterQuestionVote(
+                        cache,
+                        questionReview.question!.id,
+                        votedQuestion!.userVoteType as VoteType | null,
+                        votedQuestion!.upVoteCount,
+                        votedQuestion!.downVoteCount
+                      );
+                    },
+                  });
+                }}
+                aria-label="Up Vote Question"
+                icon={
+                  questionReview.question.userVoteType == VoteType.Up ? (
+                    <RiThumbUpFill />
+                  ) : (
+                    <RiThumbUpLine />
+                  )
+                }
+              />
+              {questionReview.question.upVoteCount}
+            </Text>
+            <Text color="grayMain" fontSize="sm">
+              <IconButton
+                mr={1}
+                minWidth="24px"
+                height="24px"
+                isRound={true}
+                size="lg"
+                bg="none"
+                _focus={{
+                  boxShadow: "none",
+                }}
+                _hover={{
+                  bg: "grayLight",
+                }}
+                onClick={async () => {
+                  await addQuestionVote({
+                    variables: {
+                      questionId: questionReview.question!.id,
+                      voteType: VoteType.Down,
+                    },
+                    update: (cache, { data: responseData }) => {
+                      const votedQuestion = responseData?.addQuestionVote;
+                      updateAfterQuestionVote(
+                        cache,
+                        questionReview.question!.id,
+                        votedQuestion!.userVoteType as VoteType | null,
+                        votedQuestion!.upVoteCount,
+                        votedQuestion!.downVoteCount
+                      );
+                    },
+                  });
+                }}
+                aria-label="Down Vote Question"
+                icon={
+                  questionReview.question.userVoteType == VoteType.Down ? (
+                    <RiThumbDownFill />
+                  ) : (
+                    <RiThumbDownLine />
+                  )
+                }
+              />
+              {questionReview.question.downVoteCount}
+            </Text>
+          </>
+        )}
+
+        <Center>
+          <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
+          <Text color="grayMain" fontSize="sm">
+            {questionReview.question.viewCount +
+              (questionReview.question.viewCount == 1 ? " view" : " views")}
+          </Text>
+        </Center>
+        <Center>
+          <Icon as={RiCalendarEventFill} color="grayMain" mr={1} w={5} h={5} />
+          <Text color="grayMain" fontSize="sm">
+            {new Date(questionReview.question.createdAt).toLocaleString(
+              "default",
+              {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }
+            )}
+          </Text>
+        </Center>
+      </HStack>
+      <Text color="grayMain" fontSize="sm" my={2}>
+        {questionReview.question.questionType == QuestionType.Single &&
+          "Select the correct answer"}
+        {questionReview.question.questionType == QuestionType.Multiple &&
+          "Select all that apply"}
+        {questionReview.question.questionType == QuestionType.Text &&
+          "Type the correct answer"}
+      </Text>
+      {(questionReview.question.questionType == QuestionType.Single ||
+        questionReview.question.questionType == QuestionType.Multiple) && (
+        <Stack>
+          {questionReview.question.choices &&
+            questionReview.question.choices.map((option, index) => (
+              <Box key={index}>
+                {questionReview.question.questionType ==
+                  QuestionType.Single && (
+                  <Radio
+                    size="lg"
+                    my="4px"
+                    borderColor="grayMain"
+                    colorScheme="gray"
+                    isDisabled={true}
+                  >
+                    <Text fontSize="md">{option}</Text>
+                  </Radio>
+                )}
+
+                {questionReview.question.questionType ==
+                  QuestionType.Multiple && (
+                  <Checkbox
+                    size="lg"
+                    my="4px"
+                    borderColor="grayMain"
+                    colorScheme="gray"
+                    isDisabled={true}
+                  >
+                    <Text ml={2} fontSize="md">
+                      {option}
+                    </Text>
+                  </Checkbox>
+                )}
+              </Box>
+            ))}
+        </Stack>
+      )}
+      {questionReview.question.questionType == QuestionType.Text && (
+        <Input
+          size="sm"
+          border="2px"
+          borderColor="grayLight"
+          value={""}
+          readOnly={true}
+        />
+      )}
+      <HStack mt={3} spacing={4}>
+        <NextLink href={"/review/" + questionReview.question.id}>
+          <Link
+            color="iris"
+            _hover={{ color: "irisDark" }}
+            href={"/review/" + questionReview.question.id}
+          >
+            <Center alignItems="left" justifyContent="left">
+              <Icon as={GoChecklist} w="24px" height="24px" />
+              <Text
+                textAlign="left"
+                ml={1}
+                as="span"
+                fontWeight="bold"
+                fontSize="md"
+              >
+                answer question
+              </Text>
+            </Center>
+          </Link>
+        </NextLink>
+      </HStack>
+      <Divider borderColor="grayLight" border="1px" my={3} />
+      <Text fontSize="sm" color="grey" mt={4}>
+        {questionReview.reviewStatus == ReviewStatus.Queued
+          ? "added"
+          : questionReview.reviewStatus == ReviewStatus.Incorrect
+          ? "answered incorrectly"
+          : questionReview.reviewStatus == ReviewStatus.Correct
+          ? "answered correctly"
+          : ""}
+        {" on "}
+        {new Date(questionReview.dateUpdated).toLocaleString()}
+      </Text>
+    </Box>
+  );
+
   const getContentList = () => {
     let contentList = null;
 
@@ -593,6 +847,13 @@ const AccountSettings: React.FC<{}> = ({}) => {
           </Text>
         </Box>
       ));
+    } else if (
+      contentType == "viewed question" &&
+      createdData?.me?.questionReviews
+    ) {
+      contentList = questionReviewsSortedByUpdate.map((questionReview) =>
+        getViewedQuestionComponent(questionReview as QuestionReview)
+      );
     } else if (
       contentType == "created paragraph" &&
       createdData?.me?.createdParagraphs &&
@@ -842,7 +1103,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
       createdData?.me?.createdQuestions.length
     ) {
       contentList = createdData?.me?.createdQuestions.map((question) =>
-        getQuestionComponent(question as Question)
+        getCreatedQuestionComponent(question as Question)
       );
     }
     return contentList ? <Box mt={2}>{contentList}</Box> : null;
