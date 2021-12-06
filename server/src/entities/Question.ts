@@ -9,12 +9,13 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { QuestionVote, VoteType } from "./QuestionVote";
+import { QuestionVote } from "./QuestionVote";
 import { QuestionView } from "./QuestionView";
 import { Sentence } from "./Sentence";
 import { User } from "./User";
 import { QuestionReview } from "./QuestionReview";
 import { QuestionSubject } from "./QuestionSubject";
+import { VoteType } from "../utils/voteTypeEnum";
 
 export enum QuestionType {
   TEXT = "text", // Written answer

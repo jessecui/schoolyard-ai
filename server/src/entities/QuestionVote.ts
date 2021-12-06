@@ -1,15 +1,8 @@
-import { Field, ObjectType, registerEnumType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { VoteType } from "../utils/voteTypeEnum";
 import { Question } from "./Question";
 import { User } from "./User";
-
-export enum VoteType {
-  UP = 1, // Written answer
-  DOWN = -1, // Multiple choice single answer
-}
-registerEnumType(VoteType, {
-  name: "VoteType",
-});
 
 @ObjectType()
 @Entity()

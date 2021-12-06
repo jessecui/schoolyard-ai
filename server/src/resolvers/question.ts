@@ -14,7 +14,7 @@ import {
 } from "type-graphql";
 import { EntityManager, getConnection, UpdateResult } from "typeorm";
 import { Question, QuestionType } from "../entities/Question";
-import { QuestionVote, VoteType } from "../entities/QuestionVote";
+import { QuestionVote } from "../entities/QuestionVote";
 import { QuestionView } from "../entities/QuestionView";
 import { Sentence } from "../entities/Sentence";
 import { User } from "../entities/User";
@@ -23,6 +23,7 @@ import { MyContext } from "../types";
 import { QuestionSubject } from "../entities/QuestionSubject";
 import { Subject } from "../entities/Subject";
 import { SentenceSubject } from "../entities/SentenceSubject";
+import { VoteType } from "../utils/voteTypeEnum";
 
 @InputType()
 class QuestionInput {
