@@ -1,0 +1,3 @@
+mutation AddProfilePhoto($photo: File!) {
+  addProfilePhoto(photo: $photo)
+}

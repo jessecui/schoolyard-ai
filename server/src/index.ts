@@ -1,36 +1,38 @@
-import connectRedis from "connect-redis";
-import Redis from "ioredis";
-import express from "express";
-import path from "path";
-import { createConnection } from "typeorm";
-import session from "express-session";
-import cors from "cors";
-import { COOKIE_NAME, IS_PROD } from "./constants";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
+import connectRedis from "connect-redis";
+import cors from "cors";
+import express from "express";
+import session from "express-session";
+import { graphqlUploadExpress } from "graphql-upload";
+import Redis from "ioredis";
+import path from "path";
 import { buildSchema } from "type-graphql";
-import { UserResolver } from "./resolvers/user";
-import { User } from "./entities/User";
-import { SentenceResolver } from "./resolvers/sentence";
-import { Sentence } from "./entities/Sentence";
-import { SentenceVote } from "./entities/SentenceVote";
-import { QuestionVote } from "./entities/QuestionVote";
-import { Question } from "./entities/Question";
-import { QuestionResolver } from "./resolvers/question";
-import { createUserLoader } from "./utils/createUserLoader";
-import { QuestionView } from "./entities/QuestionView";
-import { createQuestionVoteLoader } from "./utils/createQuestionVoteLoader";
-import { ParentChild } from "./entities/ParentChild";
-import { SentenceView } from "./entities/SentenceView";
-import { createSentenceVoteLoader } from "./utils/createSentenceVoteLoader";
+import { createConnection } from "typeorm";
+import { COOKIE_NAME, IS_PROD } from "./constants";
 import { Cloning } from "./entities/Cloning";
+import { ParentChild } from "./entities/ParentChild";
+import { Question } from "./entities/Question";
 import { QuestionReview } from "./entities/QuestionReview";
-import { QuestionReviewResolver } from "./resolvers/questionReview";
-import { SentenceSubject } from "./entities/SentenceSubject";
-import { Subject } from "./entities/Subject";
-import { Score } from "./entities/Score";
 import { QuestionSubject } from "./entities/QuestionSubject";
+import { QuestionView } from "./entities/QuestionView";
+import { QuestionVote } from "./entities/QuestionVote";
+import { Score } from "./entities/Score";
+import { Sentence } from "./entities/Sentence";
+import { SentenceSubject } from "./entities/SentenceSubject";
+import { SentenceView } from "./entities/SentenceView";
+import { SentenceVote } from "./entities/SentenceVote";
+import { Subject } from "./entities/Subject";
+import { User } from "./entities/User";
+import { ProfilePhotoResolver } from "./resolvers/profilePhoto";
+import { QuestionResolver } from "./resolvers/question";
+import { QuestionReviewResolver } from "./resolvers/questionReview";
+import { SentenceResolver } from "./resolvers/sentence";
 import { SentenceViewResolver } from "./resolvers/sentenceView";
+import { UserResolver } from "./resolvers/user";
+import { createQuestionVoteLoader } from "./utils/createQuestionVoteLoader";
+import { createSentenceVoteLoader } from "./utils/createSentenceVoteLoader";
+import { createUserLoader } from "./utils/createUserLoader";
 
 // Update these variables upon adding new entities and resolvers
 const entities = [
@@ -44,7 +46,7 @@ const entities = [
   QuestionReview,
   ParentChild,
   Cloning,
-  Subject,  
+  Subject,
   SentenceSubject,
   QuestionSubject,
   Score,
@@ -54,7 +56,8 @@ const resolvers = [
   SentenceResolver,
   QuestionResolver,
   QuestionReviewResolver,
-  SentenceViewResolver
+  SentenceViewResolver,
+  ProfilePhotoResolver,
 ];
 
 // Also make sure to update MyContext type in types.ts
@@ -127,6 +130,8 @@ const main = async () => {
     }),
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   });
+
+  app.use(graphqlUploadExpress());
 
   await apolloServer.start();
   apolloServer.applyMiddleware({ app, cors: false });

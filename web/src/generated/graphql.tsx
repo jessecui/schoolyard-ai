@@ -14,6 +14,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type FieldError = {
@@ -24,6 +26,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addProfilePhoto: Scalars['Boolean'];
   addQuestionView?: Maybe<Question>;
   addQuestionVote: Question;
   addSentenceView?: Maybe<Sentence>;
@@ -45,6 +48,11 @@ export type Mutation = {
   updateParagraph?: Maybe<Sentence>;
   updateQuestion?: Maybe<Question>;
   updateQuestionReview?: Maybe<QuestionReview>;
+};
+
+
+export type MutationAddProfilePhotoArgs = {
+  photo: Scalars['Upload'];
 };
 
 
@@ -338,6 +346,13 @@ export type UserFragment = { __typename?: 'User', id: number, email: string, fir
 
 export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
 
+export type AddProfilePhotoMutationVariables = Exact<{
+  photo: Scalars['Upload'];
+}>;
+
+
+export type AddProfilePhotoMutation = { __typename?: 'Mutation', addProfilePhoto: boolean };
+
 export type AddQuestionViewMutationVariables = Exact<{
   questionId: Scalars['Int'];
 }>;
@@ -496,7 +511,7 @@ export type UpdateQuestionReviewMutation = { __typename?: 'Mutation', updateQues
 export type ActivityLogQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User', sentenceViews: Array<{ __typename?: 'SentenceView', lastViewed: any, sentence: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, questionReviews: Array<{ __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateUpdated: any, question: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any }> } | null | undefined };
+export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User', sentenceViews: Array<{ __typename?: 'SentenceView', lastViewed: any, sentence: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, questionReviews: Array<{ __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateUpdated: any, question: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any }> } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -583,6 +598,37 @@ export const UserResponseFragmentDoc = gql`
 }
     ${ErrorFragmentDoc}
 ${UserFragmentDoc}`;
+export const AddProfilePhotoDocument = gql`
+    mutation AddProfilePhoto($photo: Upload!) {
+  addProfilePhoto(photo: $photo)
+}
+    `;
+export type AddProfilePhotoMutationFn = Apollo.MutationFunction<AddProfilePhotoMutation, AddProfilePhotoMutationVariables>;
+
+/**
+ * __useAddProfilePhotoMutation__
+ *
+ * To run a mutation, you first call `useAddProfilePhotoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProfilePhotoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProfilePhotoMutation, { data, loading, error }] = useAddProfilePhotoMutation({
+ *   variables: {
+ *      photo: // value for 'photo'
+ *   },
+ * });
+ */
+export function useAddProfilePhotoMutation(baseOptions?: Apollo.MutationHookOptions<AddProfilePhotoMutation, AddProfilePhotoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProfilePhotoMutation, AddProfilePhotoMutationVariables>(AddProfilePhotoDocument, options);
+      }
+export type AddProfilePhotoMutationHookResult = ReturnType<typeof useAddProfilePhotoMutation>;
+export type AddProfilePhotoMutationResult = Apollo.MutationResult<AddProfilePhotoMutation>;
+export type AddProfilePhotoMutationOptions = Apollo.BaseMutationOptions<AddProfilePhotoMutation, AddProfilePhotoMutationVariables>;
 export const AddQuestionViewDocument = gql`
     mutation AddQuestionView($questionId: Int!) {
   addQuestionView(questionId: $questionId) {
@@ -1397,7 +1443,6 @@ export const ActivityLogDocument = gql`
       userVoteType
       viewCount
       createdAt
-      updatedAt
       teacher {
         firstName
         lastName
@@ -1415,7 +1460,6 @@ export const ActivityLogDocument = gql`
       userVoteType
       viewCount
       createdAt
-      updatedAt
     }
   }
 }
