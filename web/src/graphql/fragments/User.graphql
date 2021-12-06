@@ -1,6 +1,7 @@
 fragment User on User {
   id
   email
+  photoUrl
   firstName
   lastName
   questionReviews {

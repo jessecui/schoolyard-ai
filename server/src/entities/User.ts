@@ -71,6 +71,10 @@ export class User extends BaseEntity {
   @Field()
   subjectColors: string
 
+  @Field({nullable: true})
+  @Column({nullable: true})
+  photoUrl: string
+
   @Field(() => Date)
   @CreateDateColumn()
   createdAt: Date;
