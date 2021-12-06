@@ -8,9 +8,7 @@ import {
   Center,
   Checkbox,
   Circle,
-  CloseButton,
-  Divider,
-  Flex,
+  CloseButton, Flex,
   FormControl,
   FormErrorMessage,
   HStack,
@@ -26,12 +24,12 @@ import {
   RadioGroup,
   Spacer,
   Stack,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BiDotsHorizontalRounded, BiZoomIn } from "react-icons/bi";
 import { IoPeople, IoPersonCircle } from "react-icons/io5";
 import {
@@ -39,7 +37,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine,
+  RiThumbUpLine
 } from "react-icons/ri";
 import { ChangedSubject } from "../../components/SiteLayout";
 import {
@@ -64,7 +62,7 @@ import {
   useQuestionReviewQuery,
   User,
   useUpdateQuestionReviewMutation,
-  VoteType,
+  VoteType
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -90,8 +88,22 @@ const Review: React.FC<{
   useEffect(() => {
     if (!meLoading && !meData?.me) {
       router.push("/");
-    }
+    }    
   });
+
+  useEffect(() => {
+    if (reviewData?.questionReview && data?.question) {
+      setChangedSubjects(
+        data.question.subjects.map((subject) => {
+          return {
+            subject: subject,
+            oldStatus: reviewData.questionReview?.reviewStatus!,
+            newStatus: reviewData.questionReview?.reviewStatus!,
+          };
+        })
+      );
+    }
+  }, [reviewData?.questionReview, data?.question])
 
   useEffect(() => {
     if (data?.question) {
@@ -205,7 +217,7 @@ const Review: React.FC<{
   const questionIsLocked = reviewData?.questionReview?.dateNextAvailable
     ? new Date().getTime() <
       new Date(reviewData.questionReview.dateNextAvailable).getTime()
-    : false;
+    : false;  
 
   const updateQuestionAfterVote = (
     cache: ApolloCache<AddQuestionVoteMutation>,

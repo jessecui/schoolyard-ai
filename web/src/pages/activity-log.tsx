@@ -47,6 +47,9 @@ const AccountSettings: React.FC<{}> = ({}) => {
   const router = useRouter();
   const [contentType, setContentType] = useState("viewed paragraph");
   useEffect(() => {
+    if (!meLoading && !meData?.me) {
+      router.push("/");
+    }
     if (router.query.contentType) {
       setContentType(router.query.contentType as string);
     }
