@@ -1,32 +1,37 @@
-import { Box, HStack, Icon, Image, Text, VStack } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  HStack, Text,
+  VStack
+} from "@chakra-ui/react";
 import gql from "graphql-tag";
-import React, { useState } from "react";
+import React from "react";
 import Dropzone from "react-dropzone";
-import { IoPersonCircle } from "react-icons/io5";
 import {
   useAddProfilePhotoMutation,
   useDeleteProfilePhotoMutation,
-  useMeQuery,
+  useMeQuery
 } from "../generated/graphql";
 
-export const ProfilePhotoUpload: React.FC<{}> = ({}) => {
+export const ProfilePhotoUpload: React.FC<{
+  imageHash: number;
+  setImageHash: React.Dispatch<React.SetStateAction<number>>;
+}> = ({imageHash, setImageHash}) => {
   const [addProfilePhoto] = useAddProfilePhotoMutation();
   const [deleteProfilePhoto] = useDeleteProfilePhotoMutation();
 
   const { data, loading: meLoading } = useMeQuery();
-  const [imageHash, setImageHash] = useState(1);
   return (
     <HStack mb={4} spacing={4}>
       {data?.me?.photoUrl ? (
-        <Image
-          alt="Personal Profile Photo"
-          borderRadius="full"
-          boxSize="80px"
-          objectFit="cover"
+        <Avatar
+          size="lg"
+          bg="iris"
+          name={`${data.me.firstName} ${data.me.lastName}`}
           src={`${data.me.photoUrl}?${imageHash}`}
         />
       ) : (
-        <Icon color="iris" as={IoPersonCircle} w="80px" h="80px" />
+        <Avatar size="lg" bg="iris" />
       )}
       <VStack alignItems="left" spacing={1}>
         <Dropzone

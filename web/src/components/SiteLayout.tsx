@@ -22,6 +22,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
   const [availableQuestions, setAvailableQuestions] = useState<Question[]>([]);
   const [activeScoreSubjects, setActiveScoreSubjects] = useState<string[]>([]);
   const [changedSubjects, setChangedSubjects] = useState<ChangedSubject[]>([]);
+  const [imageHash, setImageHash] = useState(1);
 
   useEffect(() => {
     if (router.pathname !== "/learn/[id]") {
@@ -33,7 +34,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
   return (
     <>
       <Box position="sticky" top={0} zIndex={1}>
-        <Navbar />
+        <Navbar imageHash={imageHash} setImageHash={setImageHash} />
       </Box>
       <Container maxW="container.xl" pt={4}>
         <Grid templateColumns="repeat(10, 1fr)">
@@ -53,6 +54,8 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
                   setAvailableQuestions,
                   setChangedSubjects,
                   setActiveScoreSubjects,
+                  imageHash,
+                  setImageHash,
                 })}
             </Container>
           </GridItem>
