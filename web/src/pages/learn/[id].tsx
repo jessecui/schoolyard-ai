@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { ApolloCache } from "@apollo/client/cache";
 import {
+  Avatar,
   Box,
   Center,
   Circle,
@@ -11,13 +12,13 @@ import {
   Link,
   Spacer,
   Stack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiZoomIn } from "react-icons/bi";
-import { IoExpand, IoPeople, IoPersonCircle } from "react-icons/io5";
+import { IoExpand, IoPeople } from "react-icons/io5";
 import { MdLibraryAdd } from "react-icons/md";
 import {
   RiArrowLeftSLine,
@@ -27,7 +28,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine
+  RiThumbUpLine,
 } from "react-icons/ri";
 import {
   AddSentenceVoteMutation,
@@ -39,7 +40,7 @@ import {
   useAddSentenceVoteMutation,
   useMeQuery,
   useSentenceQuery,
-  VoteType
+  VoteType,
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -211,7 +212,18 @@ const Learn: React.FC<{
       >
         <Flex>
           <Flex align="center" width="80%">
-            <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+            {activeSentence.teacher.photoUrl ? (
+              <Avatar
+                size="md"
+                bg="white"
+                name={`${activeSentence.teacher.firstName} ${activeSentence.teacher.lastName}`}
+                src={`${activeSentence.teacher.photoUrl}`}
+                mr={2}
+                color="white"
+              />
+            ) : (
+              <Avatar size="md" bg="iris" mr={2} />
+            )}
             <Box>
               <Text fontWeight="bold" fontSize="md">
                 {activeSentence.teacher.firstName}{" "}
@@ -563,13 +575,47 @@ const Learn: React.FC<{
                 <Spacer borderRight="2px solid" borderColor="grayMain" />
                 <Flex width={"20%"} ml={2} flexDirection="column">
                   <Center>
-                    <Icon
-                      as={IoPersonCircle}
-                      color="grayMain"
-                      w={"20px"}
-                      h={"20px"}
-                      mr={"6px"}
-                    />
+                    {child.clones &&
+                    clonesWithChildren(child.clones)[
+                      activeChildrenCloneIndices[index]
+                    ] &&
+                    (
+                      child.clones &&
+                      clonesWithChildren(child.clones)[
+                        activeChildrenCloneIndices[index]
+                      ]
+                    ).teacher.photoUrl ? (
+                      <Avatar
+                        size="xs"
+                        bg="white"
+                        name={`${
+                          (
+                            child.clones &&
+                            clonesWithChildren(child.clones)[
+                              activeChildrenCloneIndices[index]
+                            ]
+                          ).teacher.firstName
+                        } ${
+                          (
+                            child.clones &&
+                            clonesWithChildren(child.clones)[
+                              activeChildrenCloneIndices[index]
+                            ]
+                          ).teacher.lastName
+                        }`}
+                        src={`${
+                          (
+                            child.clones &&
+                            clonesWithChildren(child.clones)[
+                              activeChildrenCloneIndices[index]
+                            ]
+                          ).teacher.photoUrl
+                        }`}
+                        color="white"
+                      />
+                    ) : (
+                      <Avatar size="xs" bg="iris" />
+                    )}
                   </Center>
                   <Center>
                     <Text fontWeight="bold" color="grayMain" fontSize="xs">
@@ -756,13 +802,18 @@ const Learn: React.FC<{
             {allParents.map((p) => (
               <Box key={p.parent!.id}>
                 <Flex align="center" flexWrap="wrap">
-                  <Icon
-                    as={IoPersonCircle}
-                    color="grayMain"
-                    w={"24px"}
-                    h={"24px"}
-                    mr={"6px"}
-                  />
+                  {p.parent?.teacher.photoUrl ? (
+                    <Avatar
+                      size="xs"
+                      bg="white"
+                      name={`${p.parent?.teacher.firstName} ${p.parent?.teacher.lastName}`}
+                      src={`${p.parent?.teacher.photoUrl}`}
+                      mr={2}
+                      color="white"
+                    />
+                  ) : (
+                    <Avatar size="xs" bg="iris" mr={2} />
+                  )}
                   <Text fontWeight="bold" color="grayMain" fontSize="sm">
                     {p.parent?.teacher.firstName[0]}
                     {". "}

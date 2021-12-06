@@ -9,6 +9,7 @@ import {
   Stack,
 } from "@chakra-ui/layout";
 import {
+  Avatar,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -25,7 +26,6 @@ import {
 import { Field, FieldArray, Form, Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { IoPersonCircle } from "react-icons/io5";
 import { RiAddLine, RiSubtractLine } from "react-icons/ri";
 import {
   MeQuery,
@@ -632,7 +632,18 @@ export const Create: React.FC<{}> = ({}) => {
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
                 <Flex align="center">
-                  <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+                  {userData?.me?.photoUrl ? (
+                    <Avatar
+                      size="md"
+                      bg="white"
+                      name={userData.me.firstName + " " + userData.me.lastName}
+                      src={`${userData.me.photoUrl}`}
+                      mr={2}
+                      color="white"
+                    />
+                  ) : (
+                    <Avatar size="md" bg="iris" mr={2} />
+                  )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
                       {userData?.me?.firstName} {userData?.me?.lastName}
@@ -926,7 +937,18 @@ export const Create: React.FC<{}> = ({}) => {
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
                 <Flex align="center">
-                  <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+                  {userData?.me?.photoUrl ? (
+                    <Avatar
+                      size="md"
+                      bg="white"
+                      name={userData.me.firstName + " " + userData.me.lastName}
+                      src={`${userData.me.photoUrl}`}
+                      mr={2}
+                      color="white"
+                    />
+                  ) : (
+                    <Avatar size="md" bg="iris" mr={2} />
+                  )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
                       {userData?.me?.firstName} {userData?.me?.lastName}

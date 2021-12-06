@@ -6,27 +6,28 @@ import {
   Flex,
   HStack,
   Link,
-  Stack,
+  Stack
 } from "@chakra-ui/layout";
 import {
   Alert,
   AlertIcon,
+  Avatar,
   CloseButton,
   Icon,
   IconButton,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiZoomIn } from "react-icons/bi";
-import { IoPeople, IoPersonCircle } from "react-icons/io5";
+import { IoPeople } from "react-icons/io5";
 import {
   RiCalendarEventFill,
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine,
+  RiThumbUpLine
 } from "react-icons/ri";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
@@ -36,7 +37,7 @@ import {
   useAddSentenceVoteMutation,
   useMeQuery,
   useSentencesQuery,
-  VoteType,
+  VoteType
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -143,7 +144,18 @@ const Index: React.FC<{}> = ({}) => {
             >
               <Flex>
                 <Flex align="center" width="80%">
-                  <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+                {sentence.teacher.photoUrl ? (
+                  <Avatar
+                    size="md"
+                    bg="white"
+                    name={`${sentence.teacher.firstName} ${sentence.teacher.lastName}`}
+                    src={`${sentence.teacher.photoUrl}`}
+                    mr={2}
+                    color="white"
+                  />
+                ) : (
+                  <Avatar size="md" bg="iris" mr={2} />
+                )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
                       {sentence.teacher.firstName} {sentence.teacher.lastName}

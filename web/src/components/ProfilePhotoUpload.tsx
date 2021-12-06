@@ -26,9 +26,10 @@ export const ProfilePhotoUpload: React.FC<{
       {data?.me?.photoUrl ? (
         <Avatar
           size="lg"
-          bg="iris"
+          bg="white"
           name={`${data.me.firstName} ${data.me.lastName}`}
           src={`${data.me.photoUrl}?${imageHash}`}
+          color="white"
         />
       ) : (
         <Avatar size="lg" bg="iris" />

@@ -16,6 +16,7 @@ query ActivityLog {
         teacher {
           firstName
           lastName
+          photoUrl
         }
       }
       lastViewed
@@ -36,6 +37,7 @@ query ActivityLog {
         teacher {
           firstName
           lastName
+          photoUrl
         }
       }
       reviewStatus
@@ -56,6 +58,7 @@ query ActivityLog {
       teacher {
         firstName
         lastName
+        photoUrl
       }
     }
     createdQuestions {

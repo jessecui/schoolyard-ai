@@ -9,6 +9,7 @@ mutation UpdateQuestion($id: Int!, $questionInput: QuestionInput!) {
     teacher {
       firstName
       lastName
+      photoUrl
     }
     upVoteCount
     downVoteCount

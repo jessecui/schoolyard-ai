@@ -13,6 +13,7 @@ query Sentence($id: Int!) {
     teacher {
       firstName
       lastName
+      photoUrl
     }
     children {
       id
@@ -20,6 +21,7 @@ query Sentence($id: Int!) {
       teacher {
         firstName
         lastName
+        photoUrl
       }
       upVoteCount
       downVoteCount
@@ -35,6 +37,7 @@ query Sentence($id: Int!) {
       teacher {
         firstName
         lastName
+        photoUrl
       }
       subjects
       upVoteCount
@@ -61,6 +64,7 @@ query Sentence($id: Int!) {
         teacher {
           firstName
           lastName
+          photoUrl
         }
         children {
           text
@@ -73,6 +77,7 @@ query Sentence($id: Int!) {
         id
         firstName
         lastName
+        photoUrl
       }
       upVoteCount
       downVoteCount
@@ -85,6 +90,7 @@ query Sentence($id: Int!) {
         teacher {
           firstName
           lastName
+          photoUrl
         }
         children {
           id
@@ -96,6 +102,7 @@ query Sentence($id: Int!) {
           teacher {
             firstName
             lastName
+            photoUrl
           }
           children {
             id

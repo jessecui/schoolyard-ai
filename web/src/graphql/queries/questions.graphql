@@ -10,6 +10,7 @@ query Questions($limit: Int!, $cursor: String) {
       teacher {
         firstName
         lastName
+        photoUrl
       }
       subjects
       upVoteCount
