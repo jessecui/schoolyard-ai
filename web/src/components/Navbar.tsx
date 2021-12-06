@@ -7,9 +7,10 @@ import {
   Grid,
   Heading,
   HStack,
-  Link
+  Link,
 } from "@chakra-ui/layout";
 import {
+  Avatar,
   Container,
   Icon,
   Image,
@@ -17,22 +18,20 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import {
-  IoListCircle,
-  IoLogOut,
-  IoPersonCircle,
-  IoSettings
-} from "react-icons/io5";
+import { IoListCircle, IoLogOut, IoSettings } from "react-icons/io5";
 import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
 
-interface NavbarProps {}
+interface NavbarProps {
+  imageHash: number;
+  setImageHash: React.Dispatch<React.SetStateAction<number>>;
+}
 
-export const Navbar: React.FC<NavbarProps> = ({}) => {
+export const Navbar: React.FC<NavbarProps> = ({ imageHash, setImageHash }) => {
   const apolloClient = useApolloClient();
   const router = useRouter();
 
@@ -48,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     setUserDataLoading(loading);
   });
 
-  // Profile links give the user the option to log in, log out, see settings, etc.
+  // Profile links give the user the option to log in, see settings, etc.
   let profileLinks;
   if (userDataLoading) {
     // Determining user status
@@ -95,20 +94,35 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             as={Button}
             leftIcon={
               <Center>
-                <Icon color="white" as={IoPersonCircle} w="32px" h="32px" />
+                {data?.me?.photoUrl ? (
+                  <Avatar
+                    size="sm"
+                    bg="iris"
+                    name={`${data.me.firstName} ${data.me.lastName}`}
+                    src={`${data.me.photoUrl}?${imageHash}`}
+                  />
+                ) : (
+                  <Avatar size="sm" bg="iris" />
+                )}
               </Center>
             }
             aria-label="View Profile Options"
             borderRadius="full"
             size="md"
-            bg="iris"
+            bg="white"
             _hover={{
-              bg: "irisDark",
+              bg: "iris",
+              color: "white",
+            }}
+            _active={{ bg: "iris", color: "white" }}
+            color="grayMain"
+            _focus={{
+              boxShadow: "none",
             }}
           >
-            <Box fontWeight="bold" color="white">
+            <Text fontWeight="bold">
               {userData.me.firstName + " " + userData.me.lastName}
-            </Box>
+            </Text>
           </MenuButton>
           <MenuList borderColor="grayLight">
             <NextLink href="/account-settings">

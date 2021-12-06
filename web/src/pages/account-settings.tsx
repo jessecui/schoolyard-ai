@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
-  Button,  
+  Button,
   Text,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
@@ -27,7 +27,10 @@ import { isServer } from "../utils/isServer";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";
 
-const AccountSettings: React.FC<{}> = ({}) => {
+const AccountSettings: React.FC<{
+  imageHash: number;
+  setImageHash: React.Dispatch<React.SetStateAction<number>>;
+}> = ({ imageHash, setImageHash }) => {
   const apolloClient = useApolloClient();
   const { data, loading: meLoading } = useMeQuery({
     skip: isServer(),
@@ -104,8 +107,8 @@ const AccountSettings: React.FC<{}> = ({}) => {
           >
             <Text color="grayMain" fontWeight="bold" fontSize="md" mb={4}>
               Profile Settings
-            </Text>            
-            <ProfilePhotoUpload />            
+            </Text>
+            <ProfilePhotoUpload imageHash={imageHash} setImageHash={setImageHash} />
             <Form>
               <VStack spacing={2}>
                 <SimpleGrid width="100%" columns={2} spacing={4}>
