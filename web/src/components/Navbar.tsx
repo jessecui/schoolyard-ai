@@ -28,7 +28,6 @@ import {
   IoPersonCircle,
   IoSettings
 } from "react-icons/io5";
-import LogoImage from "../../public/images/schoolyard_logo.png";
 import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
 
 interface NavbarProps {}
@@ -180,7 +179,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 <Image
                   alt="Schoolyard Logo"
                   htmlWidth={150}
-                  src={LogoImage.src}
+                  src={"/images/schoolyard_logo.png"}
                 />
               </Link>
             </NextLink>

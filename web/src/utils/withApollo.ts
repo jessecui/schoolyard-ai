@@ -1,24 +1,27 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { createWithApollo } from "./createWithApollo";
+import { createUploadLink } from "apollo-upload-client";
 import { NextPageContext } from "next";
-import { PaginatedSentences, Score } from "../generated/graphql";
+import { PaginatedSentences } from "../generated/graphql";
+import { createWithApollo } from "./createWithApollo";
 
 const createClient = (ctx: NextPageContext) =>
   new ApolloClient({
-    uri: "http://localhost:4000/graphql",
-    credentials: "include",
-    headers: {
-      cookie:
-        (typeof window === "undefined"
-          ? ctx?.req?.headers.cookie
-          : undefined) || "",
-    },
+    link: createUploadLink({
+      uri: "http://localhost:4000/graphql",
+      credentials: "include",
+      headers: {
+        cookie:
+          (typeof window === "undefined"
+            ? ctx?.req?.headers.cookie
+            : undefined) || "",
+      },
+    }),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
           fields: {
             me: {
-              merge: false
+              merge: false,
             },
             sentences: {
               keyArgs: false,
@@ -34,16 +37,16 @@ const createClient = (ctx: NextPageContext) =>
                   ],
                 };
               },
-            },            
+            },
           },
         },
         User: {
           fields: {
             scores: {
-              merge: false
-            }
-          }
-        }
+              merge: false,
+            },
+          },
+        },
       },
     }),
   });

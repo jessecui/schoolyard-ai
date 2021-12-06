@@ -1,3 +1,4 @@
+import { useApolloClient } from "@apollo/client";
 import { Box, SimpleGrid, VStack } from "@chakra-ui/layout";
 import {
   AlertDialog,
@@ -7,12 +8,14 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  Image,
   Text,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import router from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { InputField } from "../components/InputField";
+import { ProfilePhotoUpload } from "../components/ProfilePhotoUpload";
 import {
   MeDocument,
   MeQuery,
@@ -24,7 +27,6 @@ import {
 import { isServer } from "../utils/isServer";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";
-import { useApolloClient } from "@apollo/client";
 
 const AccountSettings: React.FC<{}> = ({}) => {
   const apolloClient = useApolloClient();
@@ -104,6 +106,15 @@ const AccountSettings: React.FC<{}> = ({}) => {
             <Text color="grayMain" fontWeight="bold" fontSize="md" mb={4}>
               Profile Settings
             </Text>
+            <Image
+              alt="Personal Profile Photo"
+              htmlWidth={150}
+              borderRadius="full"
+              boxSize="150px"
+              objectFit="cover"
+              src={`images/profile_photos/${data?.me?.id}_profile.png`}
+            />
+            <ProfilePhotoUpload />
             <Form>
               <VStack spacing={2}>
                 <SimpleGrid width="100%" columns={2} spacing={4}>
