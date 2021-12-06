@@ -1,5 +1,5 @@
 import { useApolloClient } from "@apollo/client";
-import { Box, SimpleGrid, VStack } from "@chakra-ui/layout";
+import { Box, HStack, SimpleGrid, VStack } from "@chakra-ui/layout";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -7,8 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
-  Button,
-  Image,
+  Button,  
   Text,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
@@ -105,16 +104,8 @@ const AccountSettings: React.FC<{}> = ({}) => {
           >
             <Text color="grayMain" fontWeight="bold" fontSize="md" mb={4}>
               Profile Settings
-            </Text>
-            <Image
-              alt="Personal Profile Photo"
-              htmlWidth={150}
-              borderRadius="full"
-              boxSize="150px"
-              objectFit="cover"
-              src={`images/profile_photos/${data?.me?.id}_profile.png`}
-            />
-            <ProfilePhotoUpload />
+            </Text>            
+            <ProfilePhotoUpload />            
             <Form>
               <VStack spacing={2}>
                 <SimpleGrid width="100%" columns={2} spacing={4}>
@@ -136,7 +127,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
                 Save Changes
               </Button>
               {profileChangeSuccess ? (
-                <Text mt={2} color="green">
+                <Text mt={2} color="green" fontSize="md">
                   Your profile has been updated.
                 </Text>
               ) : null}
@@ -201,7 +192,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
                 Change Password
               </Button>
               {passwordChangeSuccess ? (
-                <Text mt={2} color="green">
+                <Text mt={2} color="green" fontSize="md">
                   Your password has been updated.
                 </Text>
               ) : null}

@@ -136,6 +136,8 @@ const main = async () => {
   await apolloServer.start();
   apolloServer.applyMiddleware({ app, cors: false });
 
+  app.use(express.static(__dirname + '/public'));  
+
   // Start the server on port 4000
   app.listen(4000, () => {
     console.log("Server started on localhost:4000");
