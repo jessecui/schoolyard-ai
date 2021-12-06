@@ -1,6 +1,7 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import "@fontsource/nunito-sans/400.css";
-import "@fontsource/red-hat-display/500.css";
+import "@fontsource/nunito-sans/700.css";
+import "@fontsource/red-hat-display/700.css";
 import React from "react";
 import { SiteLayout } from "../components/SiteLayout";
 import theme from "../theme";
