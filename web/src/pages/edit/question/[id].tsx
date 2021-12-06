@@ -6,6 +6,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Avatar,
   Box,
   Button,
   Checkbox,
@@ -29,7 +30,6 @@ import {
 import { Field, FieldArray, Form, Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import { IoPersonCircle } from "react-icons/io5";
 import { RiAddLine, RiSubtractLine } from "react-icons/ri";
 import {
   QuestionType,
@@ -436,7 +436,9 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                     Sentence Being Linked
                   </Text>
                   <Divider borderColor="grayLight" border="1px" mb={2} />
-                  <Text fontSize="lg">{questionData.question?.sentence.text}</Text>
+                  <Text fontSize="lg">
+                    {questionData.question?.sentence.text}
+                  </Text>
                 </Box>
               )}
               <Box>
@@ -576,7 +578,18 @@ export const EditQuestion: React.FC<{}> = ({}) => {
               </Text>
               <Divider borderColor="grayLight" border="1px" mb={2} />
               <Flex align="center">
-                <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+                {meData?.me?.photoUrl ? (
+                  <Avatar
+                    size="md"
+                    bg="white"
+                    name={meData.me.firstName + " " + meData.me.lastName}
+                    src={`${meData.me.photoUrl}`}
+                    mr={2}
+                    color="white"
+                  />
+                ) : (
+                  <Avatar size="md" bg="iris" mr={2} />
+                )}
                 <Box>
                   <Text fontWeight="bold" fontSize="md">
                     {meData?.me?.firstName} {meData?.me?.lastName}

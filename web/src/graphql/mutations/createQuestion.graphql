@@ -9,6 +9,7 @@ mutation CreateQuestion($questionInput: QuestionInput!) {
     teacher {
       firstName
       lastName
+      photoUrl
     }
     upVoteCount
     downVoteCount

@@ -3,12 +3,14 @@ import { DeleteIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
+  Avatar,
   Box,
   Button,
   Center,
   Checkbox,
   Circle,
-  CloseButton, Flex,
+  CloseButton,
+  Flex,
   FormControl,
   FormErrorMessage,
   HStack,
@@ -24,20 +26,20 @@ import {
   RadioGroup,
   Spacer,
   Stack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { BiDotsHorizontalRounded, BiZoomIn } from "react-icons/bi";
-import { IoPeople, IoPersonCircle } from "react-icons/io5";
+import { IoPeople } from "react-icons/io5";
 import {
   RiCalendarEventFill,
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine
+  RiThumbUpLine,
 } from "react-icons/ri";
 import { ChangedSubject } from "../../components/SiteLayout";
 import {
@@ -62,7 +64,7 @@ import {
   useQuestionReviewQuery,
   User,
   useUpdateQuestionReviewMutation,
-  VoteType
+  VoteType,
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -88,7 +90,7 @@ const Review: React.FC<{
   useEffect(() => {
     if (!meLoading && !meData?.me) {
       router.push("/");
-    }    
+    }
   });
 
   useEffect(() => {
@@ -103,7 +105,7 @@ const Review: React.FC<{
         })
       );
     }
-  }, [reviewData?.questionReview, data?.question])
+  }, [reviewData?.questionReview, data?.question]);
 
   useEffect(() => {
     if (data?.question) {
@@ -217,7 +219,7 @@ const Review: React.FC<{
   const questionIsLocked = reviewData?.questionReview?.dateNextAvailable
     ? new Date().getTime() <
       new Date(reviewData.questionReview.dateNextAvailable).getTime()
-    : false;  
+    : false;
 
   const updateQuestionAfterVote = (
     cache: ApolloCache<AddQuestionVoteMutation>,
@@ -811,7 +813,22 @@ const Review: React.FC<{
       >
         <Flex>
           <Flex align="center" width="80%">
-            <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+            {data.question.teacher.photoUrl ? (
+              <Avatar
+                size="md"
+                bg="white"
+                name={
+                  data.question.teacher.firstName +
+                  " " +
+                  data.question.teacher.lastName
+                }
+                src={`${data.question.teacher.photoUrl}`}
+                mr={2}
+                color="white"
+              />
+            ) : (
+              <Avatar size="md" bg="iris" mr={2} />
+            )}
             <Box>
               <Text fontWeight="bold" fontSize="md">
                 {data.question.teacher.firstName}{" "}
@@ -1147,7 +1164,18 @@ const Review: React.FC<{
           </Text>
           <Flex>
             <Flex align="center" width="80%">
-              <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+              {data.question.teacher.photoUrl ? (
+                <Avatar
+                  size="md"
+                  bg="white"
+                  name={`${data.question.sentence.teacher.firstName} ${data.question.sentence.teacher.lastName}`}
+                  src={`${data.question.sentence.teacher.photoUrl}`}
+                  mr={2}
+                  color="white"
+                />
+              ) : (
+                <Avatar size="md" bg="iris" mr={2} />
+              )}
               <Box>
                 <Text fontWeight="bold" fontSize="md">
                   {data.question.sentence.teacher.firstName}{" "}

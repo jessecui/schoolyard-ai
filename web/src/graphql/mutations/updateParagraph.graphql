@@ -5,6 +5,7 @@ mutation UpdateParagraph($id: Int!, $paragraphInput: ParagraphInput!) {
     teacher {
       firstName
       lastName
+      photoUrl
     }
     children {
       id

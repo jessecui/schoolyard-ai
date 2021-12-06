@@ -416,14 +416,14 @@ export type CreateParagraphMutationVariables = Exact<{
 }>;
 
 
-export type CreateParagraphMutation = { __typename?: 'Mutation', createParagraph: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } };
+export type CreateParagraphMutation = { __typename?: 'Mutation', createParagraph: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } };
 
 export type CreateQuestionMutationVariables = Exact<{
   questionInput: QuestionInput;
 }>;
 
 
-export type CreateQuestionMutation = { __typename?: 'Mutation', createQuestion: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, teacher: { __typename?: 'User', firstName: string, lastName: string } } };
+export type CreateQuestionMutation = { __typename?: 'Mutation', createQuestion: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } };
 
 export type CreateQuestionReviewMutationVariables = Exact<{
   questionId: Scalars['Int'];
@@ -497,7 +497,7 @@ export type UpdateParagraphMutationVariables = Exact<{
 }>;
 
 
-export type UpdateParagraphMutation = { __typename?: 'Mutation', updateParagraph?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined };
+export type UpdateParagraphMutation = { __typename?: 'Mutation', updateParagraph?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined };
 
 export type UpdateQuestionMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -505,7 +505,7 @@ export type UpdateQuestionMutationVariables = Exact<{
 }>;
 
 
-export type UpdateQuestionMutation = { __typename?: 'Mutation', updateQuestion?: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, teacher: { __typename?: 'User', firstName: string, lastName: string } } | null | undefined };
+export type UpdateQuestionMutation = { __typename?: 'Mutation', updateQuestion?: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } | null | undefined };
 
 export type UpdateQuestionReviewMutationVariables = Exact<{
   questionId: Scalars['Int'];
@@ -518,7 +518,7 @@ export type UpdateQuestionReviewMutation = { __typename?: 'Mutation', updateQues
 export type ActivityLogQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User', sentenceViews: Array<{ __typename?: 'SentenceView', lastViewed: any, sentence: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, questionReviews: Array<{ __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateUpdated: any, question: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string } } }>, createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any }> } | null | undefined };
+export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User', sentenceViews: Array<{ __typename?: 'SentenceView', lastViewed: any, sentence: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } }>, questionReviews: Array<{ __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateUpdated: any, question: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } }>, createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any }> } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -530,7 +530,7 @@ export type QuestionQueryVariables = Exact<{
 }>;
 
 
-export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, userVoteType?: VoteType | null | undefined, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined } | null | undefined };
+export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, userVoteType?: VoteType | null | undefined, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined } | null | undefined };
 
 export type QuestionReviewQueryVariables = Exact<{
   questionId: Scalars['Int'];
@@ -545,14 +545,14 @@ export type QuestionsQueryVariables = Exact<{
 }>;
 
 
-export type QuestionsQuery = { __typename?: 'Query', questions: { __typename?: 'PaginatedQuestions', hasMore: boolean, questions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string } }> } };
+export type QuestionsQuery = { __typename?: 'Query', questions: { __typename?: 'PaginatedQuestions', hasMore: boolean, questions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } }> } };
 
 export type SentenceQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type SentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacherId: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, upVoteCount: number, downVoteCount: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, orderNumber?: number | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }>, parent?: { __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', text: string, orderNumber?: number | null | undefined }> | null | undefined } | null | undefined, teacher: { __typename?: 'User', id: number, firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined }> | null | undefined }> | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }> } | null | undefined };
+export type SentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacherId: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, upVoteCount: number, downVoteCount: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, orderNumber?: number | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }>, parent?: { __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', text: string, orderNumber?: number | null | undefined }> | null | undefined } | null | undefined, teacher: { __typename?: 'User', id: number, firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined }> | null | undefined }> | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }> } | null | undefined };
 
 export type SentencesQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -560,7 +560,7 @@ export type SentencesQueryVariables = Exact<{
 }>;
 
 
-export type SentencesQuery = { __typename?: 'Query', sentences: { __typename?: 'PaginatedSentences', hasMore: boolean, sentences: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string }, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined }> } };
+export type SentencesQuery = { __typename?: 'Query', sentences: { __typename?: 'PaginatedSentences', hasMore: boolean, sentences: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined }> } };
 
 export const ErrorFragmentDoc = gql`
     fragment Error on FieldError {
@@ -889,6 +889,7 @@ export const CreateParagraphDocument = gql`
     teacher {
       firstName
       lastName
+      photoUrl
     }
     children {
       id
@@ -937,6 +938,7 @@ export const CreateQuestionDocument = gql`
     teacher {
       firstName
       lastName
+      photoUrl
     }
     upVoteCount
     downVoteCount
@@ -1301,6 +1303,7 @@ export const UpdateParagraphDocument = gql`
     teacher {
       firstName
       lastName
+      photoUrl
     }
     children {
       id
@@ -1349,6 +1352,7 @@ export const UpdateQuestionDocument = gql`
     teacher {
       firstName
       lastName
+      photoUrl
     }
     upVoteCount
     downVoteCount
@@ -1444,6 +1448,7 @@ export const ActivityLogDocument = gql`
         teacher {
           firstName
           lastName
+          photoUrl
         }
       }
       lastViewed
@@ -1464,6 +1469,7 @@ export const ActivityLogDocument = gql`
         teacher {
           firstName
           lastName
+          photoUrl
         }
       }
       reviewStatus
@@ -1484,6 +1490,7 @@ export const ActivityLogDocument = gql`
       teacher {
         firstName
         lastName
+        photoUrl
       }
     }
     createdQuestions {
@@ -1575,6 +1582,7 @@ export const QuestionDocument = gql`
     teacher {
       firstName
       lastName
+      photoUrl
     }
     sentence {
       id
@@ -1584,6 +1592,7 @@ export const QuestionDocument = gql`
       teacher {
         firstName
         lastName
+        photoUrl
       }
       children {
         id
@@ -1684,6 +1693,7 @@ export const QuestionsDocument = gql`
       teacher {
         firstName
         lastName
+        photoUrl
       }
       subjects
       upVoteCount
@@ -1740,6 +1750,7 @@ export const SentenceDocument = gql`
     teacher {
       firstName
       lastName
+      photoUrl
     }
     children {
       id
@@ -1747,6 +1758,7 @@ export const SentenceDocument = gql`
       teacher {
         firstName
         lastName
+        photoUrl
       }
       upVoteCount
       downVoteCount
@@ -1762,6 +1774,7 @@ export const SentenceDocument = gql`
       teacher {
         firstName
         lastName
+        photoUrl
       }
       subjects
       upVoteCount
@@ -1788,6 +1801,7 @@ export const SentenceDocument = gql`
         teacher {
           firstName
           lastName
+          photoUrl
         }
         children {
           text
@@ -1800,6 +1814,7 @@ export const SentenceDocument = gql`
         id
         firstName
         lastName
+        photoUrl
       }
       upVoteCount
       downVoteCount
@@ -1812,6 +1827,7 @@ export const SentenceDocument = gql`
         teacher {
           firstName
           lastName
+          photoUrl
         }
         children {
           id
@@ -1823,6 +1839,7 @@ export const SentenceDocument = gql`
           teacher {
             firstName
             lastName
+            photoUrl
           }
           children {
             id
@@ -1878,6 +1895,7 @@ export const SentencesDocument = gql`
       teacher {
         firstName
         lastName
+        photoUrl
       }
       children {
         text

@@ -12,14 +12,14 @@ import {
   Link,
   Text,
 } from "@chakra-ui/layout";
-import { Checkbox, Input, Radio, Stack } from "@chakra-ui/react";
+import { Avatar, Checkbox, Input, Radio, Stack } from "@chakra-ui/react";
 import gql from "graphql-tag";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiZoomIn } from "react-icons/bi";
 import { GoChecklist } from "react-icons/go";
-import { IoPeople, IoPersonCircle } from "react-icons/io5";
+import { IoPeople } from "react-icons/io5";
 import {
   RiCalendarEventFill,
   RiEditBoxLine,
@@ -135,7 +135,18 @@ const AccountSettings: React.FC<{}> = ({}) => {
       my={2}
     >
       <Flex align="center">
-        <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+        {meData?.me?.photoUrl ? (
+          <Avatar
+            size="md"
+            bg="white"
+            name={meData.me.firstName + " " + meData.me.lastName}
+            src={`${meData.me.photoUrl}`}
+            mr={2}
+            color="white"
+          />
+        ) : (
+          <Avatar size="md" bg="iris" mr={2} />
+        )}
         <Box>
           <Text fontWeight="bold" fontSize="md">
             {meData?.me?.firstName} {meData?.me?.lastName}
@@ -387,10 +398,26 @@ const AccountSettings: React.FC<{}> = ({}) => {
       my={2}
     >
       <Flex align="center">
-        <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+        {meData?.me?.photoUrl ? (
+          <Avatar
+            size="md"
+            bg="white"
+            name={
+              questionReview.question.teacher.firstName +
+              " " +
+              questionReview.question.teacher.lastName
+            }
+            src={`${questionReview.question.teacher.photoUrl}`}
+            mr={2}
+            color="white"
+          />
+        ) : (
+          <Avatar size="md" bg="iris" mr={2} />
+        )}
         <Box>
           <Text fontWeight="bold" fontSize="md">
-            {meData?.me?.firstName} {meData?.me?.lastName}
+            {questionReview.question.teacher.firstName}{" "}
+            {questionReview.question.teacher.lastName}
           </Text>
           <HStack spacing="6px">
             {questionReview.question.subjects
@@ -641,7 +668,22 @@ const AccountSettings: React.FC<{}> = ({}) => {
             >
               <Flex>
                 <Flex align="center" width="80%">
-                  <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+                  {sentenceView.sentence.teacher.photoUrl ? (
+                    <Avatar
+                      size="md"
+                      bg="white"
+                      name={
+                        sentenceView.sentence.teacher.firstName +
+                        " " +
+                        sentenceView.sentence.teacher.lastName
+                      }
+                      src={`${sentenceView.sentence.teacher.photoUrl}`}
+                      mr={2}
+                      color="white"
+                    />
+                  ) : (
+                    <Avatar size="md" bg="iris" mr={2} />
+                  )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
                       {sentenceView.sentence.teacher.firstName}{" "}
@@ -906,7 +948,18 @@ const AccountSettings: React.FC<{}> = ({}) => {
             >
               <Flex>
                 <Flex align="center" width="80%">
-                  <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+                  {meData?.me?.photoUrl ? (
+                    <Avatar
+                      size="md"
+                      bg="white"
+                      name={meData.me.firstName + " " + meData.me.lastName}
+                      src={`${meData.me.photoUrl}`}
+                      mr={2}
+                      color="white"
+                    />
+                  ) : (
+                    <Avatar size="md" bg="iris" mr={2} />
+                  )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
                       {sentence.teacher.firstName} {sentence.teacher.lastName}

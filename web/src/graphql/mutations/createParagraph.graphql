@@ -11,6 +11,7 @@ mutation createParagraph(
     teacher {
       firstName
       lastName
+      photoUrl
     }
     children {
       id

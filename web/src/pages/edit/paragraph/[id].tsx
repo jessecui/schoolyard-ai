@@ -7,37 +7,31 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Avatar,
   Button,
   Checkbox,
   FormControl,
   FormErrorMessage,
-  Grid,
-  Icon,
-  IconButton,
+  Grid, IconButton,
   Input,
   Text,
-  Textarea,
+  Textarea
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import { IoPersonCircle } from "react-icons/io5";
 import {
-  MeQuery,
   Sentence,
   useDeleteParagraphMutation,
   useMeQuery,
   useSentenceQuery,
-  useUpdateParagraphMutation,
+  useUpdateParagraphMutation
 } from "../../../generated/graphql";
 import { withApollo } from "../../../utils/withApollo";
 
 export const EditParagraph: React.FC<{}> = ({}) => {
   const router = useRouter();
-
   const { data: meData, loading: meLoading } = useMeQuery();
-  const [userData, setUserData] = useState<MeQuery | undefined>();
-  const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
   useEffect(() => {
     if (
       !meLoading &&
@@ -47,8 +41,6 @@ export const EditParagraph: React.FC<{}> = ({}) => {
     ) {
       router.push("/");
     }
-    setUserData(meData);
-    setUserDataLoading(meLoading);
   });
 
   const [updateParagraph] = useUpdateParagraphMutation();
@@ -393,10 +385,21 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
                 <Flex align="center">
-                  <Icon as={IoPersonCircle} color="iris" w={12} h={12} mr={2} />
+                  {meData?.me?.photoUrl ? (
+                    <Avatar
+                      size="md"
+                      bg="white"
+                      name={meData.me.firstName + " " + meData.me.lastName}
+                      src={`${meData.me.photoUrl}`}
+                      mr={2}
+                      color="white"
+                    />
+                  ) : (
+                    <Avatar size="md" bg="iris" mr={2} />
+                  )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
-                      {userData?.me?.firstName} {userData?.me?.lastName}
+                      {meData?.me?.firstName} {meData?.me?.lastName}
                     </Text>
                     <HStack spacing="6px">
                       {props.values.subjects

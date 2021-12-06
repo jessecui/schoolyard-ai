@@ -9,6 +9,7 @@ query Question($id: Int!) {
     teacher {      
       firstName
       lastName
+      photoUrl
     }
     sentence {
       id
@@ -18,6 +19,7 @@ query Question($id: Int!) {
       teacher {
         firstName
         lastName
+        photoUrl
       }
       children {
         id
