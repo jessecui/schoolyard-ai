@@ -10,7 +10,7 @@ import {
   Heading,
   HStack,
   Link,
-  Text,
+  Text
 } from "@chakra-ui/layout";
 import { Avatar, Checkbox, Input, Radio, Stack } from "@chakra-ui/react";
 import gql from "graphql-tag";
@@ -26,7 +26,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine,
+  RiThumbUpLine
 } from "react-icons/ri";
 import {
   AddQuestionVoteMutation,
@@ -39,7 +39,7 @@ import {
   useAddQuestionVoteMutation,
   useAddSentenceVoteMutation,
   useMeQuery,
-  VoteType,
+  VoteType
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -901,7 +901,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
               </Text>
             </Box>
           ))
-        ) : (
+        ) : createdData?.me ? (
           <Box
             border="2px"
             borderColor="grayLight"
@@ -912,7 +912,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           >
             <Text fontSize="md">You do not have any viewed paragraphs.</Text>
           </Box>
-        );
+        ) : null;
     } else if (contentType == "viewed question") {
       contentList =
         createdData?.me?.questionReviews &&
@@ -920,7 +920,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           questionReviewsSortedByUpdate.map((questionReview) =>
             getViewedQuestionComponent(questionReview as QuestionReview)
           )
-        ) : (
+        ) : createdData?.me ? (
           <Box
             border="2px"
             borderColor="grayLight"
@@ -931,7 +931,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           >
             <Text fontSize="md">You do not have any viewed questions.</Text>
           </Box>
-        );
+        ) : null;
     } else if (contentType == "created paragraph") {
       contentList =
         createdData?.me?.createdParagraphs &&
@@ -1187,7 +1187,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
               </Text>
             </Box>
           ))
-        ) : (
+        ) : createdData?.me ? (
           <Box
             border="2px"
             borderColor="grayLight"
@@ -1198,7 +1198,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           >
             <Text fontSize="md">You do not have any created paragraphs.</Text>
           </Box>
-        );
+        ) : null;
     } else if (contentType == "created question") {
       contentList =
         createdData?.me?.createdQuestions &&
@@ -1206,7 +1206,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           createdData?.me?.createdQuestions.map((question) =>
             getCreatedQuestionComponent(question as Question)
           )
-        ) : (
+        ) : createdData?.me ? (
           <Box
             border="2px"
             borderColor="grayLight"
@@ -1217,7 +1217,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
           >
             <Text fontSize="md">You do not have any created questions.</Text>
           </Box>
-        );
+        ) : null;
     }
     return contentList ? <Box mt={2}>{contentList}</Box> : null;
   };
