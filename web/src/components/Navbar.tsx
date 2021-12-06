@@ -202,7 +202,13 @@ export const Navbar: React.FC<NavbarProps> = ({ imageHash, setImageHash }) => {
           <Center>
             <HStack spacing="36px">
               <NextLink href="/">
-                <Link href="/" style={{ textDecoration: "none" }}>
+                <Link
+                  href="/"
+                  style={{ textDecoration: "none" }}
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                >
                   <Heading
                     color={
                       router.asPath === "/" ||
@@ -230,7 +236,13 @@ export const Navbar: React.FC<NavbarProps> = ({ imageHash, setImageHash }) => {
                 </Link>
               </NextLink>
               <NextLink href="/review">
-                <Link href="/review" style={{ textDecoration: "none" }}>
+                <Link
+                  href="/review"
+                  style={{ textDecoration: "none" }}
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                >
                   <Heading
                     color={
                       router.asPath.startsWith("/review") ? "mint" : "grayMain"
@@ -251,7 +263,13 @@ export const Navbar: React.FC<NavbarProps> = ({ imageHash, setImageHash }) => {
                 </Link>
               </NextLink>
               <NextLink href="/create">
-                <Link href="/create" style={{ textDecoration: "none" }}>
+                <Link
+                  href="/create"
+                  style={{ textDecoration: "none" }}
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                >
                   <Heading
                     color={
                       router.asPath.startsWith("/create") ||
