@@ -10,10 +10,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { VoteType } from "../utils/voteTypeEnum";
 import { Cloning } from "./Cloning";
 import { ParentChild } from "./ParentChild";
 import { Question } from "./Question";
-import { VoteType } from "./QuestionVote";
 import { SentenceSubject } from "./SentenceSubject";
 import { SentenceView } from "./SentenceView";
 import { SentenceVote } from "./SentenceVote";

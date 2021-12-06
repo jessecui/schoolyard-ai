@@ -24,7 +24,6 @@ import { Cloning } from "../entities/Cloning";
 import { ParentChild } from "../entities/ParentChild";
 import { Question } from "../entities/Question";
 import { QuestionSubject } from "../entities/QuestionSubject";
-import { VoteType } from "../entities/QuestionVote";
 import { Sentence } from "../entities/Sentence";
 import { SentenceSubject } from "../entities/SentenceSubject";
 import { SentenceView } from "../entities/SentenceView";
@@ -33,6 +32,7 @@ import { Subject } from "../entities/Subject";
 import { User } from "../entities/User";
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
+import { VoteType } from "../utils/voteTypeEnum";
 
 @InputType()
 class ParagraphInput {
