@@ -16,9 +16,9 @@ export class ProfilePhotoResolver {
     const { createReadStream } = await photo;
     const saveFilename = req.session.userId + "_profile.png";
 
-    let imageDir = __dirname + "/../../../web/public/images/profile_photos";
-    if (!fs.existsSync(imageDir)) {
-      fs.mkdirSync(imageDir);
+    let imageDir = __dirname + "/../public/profile_photos";    
+    if (!fs.existsSync(imageDir)) {      
+      fs.mkdirSync(imageDir, { recursive: true });
     }
     return new Promise(async (resolve, reject) => {
       createReadStream()
