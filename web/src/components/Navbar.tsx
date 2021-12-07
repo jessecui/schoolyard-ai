@@ -46,7 +46,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { data, loading } = useMeQuery();
   const [logout] = useLogoutMutation();
 
-  const navbarType = useBreakpointValue({ base: "condensed", md: "full" });
+  const navbarType = useBreakpointValue({ base: "condensed", lg: "full" });
+  const logoWidth = useBreakpointValue({ base: 120, sm: 150 });
 
   useEffect(() => {
     if (navbarType == "condensed") {
@@ -91,6 +92,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               variant="solid"
               mr={2}
+              size="sm"
             >
               log in
             </Button>
@@ -105,6 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 color: "irisDark",
                 borderColor: "irisDark",
               }}
+              size="sm"
             >
               sign up
             </Button>
@@ -219,10 +222,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   const logo = (
     <Flex align="center">
       <NextLink href="/">
-        <Link href="/">
+        <Link href="/" _focus={{ boxShadow: "none" }}>
           <Image
             alt="Schoolyard Logo"
-            htmlWidth={150}
+            htmlWidth={logoWidth}
             src={"/images/schoolyard_logo.png"}
           />
         </Link>
@@ -329,7 +332,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   );
 
   const menuBarCondensed = (
-    <Box mx={2}>
+    <Flex mx={2} alignItems="center">
       <Menu>
         <MenuButton
           as={IconButton}
@@ -411,7 +414,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </MenuItem>
         </MenuList>
       </Menu>
-    </Box>
+    </Flex>
   );
 
   return (

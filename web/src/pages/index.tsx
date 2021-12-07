@@ -1,11 +1,5 @@
 import { ApolloCache, gql } from "@apollo/client";
-import {
-  Box,
-  Center,
-  Circle,
-  Flex, Link,
-  Stack
-} from "@chakra-ui/layout";
+import { Box, Center, Circle, Flex, Link, Stack } from "@chakra-ui/layout";
 import {
   Alert,
   AlertIcon,
@@ -13,7 +7,7 @@ import {
   CloseButton,
   Icon,
   IconButton,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -25,7 +19,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine
+  RiThumbUpLine,
 } from "react-icons/ri";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
@@ -35,7 +29,7 @@ import {
   useAddSentenceVoteMutation,
   useMeQuery,
   useSentencesQuery,
-  VoteType
+  VoteType,
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -192,7 +186,7 @@ const Index: React.FC<{}> = ({}) => {
                   <>
                     <Text color="grayMain" fontSize="sm" mr={2}>
                       <IconButton
-                        mr={1}
+                        mr={0.5}
                         minWidth="24px"
                         height="24px"
                         isRound={true}
@@ -236,7 +230,7 @@ const Index: React.FC<{}> = ({}) => {
                     </Text>
                     <Text color="grayMain" fontSize="sm" mr={2}>
                       <IconButton
-                        mr={1}
+                        mr={0.5}
                         minWidth="24px"
                         height="24px"
                         isRound={true}
