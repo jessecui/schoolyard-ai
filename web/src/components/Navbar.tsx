@@ -7,7 +7,7 @@ import {
   Grid,
   Heading,
   HStack,
-  Link,
+  Link
 } from "@chakra-ui/layout";
 import {
   Avatar,
@@ -19,6 +19,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -36,6 +37,9 @@ export const Navbar: React.FC<NavbarProps> = ({ imageHash }) => {
 
   const { data, loading } = useMeQuery();
   const [logout] = useLogoutMutation();
+
+  const navbarType = useBreakpointValue({ base: "condensed", md: "full" });
+  console.log(navbarType)
 
   // Create our own states that set user data only when component mounts
   // Avoids errors where the server renders differently than the client
@@ -197,7 +201,7 @@ export const Navbar: React.FC<NavbarProps> = ({ imageHash }) => {
               </Link>
             </NextLink>
           </Flex>
-
+      
           <Center>
             <HStack spacing="36px">
               <NextLink href="/">

@@ -1,4 +1,5 @@
 import { Box, Container, Grid, GridItem } from "@chakra-ui/layout";
+import { useBreakpointValue, useMediaQuery } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, {
   cloneElement,
@@ -29,7 +30,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
       setAvailableQuestions([]);
     }
     setChangedSubjects([]);
-  }, [router]);
+  }, [router]);  
 
   return (
     <>
