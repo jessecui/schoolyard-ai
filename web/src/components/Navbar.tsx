@@ -28,10 +28,9 @@ import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
 
 interface NavbarProps {
   imageHash: number;
-  setImageHash: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ imageHash, setImageHash }) => {
+export const Navbar: React.FC<NavbarProps> = ({ imageHash }) => {
   const apolloClient = useApolloClient();
   const router = useRouter();
 
