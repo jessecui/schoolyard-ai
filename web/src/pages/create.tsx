@@ -6,7 +6,7 @@ import {
   Flex,
   Grid,
   HStack,
-  Stack,
+  Stack
 } from "@chakra-ui/layout";
 import {
   Avatar,
@@ -15,13 +15,12 @@ import {
   CheckboxGroup,
   FormControl,
   FormErrorMessage,
-  Icon,
   IconButton,
   Input,
   Radio,
   RadioGroup,
   Text,
-  Textarea,
+  Textarea
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
@@ -33,7 +32,7 @@ import {
   useCreateParagraphMutation,
   useCreateQuestionMutation,
   useMeQuery,
-  useSentenceQuery,
+  useSentenceQuery
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -648,12 +647,12 @@ export const Create: React.FC<{}> = ({}) => {
                     <Text fontWeight="bold" fontSize="md">
                       {userData?.me?.firstName} {userData?.me?.lastName}
                     </Text>
-                    <HStack spacing="6px">
+                    <Flex wrap="wrap">
                       {props.values.subjects
                         ? props.values.subjects.split(",").map((subject) => {
                             subject = subject.trim().toLowerCase();
                             return subject ? (
-                              <Flex align="center" key={subject}>
+                              <Flex align="center" key={subject} mr={2}>
                                 <Circle
                                   mr="4px"
                                   size="12px"
@@ -670,7 +669,7 @@ export const Create: React.FC<{}> = ({}) => {
                             ) : null;
                           })
                         : null}
-                    </HStack>
+                    </Flex>
                   </Box>
                 </Flex>
                 <Text my={2} fontWeight="bold" fontSize="xl">
@@ -832,17 +831,17 @@ export const Create: React.FC<{}> = ({}) => {
                           props.setFieldValue("correctAnswers", []);
                         }}
                       >
-                        <HStack spacing={4}>
-                          <Radio value={QuestionType.Single}>
+                        <Flex wrap="wrap">
+                          <Radio value={QuestionType.Single} mr={4} mb={2}>
                             <Text fontSize="md">Multiple Choice</Text>
                           </Radio>
-                          <Radio value={QuestionType.Multiple}>
+                          <Radio value={QuestionType.Multiple} mr={4} mb={2}>
                             <Text fontSize="md">Multiple Answers</Text>
                           </Radio>
-                          <Radio value={QuestionType.Text}>
+                          <Radio value={QuestionType.Text} mb={2}>
                             <Text fontSize="md">Written Answer</Text>
                           </Radio>
-                        </HStack>
+                        </Flex>
                       </RadioGroup>
                     )}
                   </Field>
@@ -953,12 +952,12 @@ export const Create: React.FC<{}> = ({}) => {
                     <Text fontWeight="bold" fontSize="md">
                       {userData?.me?.firstName} {userData?.me?.lastName}
                     </Text>
-                    <HStack spacing="6px">
+                    <Flex wrap="wrap">
                       {props.values.subjects
                         ? props.values.subjects.split(",").map((subject) => {
                             subject = subject.trim().toLowerCase();
                             return subject ? (
-                              <Flex align="center" key={subject}>
+                              <Flex align="center" key={subject} mr={2}>
                                 <Circle
                                   mr="4px"
                                   size="12px"
@@ -975,7 +974,7 @@ export const Create: React.FC<{}> = ({}) => {
                             ) : null;
                           })
                         : null}
-                    </HStack>
+                    </Flex>
                   </Box>
                 </Flex>
                 <Text my={2} fontWeight="bold" fontSize="xl">

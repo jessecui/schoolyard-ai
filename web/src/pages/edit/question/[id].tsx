@@ -18,7 +18,6 @@ import {
   FormErrorMessage,
   Grid,
   HStack,
-  Icon,
   IconButton,
   Input,
   Radio,
@@ -480,17 +479,17 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                         props.setFieldValue("correctAnswers", []);
                       }}
                     >
-                      <HStack spacing={4}>
-                        <Radio value={QuestionType.Single}>
+                      <Flex wrap="wrap">
+                        <Radio value={QuestionType.Single} mr={4} mb={2}>
                           <Text fontSize="md">Multiple Choice</Text>
                         </Radio>
-                        <Radio value={QuestionType.Multiple}>
+                        <Radio value={QuestionType.Multiple} mr={4} mb={2}>
                           <Text fontSize="md">Multiple Answers</Text>
                         </Radio>
-                        <Radio value={QuestionType.Text}>
+                        <Radio value={QuestionType.Text} mb={2}>
                           <Text fontSize="md">Written Answer</Text>
                         </Radio>
-                      </HStack>
+                      </Flex>
                     </RadioGroup>
                   )}
                 </Field>
@@ -594,12 +593,12 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                   <Text fontWeight="bold" fontSize="md">
                     {meData?.me?.firstName} {meData?.me?.lastName}
                   </Text>
-                  <HStack spacing="6px">
+                  <Flex wrap="wrap">
                     {props.values.subjects
                       ? props.values.subjects.split(",").map((subject) => {
                           subject = subject.trim().toLowerCase();
                           return subject ? (
-                            <Flex align="center" key={subject}>
+                            <Flex align="center" key={subject} mr={2}>
                               <Circle
                                 mr="4px"
                                 size="12px"
@@ -616,7 +615,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                           ) : null;
                         })
                       : null}
-                  </HStack>
+                  </Flex>
                 </Box>
               </Flex>
               <Text my={2} fontWeight="bold" fontSize="xl">

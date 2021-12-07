@@ -834,11 +834,12 @@ const Review: React.FC<{
                 {data.question.teacher.firstName}{" "}
                 {data.question.teacher.lastName}
               </Text>
-              <HStack spacing="6px">
+              <Flex wrap="wrap">
                 {data.question.subjects.map((subject) => (
                   <Flex
                     align="center"
                     key={String(data.question!.id) + subject}
+                    mr={2}
                   >
                     <Circle
                       mr="4px"
@@ -852,7 +853,7 @@ const Review: React.FC<{
                     <Text fontSize="sm">{"#" + subject.toLowerCase()}</Text>
                   </Flex>
                 ))}
-              </HStack>
+              </Flex>
             </Box>
           </Flex>
           <Spacer />
@@ -862,6 +863,9 @@ const Review: React.FC<{
               aria-label="Options"
               icon={<Icon as={BiDotsHorizontalRounded} />}
               variant="outline"
+              isRound={true}
+              size="md"
+              _focus={{ boxShadow: "none" }}
             />
             <MenuList>
               <MenuItem
@@ -971,12 +975,12 @@ const Review: React.FC<{
         <Text my={2} fontWeight="bold" fontSize="xl">
           {data.question.question}
         </Text>
-        <HStack spacing={4}>
+        <Flex wrap="wrap">
           {!meLoading && meData && (
             <>
-              <Text color="grayMain" fontSize="sm">
+              <Text color="grayMain" fontSize="sm" mr={2}>
                 <IconButton
-                  mr={1}
+                  mr={0.5}
                   minWidth="24px"
                   height="24px"
                   isRound={true}
@@ -1017,9 +1021,9 @@ const Review: React.FC<{
                 />
                 {data.question.upVoteCount}
               </Text>
-              <Text color="grayMain" fontSize="sm">
+              <Text color="grayMain" fontSize="sm" mr={2}>
                 <IconButton
-                  mr={1}
+                  mr={0.5}
                   minWidth="24px"
                   height="24px"
                   isRound={true}
@@ -1063,14 +1067,14 @@ const Review: React.FC<{
             </>
           )}
 
-          <Center>
+          <Center mr={2}>
             <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
             <Text color="grayMain" fontSize="sm">
               {data.question.viewCount +
                 (data.question.viewCount == 1 ? " view" : " views")}
             </Text>
           </Center>
-          <Center>
+          <Center mr={2}>
             <Icon
               as={RiCalendarEventFill}
               color="grayMain"
@@ -1086,7 +1090,7 @@ const Review: React.FC<{
               })}
             </Text>
           </Center>
-        </HStack>
+        </Flex>
         <Box>{questionForm(data.question as Question)}</Box>
         {reviewData?.questionReview && questionIsLocked && (
           <Box mt={2}>
@@ -1181,9 +1185,9 @@ const Review: React.FC<{
                   {data.question.sentence.teacher.firstName}{" "}
                   {data.question.sentence.teacher.lastName}
                 </Text>
-                <HStack spacing="6px">
+                <Flex wrap="wrap">
                   {data.question.sentence.subjects.map((subject) => (
-                    <Flex align="center" key={subject}>
+                    <Flex align="center" key={subject} mr={2}>
                       <Circle
                         mr="4px"
                         size="12px"
@@ -1198,7 +1202,7 @@ const Review: React.FC<{
                       </Text>
                     </Flex>
                   ))}
-                </HStack>
+                </Flex>
               </Box>
             </Flex>
           </Flex>
@@ -1212,12 +1216,12 @@ const Review: React.FC<{
                   .join(" ")
               : null}
           </Text>
-          <HStack spacing={4}>
+          <Flex wrap="wrap">
             {!meLoading && meData?.me && (
               <>
-                <Text color="grayMain" fontSize="sm">
+                <Text color="grayMain" fontSize="sm" mr={2}>
                   <IconButton
-                    mr={1}
+                    mr={0.5}
                     minWidth="24px"
                     height="24px"
                     isRound={true}
@@ -1258,9 +1262,9 @@ const Review: React.FC<{
                   />
                   {data.question.sentence.upVoteCount}
                 </Text>
-                <Text color="grayMain" fontSize="sm">
+                <Text color="grayMain" fontSize="sm" mr={2}>
                   <IconButton
-                    mr={1}
+                    mr={0.5}
                     minWidth="24px"
                     height="24px"
                     isRound={true}
@@ -1304,7 +1308,7 @@ const Review: React.FC<{
               </>
             )}
 
-            <Center>
+            <Center mr={2}>
               <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
               <Text color="grayMain" fontSize="sm">
                 {data.question.sentence.viewCount +
@@ -1312,7 +1316,7 @@ const Review: React.FC<{
               </Text>
             </Center>
 
-            <Center>
+            <Center mr={2}>
               <Icon
                 as={RiCalendarEventFill}
                 color="grayMain"
@@ -1331,7 +1335,7 @@ const Review: React.FC<{
                 )}
               </Text>
             </Center>
-          </HStack>
+          </Flex>
           <Box mt={3}>
             <NextLink href={"/learn/" + data.question.sentence.id}>
               <Link

@@ -1,11 +1,10 @@
 import { Box, Container, Grid, GridItem } from "@chakra-ui/layout";
-import { useBreakpointValue, useMediaQuery } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, {
   cloneElement,
   isValidElement,
   useEffect,
-  useState,
+  useState
 } from "react";
 import { Question, ReviewStatus } from "../generated/graphql";
 import { Navbar } from "./Navbar";

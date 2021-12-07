@@ -12,7 +12,8 @@ import {
   Checkbox,
   FormControl,
   FormErrorMessage,
-  Grid, IconButton,
+  Grid,
+  IconButton,
   Input,
   Text,
   Textarea
@@ -401,12 +402,12 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                     <Text fontWeight="bold" fontSize="md">
                       {meData?.me?.firstName} {meData?.me?.lastName}
                     </Text>
-                    <HStack spacing="6px">
+                    <Flex wrap="wrap">
                       {props.values.subjects
                         ? props.values.subjects.split(",").map((subject) => {
                             subject = subject.trim().toLowerCase();
                             return subject ? (
-                              <Flex align="center" key={subject}>
+                              <Flex align="center" key={subject} mr={2}>
                                 <Circle
                                   mr="4px"
                                   size="12px"
@@ -423,7 +424,7 @@ export const EditParagraph: React.FC<{}> = ({}) => {
                             ) : null;
                           })
                         : null}
-                    </HStack>
+                    </Flex>
                   </Box>
                 </Flex>
                 <Text my={2} fontWeight="bold" fontSize="xl">
