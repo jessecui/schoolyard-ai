@@ -100,9 +100,9 @@ export const SideQuestions: React.FC<{
             {availableQuestionsNotSaved.map((question) => (
               <Box key={question.id} mt={2}>
                 <Box>
-                  <HStack spacing="6px">
+                  <Flex>
                     {question.subjects.map((subject) => (
-                      <Flex align="center" key={subject}>
+                      <Flex align="center" key={subject} mr={2}>
                         <Circle
                           mr="4px"
                           size="12px"
@@ -115,7 +115,7 @@ export const SideQuestions: React.FC<{
                         <Text fontSize="xs">{"#" + subject}</Text>
                       </Flex>
                     ))}
-                  </HStack>
+                  </Flex>
                 </Box>
                 <Text fontWeight="bold" fontSize="lg">
                   {question.question}
@@ -232,9 +232,9 @@ export const SideQuestions: React.FC<{
           {meData.me.questionReviews.slice(0, 5).map((questionReview) => (
             <Box key={questionReview.questionId} mt={2}>
               <Box>
-                <HStack spacing="6px">
+                <Flex wrap="wrap">
                   {questionReview.question.subjects.map((subject) => (
-                    <Flex align="center" key={subject}>
+                    <Flex align="center" key={subject} mr={2}>
                       <Circle
                         mr="4px"
                         size="12px"
@@ -247,14 +247,15 @@ export const SideQuestions: React.FC<{
                       <Text fontSize="xs">{"#" + subject}</Text>
                     </Flex>
                   ))}
-                </HStack>
+                </Flex>
               </Box>
               <Text fontWeight="bold" fontSize="md">
                 {questionReview.question.question}
               </Text>
-              <HStack mt={1}>
+              <Flex mt={1} wrap="wrap">
                 <NextLink href={"/review/" + questionReview.questionId}>
                   <Link
+                    mr={2}
                     color={
                       new Date().getTime() >=
                       new Date(questionReview.dateNextAvailable).getTime()
@@ -287,7 +288,7 @@ export const SideQuestions: React.FC<{
                     )}
                   </Text>
                 </Center>
-              </HStack>
+              </Flex>
             </Box>
           ))}
         </Stack>

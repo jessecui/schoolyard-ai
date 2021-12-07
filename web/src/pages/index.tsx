@@ -3,9 +3,7 @@ import {
   Box,
   Center,
   Circle,
-  Flex,
-  HStack,
-  Link,
+  Flex, Link,
   Stack
 } from "@chakra-ui/layout";
 import {
@@ -144,25 +142,25 @@ const Index: React.FC<{}> = ({}) => {
             >
               <Flex>
                 <Flex align="center" width="80%">
-                {sentence.teacher.photoUrl ? (
-                  <Avatar
-                    size="md"
-                    bg="white"
-                    name={`${sentence.teacher.firstName} ${sentence.teacher.lastName}`}
-                    src={`${sentence.teacher.photoUrl}`}
-                    mr={2}
-                    color="white"
-                  />
-                ) : (
-                  <Avatar size="md" bg="iris" mr={2} />
-                )}
+                  {sentence.teacher.photoUrl ? (
+                    <Avatar
+                      size="md"
+                      bg="white"
+                      name={`${sentence.teacher.firstName} ${sentence.teacher.lastName}`}
+                      src={`${sentence.teacher.photoUrl}`}
+                      mr={2}
+                      color="white"
+                    />
+                  ) : (
+                    <Avatar size="md" bg="iris" mr={2} />
+                  )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
                       {sentence.teacher.firstName} {sentence.teacher.lastName}
                     </Text>
-                    <HStack spacing="6px">
+                    <Flex wrap="wrap">
                       {sentence.subjects.map((subject) => (
-                        <Flex align="center" key={subject}>
+                        <Flex align="center" key={subject} mr={2}>
                           <Circle
                             mr="4px"
                             size="12px"
@@ -177,7 +175,7 @@ const Index: React.FC<{}> = ({}) => {
                           </Text>
                         </Flex>
                       ))}
-                    </HStack>
+                    </Flex>
                   </Box>
                 </Flex>
               </Flex>
@@ -189,10 +187,10 @@ const Index: React.FC<{}> = ({}) => {
                   ? sentence.children.map((child) => child.text).join(" ")
                   : null}
               </Text>
-              <HStack spacing={4}>
+              <Flex wrap="wrap">
                 {!meLoading && meData?.me ? (
                   <>
-                    <Text color="grayMain" fontSize="sm">
+                    <Text color="grayMain" fontSize="sm" mr={2}>
                       <IconButton
                         mr={1}
                         minWidth="24px"
@@ -236,7 +234,7 @@ const Index: React.FC<{}> = ({}) => {
                       />
                       {sentence.upVoteCount}
                     </Text>
-                    <Text color="grayMain" fontSize="sm">
+                    <Text color="grayMain" fontSize="sm" mr={2}>
                       <IconButton
                         mr={1}
                         minWidth="24px"
@@ -283,7 +281,7 @@ const Index: React.FC<{}> = ({}) => {
                   </>
                 ) : (
                   <>
-                    <Center>
+                    <Center mr={2}>
                       <Icon
                         mx="4px"
                         height="24px"
@@ -296,7 +294,7 @@ const Index: React.FC<{}> = ({}) => {
                         {sentence.upVoteCount}
                       </Text>
                     </Center>
-                    <Center>
+                    <Center mr={2}>
                       <Icon
                         mx="4px"
                         as={RiThumbDownLine}
@@ -311,7 +309,7 @@ const Index: React.FC<{}> = ({}) => {
                   </>
                 )}
 
-                <Center>
+                <Center mr={2}>
                   <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
                   <Text color="grayMain" fontSize="sm">
                     {sentence.viewCount +
@@ -334,7 +332,7 @@ const Index: React.FC<{}> = ({}) => {
                     })}
                   </Text>
                 </Center>
-              </HStack>
+              </Flex>
               <Box mt={3}>
                 <NextLink href={"/learn/" + sentence.id}>
                   <Link
