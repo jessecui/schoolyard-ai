@@ -34,7 +34,7 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
   return (
     <>
       <Box position="sticky" top={0} zIndex={1}>
-        <Navbar imageHash={imageHash} setImageHash={setImageHash} />
+        <Navbar imageHash={imageHash} />
       </Box>
       <Container maxW="container.xl" pt={4}>
         <Grid templateColumns="repeat(10, 1fr)">
