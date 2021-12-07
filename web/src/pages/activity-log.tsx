@@ -10,7 +10,7 @@ import {
   Heading,
   HStack,
   Link,
-  Text
+  Text,
 } from "@chakra-ui/layout";
 import { Avatar, Checkbox, Input, Radio, Stack } from "@chakra-ui/react";
 import gql from "graphql-tag";
@@ -26,7 +26,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine
+  RiThumbUpLine,
 } from "react-icons/ri";
 import {
   AddQuestionVoteMutation,
@@ -39,7 +39,7 @@ import {
   useAddQuestionVoteMutation,
   useAddSentenceVoteMutation,
   useMeQuery,
-  VoteType
+  VoteType,
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -133,6 +133,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
       bg="White"
       p={4}
       my={2}
+      key={question.id}
     >
       <Flex align="center">
         {meData?.me?.photoUrl ? (
@@ -396,6 +397,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
       bg="White"
       p={4}
       my={2}
+      key={questionReview.questionId}
     >
       <Flex align="center">
         {meData?.me?.photoUrl ? (
@@ -1232,69 +1234,74 @@ const AccountSettings: React.FC<{}> = ({}) => {
         p={4}
         position="sticky"
         top="72px"
-        zIndex="1"
+        zIndex={1}
       >
-        <Flex justifyContent="space-between">
-          <Center>
-            <Heading
-              fontSize="sm"
-              color={contentType == "viewed paragraph" ? "mint" : "grayMain"}
-              _hover={{ color: "mint", cursor: "pointer" }}
-              mr={1}
-              textAlign="center"
-              onClick={() => {
-                setContentType("viewed paragraph");
-                router.push("/activity-log?contentType=viewed paragraph");
-              }}
-            >
-              Viewed Paragraphs
-            </Heading>
-          </Center>
-          <Center>
-            <Heading
-              fontSize="sm"
-              color={contentType == "viewed question" ? "mint" : "grayMain"}
-              _hover={{ color: "mint", cursor: "pointer" }}
-              mx={1}
-              textAlign="center"
-              onClick={() => {
-                setContentType("viewed question");
-                router.push("/activity-log?contentType=viewed question");
-              }}
-            >
-              Viewed Questions
-            </Heading>
-          </Center>
-          <Center>
-            <Heading
-              fontSize="sm"
-              color={contentType == "created paragraph" ? "mint" : "grayMain"}
-              _hover={{ color: "mint", cursor: "pointer" }}
-              mx={1}
-              textAlign="center"
-              onClick={() => {
-                setContentType("created paragraph");
-                router.push("/activity-log?contentType=created paragraph");
-              }}
-            >
-              Created Paragraphs
-            </Heading>
-          </Center>
-          <Center>
-            <Heading
-              fontSize="sm"
-              color={contentType == "created question" ? "mint" : "grayMain"}
-              _hover={{ color: "mint", cursor: "pointer" }}
-              ml={1}
-              textAlign="center"
-              onClick={() => {
-                setContentType("created question");
-                router.push("/activity-log?contentType=created question");
-              }}
-            >
-              Created Questions
-            </Heading>
-          </Center>
+        <Flex wrap="wrap">
+          <Flex mx="auto" py={1}>
+            <Center>
+              <Heading
+                width="100px"
+                fontSize="sm"
+                color={contentType == "viewed paragraph" ? "mint" : "grayMain"}
+                _hover={{ color: "mint", cursor: "pointer" }}
+                
+                textAlign="center"
+                onClick={() => {
+                  setContentType("viewed paragraph");
+                  router.push("/activity-log?contentType=viewed paragraph");
+                }}
+              >
+                Viewed Paragraphs
+              </Heading>
+            </Center>
+            <Center>
+              <Heading
+              width="100px"
+                fontSize="sm"
+                color={contentType == "viewed question" ? "mint" : "grayMain"}
+                _hover={{ color: "mint", cursor: "pointer" }}                
+                textAlign="center"
+                onClick={() => {
+                  setContentType("viewed question");
+                  router.push("/activity-log?contentType=viewed question");
+                }}
+              >
+                Viewed Questions
+              </Heading>
+            </Center>
+          </Flex>
+          <Flex mx="auto" py={1}>
+            <Center>
+              <Heading
+              width="100px"
+                fontSize="sm"
+                color={contentType == "created paragraph" ? "mint" : "grayMain"}
+                _hover={{ color: "mint", cursor: "pointer" }}                
+                textAlign="center"
+                onClick={() => {
+                  setContentType("created paragraph");
+                  router.push("/activity-log?contentType=created paragraph");
+                }}
+              >
+                Created Paragraphs
+              </Heading>
+            </Center>
+            <Center>
+              <Heading
+              width="100px"
+                fontSize="sm"
+                color={contentType == "created question" ? "mint" : "grayMain"}
+                _hover={{ color: "mint", cursor: "pointer" }}                
+                textAlign="center"
+                onClick={() => {
+                  setContentType("created question");
+                  router.push("/activity-log?contentType=created question");
+                }}
+              >
+                Created Questions
+              </Heading>
+            </Center>
+          </Flex>
         </Flex>
       </Box>
       {getContentList()}
