@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { Redis } from "ioredis";
-import { InputType, Field } from "type-graphql";
-import { createQuestionVoteLoader } from "./utils/createQuestionVoteLoader";
-import { createSentenceVoteLoader } from "./utils/createSentenceVoteLoader";
-import { createUserLoader } from "./utils/createUserLoader";
+import { Field, InputType, registerEnumType } from "type-graphql";
+import { createQuestionVoteLoader } from "./utils/loaders/createQuestionVoteLoader";
+import { createSentenceVoteLoader } from "./utils/loaders/createSentenceVoteLoader";
+import { createUserLoader } from "./utils/loaders/createUserLoader";
 
 // Declares the format of the cookie passed into the Express session
 declare global {
@@ -35,3 +35,9 @@ export class RegisterUserInputs {
   @Field()
   password: string;
 }
+
+export enum VoteType {
+  UP = 1,
+  DOWN = -1,
+}
+registerEnumType(VoteType, { name: "VoteType" });

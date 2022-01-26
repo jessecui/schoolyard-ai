@@ -18,12 +18,12 @@ import { QuestionVote } from "../entities/QuestionVote";
 import { QuestionView } from "../entities/QuestionView";
 import { Sentence } from "../entities/Sentence";
 import { User } from "../entities/User";
-import { isAuth } from "../middleware/isAuth";
+import { isAuth } from "../utils/isAuth";
 import { MyContext } from "../types";
 import { QuestionSubject } from "../entities/QuestionSubject";
 import { Subject } from "../entities/Subject";
 import { SentenceSubject } from "../entities/SentenceSubject";
-import { VoteType } from "../utils/voteTypeEnum";
+import { VoteType } from "../types";
 
 @InputType()
 class QuestionInput {
@@ -259,7 +259,7 @@ export class QuestionResolver {
       })
     ).map((questionSubject) => questionSubject.subjectName);    
     await Question.delete({ id, teacherId: req.session.userId });    
-    await checkSubjectsAndDelete(subjectsToCheck);
+    await checkSubjectsAndDelete(subjectsToCheck);    
     return true;
   }
 

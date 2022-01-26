@@ -14,7 +14,7 @@ import { Question } from "../entities/Question";
 import { QuestionReview, ReviewStatus } from "../entities/QuestionReview";
 import { QuestionSubject } from "../entities/QuestionSubject";
 import { Score } from "../entities/Score";
-import { isAuth } from "../middleware/isAuth";
+import { isAuth } from "../utils/isAuth";
 import { MyContext } from "../types";
 
 @Resolver(QuestionReview)

@@ -18,7 +18,7 @@ import { getConnection } from "typeorm";
 import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
 import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
-import { isAuth } from "../middleware/isAuth";
+import { isAuth } from "../utils/isAuth";
 import { QuestionReview } from "../entities/QuestionReview";
 import { Score } from "../entities/Score";
 import { Sentence } from "../entities/Sentence";

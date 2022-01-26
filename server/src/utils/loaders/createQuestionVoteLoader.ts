@@ -1,5 +1,5 @@
 import DataLoader from "dataloader";
-import { QuestionVote } from "../entities/QuestionVote";
+import { QuestionVote } from "../../entities/QuestionVote";
 
 export const createQuestionVoteLoader = () =>
   new DataLoader<{ questionId: number; userId: number }, QuestionVote | null>(

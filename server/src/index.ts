@@ -30,9 +30,9 @@ import { QuestionReviewResolver } from "./resolvers/questionReview";
 import { SentenceResolver } from "./resolvers/sentence";
 import { SentenceViewResolver } from "./resolvers/sentenceView";
 import { UserResolver } from "./resolvers/user";
-import { createQuestionVoteLoader } from "./utils/createQuestionVoteLoader";
-import { createSentenceVoteLoader } from "./utils/createSentenceVoteLoader";
-import { createUserLoader } from "./utils/createUserLoader";
+import { createQuestionVoteLoader } from "./utils/loaders/createQuestionVoteLoader";
+import { createSentenceVoteLoader } from "./utils/loaders/createSentenceVoteLoader";
+import { createUserLoader } from "./utils/loaders/createUserLoader";
 
 // Update these variables upon adding new entities and resolvers
 const entities = [

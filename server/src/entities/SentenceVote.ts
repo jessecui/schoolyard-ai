@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryColumn
 } from "typeorm";
-import { VoteType } from "../utils/voteTypeEnum";
+import { VoteType } from "../types";
 import { Sentence } from "./Sentence";
 import { User } from "./User";
 

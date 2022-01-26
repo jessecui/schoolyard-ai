@@ -1,5 +1,5 @@
 import DataLoader from "dataloader";
-import { User } from "../entities/User";
+import { User } from "../../entities/User";
 
 /*
 A function that will load all users with one combined SQL command instead of

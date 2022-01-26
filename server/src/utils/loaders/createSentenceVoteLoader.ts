@@ -1,5 +1,5 @@
 import DataLoader from "dataloader";
-import { SentenceVote } from "../entities/SentenceVote";
+import { SentenceVote } from "../../entities/SentenceVote";
 
 export const createSentenceVoteLoader = () =>
   new DataLoader<{ sentenceId: number; userId: number }, SentenceVote | null>(
