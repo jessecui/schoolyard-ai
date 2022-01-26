@@ -15,7 +15,7 @@ import { Sentence } from "./Sentence";
 import { User } from "./User";
 import { QuestionReview } from "./QuestionReview";
 import { QuestionSubject } from "./QuestionSubject";
-import { VoteType } from "../utils/voteTypeEnum";
+import { VoteType } from "../types";
 
 export enum QuestionType {
   TEXT = "text", // Written answer

@@ -3,7 +3,7 @@ import { FileUpload, GraphQLUpload } from "graphql-upload";
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
 import { getConnection } from "typeorm";
 import { User } from "../entities/User";
-import { isAuth } from "../middleware/isAuth";
+import { isAuth } from "../utils/isAuth";
 import { MyContext } from "../types";
 
 @Resolver()

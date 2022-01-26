@@ -30,9 +30,9 @@ import { SentenceView } from "../entities/SentenceView";
 import { SentenceVote } from "../entities/SentenceVote";
 import { Subject } from "../entities/Subject";
 import { User } from "../entities/User";
-import { isAuth } from "../middleware/isAuth";
+import { isAuth } from "../utils/isAuth";
 import { MyContext } from "../types";
-import { VoteType } from "../utils/voteTypeEnum";
+import { VoteType } from "../types";
 
 @InputType()
 class ParagraphInput {

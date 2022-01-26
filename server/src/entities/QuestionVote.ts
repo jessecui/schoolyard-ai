@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
-import { VoteType } from "../utils/voteTypeEnum";
+import { VoteType } from "../types";
 import { Question } from "./Question";
 import { User } from "./User";
 
