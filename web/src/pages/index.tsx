@@ -55,7 +55,7 @@ const Index: React.FC<{}> = ({}) => {
 
   useEffect(() => {
     if (!meLoading && !meData?.me) {
-      router.push("/sign-up");
+      router.push("/log-in");
     }
 
     setSentenceData(data);

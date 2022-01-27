@@ -434,35 +434,37 @@ export const Navbar: React.FC<NavbarProps> = ({
     </Flex>
   );
 
-  return (    
+  return (
     <>
-      <Flex
-        h="72px"
-        bg="white"
-        borderBottom="4px solid #ccc"
-        align="center"
-        position="sticky"
-        top={0}
-        zIndex={2}
-      >
-        <Container maxW="container.xl">
-          {navbarType == "full" && (
-            <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-              {logo}
-              {menuBar}
-              {profileLinks}
-            </Grid>
-          )}
-          {navbarType == "condensed" && (
-            <Flex>
-              {logo}
-              <Spacer />
-              {menuBarCondensed}
-              {profileLinks}
-            </Flex>
-          )}
-        </Container>
-      </Flex>
+      {userData?.me && (
+        <Flex
+          h="72px"
+          bg="white"
+          borderBottom="4px solid #ccc"
+          align="center"
+          position="sticky"
+          top={0}
+          zIndex={2}
+        >
+          <Container maxW="container.xl">
+            {navbarType == "full" && (
+              <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                {logo}
+                {menuBar}
+                {profileLinks}
+              </Grid>
+            )}
+            {navbarType == "condensed" && (
+              <Flex>
+                {logo}
+                <Spacer />
+                {menuBarCondensed}
+                {profileLinks}
+              </Flex>
+            )}
+          </Container>
+        </Flex>
+      )}
     </>
   );
 };

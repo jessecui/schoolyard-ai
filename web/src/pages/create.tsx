@@ -6,7 +6,7 @@ import {
   Flex,
   Grid,
   HStack,
-  Stack
+  Stack,
 } from "@chakra-ui/layout";
 import {
   Avatar,
@@ -20,7 +20,7 @@ import {
   Radio,
   RadioGroup,
   Text,
-  Textarea
+  Textarea,
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
@@ -32,7 +32,7 @@ import {
   useCreateParagraphMutation,
   useCreateQuestionMutation,
   useMeQuery,
-  useSentenceQuery
+  useSentenceQuery,
 } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -52,7 +52,7 @@ export const Create: React.FC<{}> = ({}) => {
 
   useEffect(() => {
     if (!meLoading && !meData?.me) {
-      router.push("/");
+      router.push("/log-in");
     }
     setUserData(meData);
     setUserDataLoading(meLoading);
@@ -320,7 +320,7 @@ export const Create: React.FC<{}> = ({}) => {
     subjectToColors = JSON.parse(meData.me.subjectColors);
   }
 
-  return (
+  return meData?.me ? (
     <Box>
       <Box
         border="2px"
@@ -1055,6 +1055,8 @@ export const Create: React.FC<{}> = ({}) => {
         )}
       </Formik>
     </Box>
+  ) : (
+    <></>
   );
 };
 
