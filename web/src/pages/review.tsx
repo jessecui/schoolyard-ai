@@ -1,13 +1,19 @@
 import { Box } from "@chakra-ui/layout";
 import { SkeletonCircle, SkeletonText, Stack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import { QuestionReview, useMeQuery } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
 const Review: React.FC<{}> = ({}) => {
   const router = useRouter();
   const { data: meData, loading: meLoading } = useMeQuery();
+  useEffect(() => {
+    if (!meLoading && !meData?.me) {
+      router.push("/log-in");
+    }
+  });
+
   let reviewableQuestions: QuestionReview[] = [];
   if (meData?.me?.questionReviews.length) {
     reviewableQuestions = meData?.me?.questionReviews.filter(
@@ -24,7 +30,7 @@ const Review: React.FC<{}> = ({}) => {
       </Stack>
     );
   }
-  return (
+  return meData?.me ? (
     <Box
       border="2px"
       borderColor="grayLight"
@@ -34,6 +40,8 @@ const Review: React.FC<{}> = ({}) => {
     >
       <Text fontSize="md">You don't have any questions for review.</Text>
     </Box>
+  ) : (
+    <></>
   );
 };
 
