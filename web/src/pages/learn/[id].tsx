@@ -542,7 +542,7 @@ const Learn: React.FC<{
           borderRadius="md"
           bg="White"
           p={4}
-          mt={2}
+          my={2}
         >
           <Stack spacing="20px">
             {activeSentence.children?.map((child, index) => (
@@ -792,7 +792,7 @@ const Learn: React.FC<{
           borderColor="grayLight"
           borderRadius="md"
           bg="White"
-          mt={2}
+          my={2}
           p={4}
         >
           <Text color="grayMain" fontWeight="bold" mb={2}>
