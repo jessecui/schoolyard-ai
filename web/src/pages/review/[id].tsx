@@ -809,6 +809,7 @@ const Review: React.FC<{
         borderRadius="md"
         bg="White"
         p={4}
+        mb={2}
         key={data.question.id}
       >
         <Flex>
@@ -1093,7 +1094,7 @@ const Review: React.FC<{
         </Flex>
         <Box>{questionForm(data.question as Question)}</Box>
         {reviewData?.questionReview && questionIsLocked && (
-          <Box mt={2}>
+          <Box my={2}>
             <Text fontSize="sm">
               You answered this question{" "}
               {reviewData.questionReview.reviewStatus == ReviewStatus.Correct
@@ -1115,7 +1116,7 @@ const Review: React.FC<{
               router.push("/review/" + otherAvailableQuestions[0].questionId);
             }}
             bg="iris"
-            mt={2}
+            my={2}
             color="white"
             _hover={{
               bg: "irisDark",
@@ -1134,7 +1135,7 @@ const Review: React.FC<{
           borderRadius="md"
           bg="White"
           p={4}
-          mt={2}
+          my={2}
         >
           <Text fontSize="lg">
             You have not saved this question yet. This question can be answered
@@ -1161,7 +1162,7 @@ const Review: React.FC<{
           borderRadius="md"
           bg="White"
           p={4}
-          mt={2}
+          my={2}
         >
           <Text fontWeight="bold" color="grayMain" fontSize="md" pb={2}>
             Learn Again
