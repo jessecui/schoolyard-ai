@@ -1,3 +1,4 @@
+import { gql } from "@apollo/client";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   AlertDialog,
@@ -743,6 +744,24 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                                         id:
                                           "Question:" +
                                           questionData.question?.id,
+                                      });
+                                      let updatedQuestionReviews =
+                                        meData!.me!.questionReviews.filter(
+                                          (review) =>
+                                            review.questionId !=
+                                            Number(router.query.id)
+                                        );
+                                      cache.writeFragment({
+                                        id: "User:" + meData?.me?.id,
+                                        fragment: gql`
+                                          fragment _ on User {
+                                            questionReviews
+                                          }
+                                        `,
+                                        data: {
+                                          questionReviews:
+                                            updatedQuestionReviews,
+                                        },
                                       });
                                     },
                                   });
