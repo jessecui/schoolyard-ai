@@ -4,9 +4,14 @@ import React, {
   cloneElement,
   isValidElement,
   useEffect,
-  useState
+  useState,
 } from "react";
-import { Question, ReviewStatus } from "../generated/graphql";
+import {
+  MeQuery,
+  Question,
+  ReviewStatus,
+  useMeQuery,
+} from "../generated/graphql";
 import { Navbar } from "./Navbar";
 import { ScoreCard } from "./ScoreCard";
 import { SideQuestions } from "./SideQuestions";
@@ -23,7 +28,6 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
   const [activeScoreSubjects, setActiveScoreSubjects] = useState<string[]>([]);
   const [changedSubjects, setChangedSubjects] = useState<ChangedSubject[]>([]);
   const [imageHash, setImageHash] = useState(1);
-
   const [currentContent, setCurrentContent] = useState("");
 
   useEffect(() => {
