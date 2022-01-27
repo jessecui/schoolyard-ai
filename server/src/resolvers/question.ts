@@ -12,7 +12,12 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
-import { EntityManager, getConnection, UpdateResult } from "typeorm";
+import {
+  createQueryBuilder,
+  EntityManager,
+  getConnection,
+  UpdateResult,
+} from "typeorm";
 import { Question, QuestionType } from "../entities/Question";
 import { QuestionVote } from "../entities/QuestionVote";
 import { QuestionView } from "../entities/QuestionView";
@@ -24,6 +29,8 @@ import { QuestionSubject } from "../entities/QuestionSubject";
 import { Subject } from "../entities/Subject";
 import { SentenceSubject } from "../entities/SentenceSubject";
 import { VoteType } from "../types";
+import { QuestionReview, ReviewStatus } from "../entities/QuestionReview";
+import { Score } from "../entities/Score";
 
 @InputType()
 class QuestionInput {
@@ -251,15 +258,69 @@ export class QuestionResolver {
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
     // Retrieve subjects
-    const subjectsToCheck = (
+    const subjects = (
       await QuestionSubject.find({
         where: { questionId: id },
         skip: 0,
         take: 10,
       })
     ).map((questionSubject) => questionSubject.subjectName);    
-    await Question.delete({ id, teacherId: req.session.userId });    
-    await checkSubjectsAndDelete(subjectsToCheck);    
+
+    // Check all users with question available in question reviews
+    const questionReviewsToDelete = await QuestionReview.find({
+      where: { questionId: id },
+      skip: 0,
+      take: 100,
+    });
+
+    questionReviewsToDelete.forEach(async (questionReview) => {
+      // Subtract one from their scores
+      subjects.forEach(async (subject) => {
+        const newScoreResult = await createQueryBuilder()
+          .update(Score)
+          .where({ subjectName: subject, userId: questionReview.userId })
+          .set(
+            questionReview.reviewStatus == ReviewStatus.QUEUED
+              ? { queued: () => "queued - 1" }
+              : questionReview.reviewStatus == ReviewStatus.CORRECT
+              ? { correct: () => "correct - 1" }
+              : questionReview.reviewStatus == ReviewStatus.INCORRECT
+              ? { incorrect: () => "incorrect - 1" }
+              : {}
+          )
+          .returning("*")
+          .execute();
+
+        // Delete the subject score for user if there are no reviews
+        // Check if all scores are 0. If so, delete the score.
+        const newScore = newScoreResult.raw[0] as Score;
+        if (
+          newScore.queued <= 0 &&
+          newScore.correct <= 0 &&
+          newScore.incorrect <= 0
+        ) {
+          await createQueryBuilder()
+            .delete()
+            .from(Score)
+            .where({
+              subjectName: subject,
+              userId: questionReview.userId,
+            })
+            .execute();
+        }
+      });
+
+      // Delete the review
+      await createQueryBuilder().delete().from(QuestionReview).where({
+        userId: questionReview.userId,
+        questionId: questionReview.questionId,
+      });
+    });
+
+    // Delete the question and any subjects that depend on the question
+    await Question.delete({ id, teacherId: req.session.userId });
+    await checkSubjectsAndDelete(subjects);
+
     return true;
   }
 
