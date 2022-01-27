@@ -344,7 +344,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           variant="outline"
         />
         <MenuList minWidth="150px">
-          <MenuItem onClick={() => router.push("/")}>
+          <MenuItem
+            onClick={() =>
+              router.asPath.startsWith("/learn")
+                ? setCurrentContent("content")
+                : router.push("/")
+            }
+          >
             <Heading
               color={
                 (router.asPath === "/" ||
@@ -362,9 +368,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               learn
             </Heading>
           </MenuItem>
-          <MenuItem onClick={() => router.push("/review")}>
+          <MenuItem
+            onClick={() =>
+              router.asPath.startsWith("/review")
+                ? setCurrentContent("content")
+                : router.push("/review")
+            }
+          >
             <Heading
-              color={router.asPath.startsWith("/review") ? "mint" : "grayMain"}
+              color={
+                router.asPath.startsWith("/review") &&
+                (currentContent == "" || currentContent == "content")
+                  ? "mint"
+                  : "grayMain"
+              }
               _hover={{
                 color: "mint",
               }}
