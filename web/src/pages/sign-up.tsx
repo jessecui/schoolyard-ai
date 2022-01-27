@@ -1,27 +1,19 @@
+import { FormControl, FormErrorMessage } from "@chakra-ui/form-control";
 import {
   Box,
   Button,
-  Center,
-  Text,
-  Image,
-  Flex,
-  Spacer,
-  SimpleGrid,
-  Link,
-  VStack,
-  Checkbox,
-  Divider,
+  Center, Checkbox,
+  Divider, Image, Link, SimpleGrid, Text, VStack
 } from "@chakra-ui/react";
-import { FormControl, FormErrorMessage } from "@chakra-ui/form-control";
-import { Field, Form, Formik, FormikConsumer } from "formik";
+import { Field, Form, Formik } from "formik";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import LogoImage from "../../public/images/schoolyard_logo.png";
 import { InputField } from "../components/InputField";
 import { MeDocument, MeQuery, useRegisterMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";
-import LogoImage from "../../public/images/schoolyard_logo.png";
-import NextLink from "next/link";
 
 interface registerProps {}
 
@@ -50,12 +42,11 @@ const SignUp: React.FC<registerProps> = ({}) => {
           { email, firstName, lastName, password, terms },
           { setErrors }
         ) => {
-          // Make sure that the user has checked the terms and conditions
+          // Make sure that the user has checked the terms of use
           if (!terms) {
             setErrors({
               terms:
-                "Please confirm that you have read and agreed to our Terms and\
-                 Conditions.",
+                "Please confirm that you have read and agreed to our Terms of Use.",
             });
             return;
           }
@@ -112,9 +103,9 @@ const SignUp: React.FC<registerProps> = ({}) => {
                     <Center>
                       <Checkbox {...field} id="terms" mt={8}>
                         I have read and agreed to the{" "}
-                        <NextLink href="/terms-and-conditions">
-                          <Link href="/terms-and-conditions" color="iris">
-                            Terms and Conditions
+                        <NextLink href="/terms-of-use">
+                          <Link href="/terms-of-use" color="iris">
+                            Terms of Use
                           </Link>
                         </NextLink>
                       </Checkbox>
@@ -128,7 +119,7 @@ const SignUp: React.FC<registerProps> = ({}) => {
 
               <Center>
                 <Button
-                  mt={2}
+                  mt={4}
                   type="submit"
                   isLoading={isSubmitting}
                   bg="iris"

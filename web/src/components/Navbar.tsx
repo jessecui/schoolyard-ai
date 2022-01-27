@@ -434,7 +434,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     </Flex>
   );
 
-  return (
+  return (    
     <>
       <Flex
         h="72px"

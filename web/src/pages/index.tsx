@@ -54,6 +54,10 @@ const Index: React.FC<{}> = ({}) => {
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
 
   useEffect(() => {
+    if (!meLoading && !meData?.me) {
+      router.push("/sign-up");
+    }
+
     setSentenceData(data);
     setSentenceDataLoading(loading);
     setUserData(meData);
@@ -93,7 +97,7 @@ const Index: React.FC<{}> = ({}) => {
     subjectToColors = JSON.parse(meData.me.subjectColors);
   }
 
-  return sentenceData?.sentences.sentences ? (
+  return meData?.me && sentenceData?.sentences.sentences ? (
     <Box>
       {router.query.deleteSuccess && (
         <Alert status="success" mb={2}>
