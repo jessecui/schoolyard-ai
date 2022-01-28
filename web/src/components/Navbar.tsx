@@ -436,7 +436,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      {userData?.me && (
         <Flex
           h="72px"
           bg="white"
@@ -463,8 +462,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </Flex>
             )}
           </Container>
-        </Flex>
-      )}
+        </Flex>      
     </>
   );
 };
