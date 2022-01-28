@@ -136,7 +136,7 @@ const main = async () => {
   await apolloServer.start();
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.use(express.static(__dirname + '/public'));  
+  app.use(express.static(__dirname + "/public"));  
 
   // Start the server on port 4000
   app.listen(4000, () => {
@@ -144,6 +144,6 @@ const main = async () => {
   });
 };
 
-main().catch((err) => {
+main().catch((err) => {  
   console.error(err);
 });
