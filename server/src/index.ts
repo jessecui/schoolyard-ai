@@ -31,6 +31,7 @@ import { SentenceResolver } from "./resolvers/sentence";
 import { SentenceViewResolver } from "./resolvers/sentenceView";
 import { UserResolver } from "./resolvers/user";
 import { createQuestionVoteLoader } from "./utils/loaders/createQuestionVoteLoader";
+import { createSentenceLoader } from "./utils/loaders/createSentenceLoader";
 import { createSentenceVoteLoader } from "./utils/loaders/createSentenceVoteLoader";
 import { createUserLoader } from "./utils/loaders/createUserLoader";
 
@@ -63,6 +64,7 @@ const resolvers = [
 // Also make sure to update MyContext type in types.ts
 const loaders = {
   userLoader: createUserLoader(),
+  sentenceLoader: createSentenceLoader(),
   questionVoteLoader: createQuestionVoteLoader(),
   sentenceVoteLoader: createSentenceVoteLoader(),
 };

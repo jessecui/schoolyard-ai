@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ObjectType, registerEnumType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -7,6 +7,13 @@ import {
   PrimaryColumn,
 } from "typeorm";
 import { Sentence } from "./Sentence";
+
+export enum CloneType {
+  CREATION = "creation",
+  AUTO = "auto",
+  MANUAL = "manual"
+}
+registerEnumType(CloneType, { name: "CloneType" });
 
 @ObjectType()
 @Entity()
@@ -30,6 +37,13 @@ export class Cloning extends BaseEntity {
   youngerCloneId: number;
 
   @Field()
-  @Column('float', {default: -1})
+  @Column('float')
   distance: number
+
+  @Field(() => CloneType)
+  @Column({
+    type: "enum",
+    enum: CloneType,
+  })
+  cloneType: CloneType
 }
