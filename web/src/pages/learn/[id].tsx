@@ -12,7 +12,7 @@ import {
   Link,
   Spacer,
   Stack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -28,7 +28,7 @@ import {
   RiThumbDownFill,
   RiThumbDownLine,
   RiThumbUpFill,
-  RiThumbUpLine
+  RiThumbUpLine,
 } from "react-icons/ri";
 import {
   AddSentenceVoteMutation,
@@ -40,7 +40,7 @@ import {
   useAddSentenceVoteMutation,
   useMeQuery,
   useSentenceQuery,
-  VoteType
+  VoteType,
 } from "../../generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -84,6 +84,7 @@ const Learn: React.FC<{
   >([]);
 
   useEffect(() => {
+    console.log(sentenceData?.sentence?.clones);
     setActiveCloneIndex(
       router.query.clone ? parseInt(router.query.clone as string) : 0
     );
@@ -282,7 +283,10 @@ const Learn: React.FC<{
                   "/learn/" +
                     router.query.id +
                     (router.query.id != activeSentence.id.toString()
-                      ? "?clone=" + newActiveIndex
+                      ? "?clone=" +
+                        newActiveIndex +
+                        "&cloneId=" +
+                        activeSentence.id
                       : ""),
                   undefined,
                   { shallow: true }
@@ -319,7 +323,10 @@ const Learn: React.FC<{
                   "/learn/" +
                     router.query.id +
                     (router.query.id != activeSentence.id.toString()
-                      ? "?clone=" + newActiveIndex
+                      ? "?clone=" +
+                        newActiveIndex +
+                        "&cloneId=" +
+                        activeSentence.id
                       : ""),
                   undefined,
                   { shallow: true }
@@ -798,7 +805,7 @@ const Learn: React.FC<{
           <Text color="grayMain" fontWeight="bold" mb={2}>
             Usage{allParents.length > 1 ? "s" : ""}
           </Text>
-          <Stack spacing={2}>
+          <Stack spacing={4}>
             {allParents.map((p) => (
               <Box key={p.parent!.id}>
                 <Flex align="center" flexWrap="wrap">

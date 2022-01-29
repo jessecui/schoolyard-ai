@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
+  Column,
   Entity,
   ManyToOne,
   PrimaryColumn,
@@ -27,4 +28,8 @@ export class Cloning extends BaseEntity {
   @Field()
   @PrimaryColumn()
   youngerCloneId: number;
+
+  @Field()
+  @Column('float', {default: -1})
+  distance: number
 }

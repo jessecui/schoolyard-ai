@@ -30,9 +30,12 @@ import { SentenceView } from "../entities/SentenceView";
 import { SentenceVote } from "../entities/SentenceVote";
 import { Subject } from "../entities/Subject";
 import { User } from "../entities/User";
+import { MyContext, VoteType } from "../types";
 import { isAuth } from "../utils/isAuth";
-import { MyContext } from "../types";
-import { VoteType } from "../types";
+import {
+  getSentenceEmbedding,
+  insertDistances,
+} from "../utils/ml/textAnalysis";
 
 @InputType()
 class ParagraphInput {
@@ -104,80 +107,6 @@ const checkSubjectsAndDelete = async (subjects: string[]) => {
   );
 };
 
-const bfsClones = async (
-  sentences: Sentence[],
-  visitedIds: number[]
-): Promise<Sentence[]> => {
-  // Filter sentences for visited sentences
-  let unvisitedSentences = sentences.filter((sentence) => {
-    return !visitedIds.includes(sentence.id);
-  });
-
-  if (unvisitedSentences.length == 0) {
-    return sentences;
-  }
-
-  // Update visited IDs
-  visitedIds = visitedIds.concat(
-    unvisitedSentences.map((sentence) => sentence.id)
-  );
-
-  // For every unvisited sentence, grab its clones
-  let newNeighbors = (
-    await Promise.all(
-      unvisitedSentences.map(async (sentence) => {
-        const youngerCloneRelations = await createQueryBuilder(Cloning)
-          .where(
-            '"olderCloneId" = :olderCloneId AND "youngerCloneId" NOT IN (:...visitedIds)',
-            { olderCloneId: sentence.id, visitedIds }
-          )
-          .getMany();
-
-        const youngerClones = await Promise.all(
-          youngerCloneRelations.map(async (relationship) => {
-            return await Sentence.findOne(relationship.youngerCloneId);
-          })
-        );
-
-        const olderCloneRelations = await createQueryBuilder(Cloning)
-          .where(
-            '"youngerCloneId" = :youngerCloneId AND "olderCloneId" NOT IN (:...visitedIds)',
-            { youngerCloneId: sentence.id, visitedIds }
-          )
-          .getMany();
-
-        const olderClones = await Promise.all(
-          olderCloneRelations.map(async (relationship) => {
-            return await Sentence.findOne(relationship.olderCloneId);
-          })
-        );
-
-        let clones: Sentence[] = youngerClones
-          .concat(olderClones)
-          .filter(function (element) {
-            return element !== undefined;
-          }) as Sentence[];
-
-        return clones;
-      })
-    )
-  ).flat(1);
-
-  // Now add all these new clones and recursively retrieve their neighbors
-  const nextNeighbors = await bfsClones(newNeighbors, visitedIds);
-
-  // Concat with next layer's neighbors
-  let allVisitedSentences = sentences
-    .concat(newNeighbors)
-    .concat(nextNeighbors);
-
-  // Deduplicate and return
-  return allVisitedSentences.filter(
-    (sentence, index, self) =>
-      self.findIndex((s) => s.id === sentence.id) === index
-  );
-};
-
 @Resolver(Sentence)
 export class SentenceResolver {
   @FieldResolver(() => Sentence, { nullable: true })
@@ -239,11 +168,35 @@ export class SentenceResolver {
   // Returns a list of the sentence and all of its clones
   @FieldResolver(() => [Sentence], { nullable: true })
   async clones(@Root() sentence: Sentence) {
-    return (await bfsClones([sentence], [])).sort(
-      (a, b) =>
-        Math.abs(a.createdAt.getTime() - sentence.createdAt.getTime()) -
-        Math.abs(b.createdAt.getTime() - sentence.createdAt.getTime())
-    );
+    const youngerCloneRelations = await createQueryBuilder(Cloning)
+      .where('"olderCloneId" = :olderCloneId and distance < :threshold', {
+        olderCloneId: sentence.id,
+        threshold: 0.25,
+      })
+      .getMany();
+
+    const olderCloneRelations = await createQueryBuilder(Cloning)
+      .where('"youngerCloneId" = :youngerCloneId AND distance < :threshold', {
+        youngerCloneId: sentence.id,
+        threshold: 0.25,
+      })
+      .getMany();
+
+    const allCloneRelations = youngerCloneRelations
+      .concat(olderCloneRelations)
+      .sort((a, b) => a.distance - b.distance);
+
+    const clones = (await Promise.all(
+      allCloneRelations.map(async (relationship) => {
+        if (relationship.olderCloneId != sentence.id) {
+          return await Sentence.findOne(relationship.olderCloneId);
+        } else {
+          return await Sentence.findOne(relationship.youngerCloneId);
+        }
+      })
+    )) as Sentence[];
+
+    return [sentence].concat(clones);
   }
 
   @FieldResolver(() => User)
@@ -295,6 +248,7 @@ export class SentenceResolver {
       .values({
         text: paragraphInput.text,
         teacherId: req.session.userId,
+        embedding: getSentenceEmbedding(paragraphInput.text),
       })
       .returning("*")
       .execute();
@@ -358,6 +312,7 @@ export class SentenceResolver {
             .values({
               text: childText,
               teacherId: req.session.userId,
+              embedding: getSentenceEmbedding(childText),
             })
             .returning("*")
             .execute();
@@ -408,6 +363,7 @@ export class SentenceResolver {
         })
       );
     });
+    insertDistances(newSummarySentence.id);
     return newSummarySentence;
   }
 
