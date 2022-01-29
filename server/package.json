@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsc && concurrently \"tsc -w\" \"nodemon dist/index.js\"",
-    "copy": "mkdir -p ./dist/ml && cp -r ./src/ml/word2vec.txt ./dist/ml/word2vec.txt",
+    "copy": "cp -r ./src/utils/ml/word2vec.txt ./dist/utils/ml/word2vec.txt",
     "start": "node dist/index.js"
   },
   "author": "Jesse Cui",

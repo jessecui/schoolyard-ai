@@ -104,6 +104,10 @@ export class Sentence extends BaseEntity {
   @Column({ default: 0 })
   viewCount: number;
 
+  @Field(() => [Number])
+  @Column("float", { array: true, default: Array(100).fill(0) })
+  embedding: number[];
+
   @Field(() => Date)
   @CreateDateColumn()
   createdAt: Date;

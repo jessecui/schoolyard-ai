@@ -74,7 +74,7 @@ const main = async () => {
   const conn = await createConnection({
     type: "postgres",
     url: "postgresql://postgres:postgres@localhost:5432/" + database_name,
-    logging: true,
+    logging: ["error", "schema", "warn", "info", "log"],
     synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
     entities,
