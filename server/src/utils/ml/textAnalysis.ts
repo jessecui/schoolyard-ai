@@ -46,14 +46,8 @@ export async function insertDistances(sentenceId: number) {
   }
   const sentenceEmbedding = sentence.embedding;
 
-  // Loop through all sentences in corpus with children
-  let sentences: Sentence[] = await getConnection().query(
-    `
-    select distinct(s.*)
-    from sentence s join parent_child pc
-    on s.id = pc."parentId"
-  `
-  );
+  // Loop through all sentences in the corpus
+  let sentences: Sentence[] = await Sentence.find();
 
   // Check that sentence is not a child or parent of the other sentence
   let invalidIds: number[] = [];
