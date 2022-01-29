@@ -84,7 +84,6 @@ const Learn: React.FC<{
   >([]);
 
   useEffect(() => {
-    console.log(sentenceData?.sentence?.clones);
     setActiveCloneIndex(
       router.query.clone ? parseInt(router.query.clone as string) : 0
     );
@@ -111,7 +110,7 @@ const Learn: React.FC<{
       );
       setViewedIds(newViewedIds);
     }
-  }, [sentenceData?.sentence?.id]);
+  }, [sentenceData?.sentence?.id, router]);
 
   useEffect(() => {
     setActiveChildrenCloneIndices(
@@ -119,7 +118,7 @@ const Learn: React.FC<{
         ? JSON.parse(router.query.childrenClones as string)
         : Array(activeSentence ? activeSentence.children?.length : 0).fill(0)
     );
-  }, [activeCloneIndex, sentenceData?.sentence?.id]);
+  }, [activeCloneIndex, sentenceData?.sentence?.id, router]);
 
   const updateAfterVote = (
     cache: ApolloCache<AddSentenceVoteMutation>,
@@ -287,9 +286,7 @@ const Learn: React.FC<{
                         newActiveIndex +
                         "&cloneId=" +
                         activeSentence.id
-                      : ""),
-                  undefined,
-                  { shallow: true }
+                      : "")
                 );
               }}
             />
@@ -327,9 +324,7 @@ const Learn: React.FC<{
                         newActiveIndex +
                         "&cloneId=" +
                         activeSentence.id
-                      : ""),
-                  undefined,
-                  { shallow: true }
+                      : "")
                 );
               }}
             />
@@ -694,9 +689,7 @@ const Learn: React.FC<{
                               )
                                 ? "&childrenClones=" +
                                   JSON.stringify(newActiveChildrenCloneIndices)
-                                : ""),
-                            undefined,
-                            { shallow: true }
+                                : "")
                           );
                         }}
                       />
@@ -704,24 +697,34 @@ const Learn: React.FC<{
                         href={
                           "/learn/" +
                           (child.clones &&
-                            clonesWithChildren(child.clones)[
+                            (clonesWithChildren(child.clones)[
                               activeChildrenCloneIndices[index]
                             ] &&
-                            clonesWithChildren(child.clones)[
-                              activeChildrenCloneIndices[index]
-                            ].id)
+                              clonesWithChildren(child.clones)[
+                                activeChildrenCloneIndices[index]
+                              ].id) +
+                              (activeChildrenCloneIndices[index] == 0 &&
+                              child.clones[0].id !=
+                                clonesWithChildren(child.clones)[0].id
+                                ? "?base=" + child.clones[0].id
+                                : ""))
                         }
                       >
                         <Link
                           href={
                             "/learn/" +
                             (child.clones &&
-                              clonesWithChildren(child.clones)[
+                              (clonesWithChildren(child.clones)[
                                 activeChildrenCloneIndices[index]
                               ] &&
-                              clonesWithChildren(child.clones)[
-                                activeChildrenCloneIndices[index]
-                              ].id)
+                                clonesWithChildren(child.clones)[
+                                  activeChildrenCloneIndices[index]
+                                ].id) +
+                                (activeChildrenCloneIndices[index] == 0 &&
+                                child.clones[0].id !=
+                                  clonesWithChildren(child.clones)[0].id
+                                  ? "?base=" + child.clones[0].id
+                                  : ""))
                           }
                         >
                           <Center>
@@ -779,9 +782,7 @@ const Learn: React.FC<{
                               )
                                 ? "&childrenClones=" +
                                   JSON.stringify(newActiveChildrenCloneIndices)
-                                : ""),
-                            undefined,
-                            { shallow: true }
+                                : "")
                           );
                         }}
                       />

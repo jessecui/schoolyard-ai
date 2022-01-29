@@ -795,11 +795,7 @@ const Review: React.FC<{
             position="absolute"
             right="8px"
             top="8px"
-            onClick={() =>
-              router.push("/review/" + router.query.id, undefined, {
-                shallow: true,
-              })
-            }
+            onClick={() => router.push("/review/" + router.query.id)}
           />
         </Alert>
       )}

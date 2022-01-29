@@ -294,6 +294,7 @@ export type Sentence = {
   clones?: Maybe<Array<Sentence>>;
   createdAt: Scalars['DateTime'];
   downVoteCount: Scalars['Float'];
+  embedding: Array<Scalars['Float']>;
   id: Scalars['Float'];
   orderNumber?: Maybe<Scalars['Float']>;
   parent?: Maybe<Sentence>;
