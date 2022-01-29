@@ -4,6 +4,7 @@ import { Field, InputType, registerEnumType } from "type-graphql";
 import { createQuestionVoteLoader } from "./utils/loaders/createQuestionVoteLoader";
 import { createSentenceVoteLoader } from "./utils/loaders/createSentenceVoteLoader";
 import { createUserLoader } from "./utils/loaders/createUserLoader";
+import { createSentenceLoader } from "./utils/loaders/createSentenceLoader";
 
 // Declares the format of the cookie passed into the Express session
 declare global {
@@ -20,6 +21,7 @@ export type MyContext = {
   res: Response;
   redis: Redis;
   userLoader: ReturnType<typeof createUserLoader>;
+  sentenceLoader: ReturnType<typeof createSentenceLoader>;
   questionVoteLoader: ReturnType<typeof createQuestionVoteLoader>;
   sentenceVoteLoader: ReturnType<typeof createSentenceVoteLoader>;
 };

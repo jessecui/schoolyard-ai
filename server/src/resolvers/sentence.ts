@@ -16,11 +16,9 @@ import {
   createQueryBuilder,
   EntityManager,
   getConnection,
-  In,
-  Not,
   UpdateResult,
 } from "typeorm";
-import { Cloning } from "../entities/Cloning";
+import { CloneType, Cloning } from "../entities/Cloning";
 import { ParentChild } from "../entities/ParentChild";
 import { Question } from "../entities/Question";
 import { QuestionSubject } from "../entities/QuestionSubject";
@@ -171,20 +169,36 @@ export class SentenceResolver {
     const youngerCloneRelations = await createQueryBuilder(Cloning)
       .where('"olderCloneId" = :olderCloneId and distance < :threshold', {
         olderCloneId: sentence.id,
-        threshold: 0.25,
+        threshold: 0.17,
       })
       .getMany();
 
     const olderCloneRelations = await createQueryBuilder(Cloning)
       .where('"youngerCloneId" = :youngerCloneId AND distance < :threshold', {
         youngerCloneId: sentence.id,
-        threshold: 0.25,
+        threshold: 0.17,
       })
       .getMany();
 
     const allCloneRelations = youngerCloneRelations
       .concat(olderCloneRelations)
-      .sort((a, b) => a.distance - b.distance);
+      .sort((a, b) => {
+        const diff = a.distance - b.distance;
+        if (diff != 0) {
+          return diff;
+        } else {
+          if (a.cloneType == CloneType.AUTO && b.cloneType != CloneType.AUTO) {
+            return 1;
+          } else if (
+            a.cloneType != CloneType.AUTO &&
+            b.cloneType == CloneType.AUTO
+          ) {
+            return -1;
+          } else {
+            return 0;
+          }
+        }
+      });
 
     const clones = (await Promise.all(
       allCloneRelations.map(async (relationship) => {
@@ -270,34 +284,10 @@ export class SentenceResolver {
         .values({
           olderCloneId: cloningOriginId,
           youngerCloneId: newSummarySentence.id,
+          distance: 0,
+          cloneType: CloneType.CREATION,
         })
         .execute();
-    }
-
-    /* If there are other sentences with the same text as our summary sentence,
-    we can set them as as clones. */
-    const existingSentences = await Sentence.find({
-      where: {
-        text: paragraphInput.text,
-        id: Not(In([newSummarySentence.id, cloningOriginId])),
-      },
-      skip: 0,
-      take: 100,
-    });
-    if (existingSentences) {
-      await Promise.all(
-        existingSentences.map(async (existingSentence) => {
-          await getConnection()
-            .createQueryBuilder()
-            .insert()
-            .into(Cloning)
-            .values({
-              olderCloneId: existingSentence.id,
-              youngerCloneId: newSummarySentence.id,
-            })
-            .execute();
-        })
-      );
     }
 
     // Create children sentences and add parent child relations
@@ -335,31 +325,6 @@ export class SentenceResolver {
               orderNumber: index,
             })
             .execute();
-
-          /* If there are existing children with the same text as our child 
-            text, we can set them as as clones. */
-          const existingChildren = await Sentence.find({
-            where: { text: childText, id: Not(newChild.id) },
-            skip: 0,
-            take: 100,
-          });
-          if (existingChildren) {
-            await Promise.all(
-              existingChildren.map(async (existingChild) => {
-                if (existingChild) {
-                  await manager
-                    .createQueryBuilder()
-                    .insert()
-                    .into(Cloning)
-                    .values({
-                      olderCloneId: existingChild.id,
-                      youngerCloneId: newChild.id,
-                    })
-                    .execute();
-                }
-              })
-            );
-          }
         })
       );
     });
@@ -434,52 +399,6 @@ export class SentenceResolver {
       );
     }
 
-    // Add new clones where the updated text matches
-    const existingOlderClonesIds = (
-      await Cloning.find({
-        where: { youngerCloneId: id },
-        skip: 0,
-        take: 100,
-      })
-    ).map((existingClone) => existingClone.olderCloneId);
-
-    const existingYoungerClonesIds = (
-      await Cloning.find({
-        where: { olderCloneId: id },
-        skip: 0,
-        take: 100,
-      })
-    ).map((existingClone) => existingClone.youngerCloneId);
-
-    const existingClones = existingOlderClonesIds
-      .concat(existingYoungerClonesIds)
-      .concat([id]);
-
-    const existingSentences = await Sentence.find({
-      where: {
-        text: paragraphInput.text,
-        id: Not(In(existingClones)),
-      },
-      skip: 0,
-      take: 100,
-    });
-
-    if (existingSentences) {
-      await Promise.all(
-        existingSentences.map(async (existingSentence) => {
-          await getConnection()
-            .createQueryBuilder()
-            .insert()
-            .into(Cloning)
-            .values({
-              olderCloneId: existingSentence.id,
-              youngerCloneId: updatedSummarySentence.id,
-            })
-            .execute();
-        })
-      );
-    }
-
     if (paragraphInput.childrenText) {
       // Get the number of children
       const childrenCount = await ParentChild.count({
@@ -523,53 +442,6 @@ export class SentenceResolver {
                   updatedChildSentence.id,
                   manager,
                   true
-                );
-              }
-
-              // If there exist other sentences with the child's clones,
-              // set them as clones.
-              const existingOlderClonesIds = (
-                await Cloning.find({
-                  where: { youngerCloneId: childId },
-                  skip: 0,
-                  take: 100,
-                })
-              ).map((existingClone) => existingClone.olderCloneId);
-
-              const existingYoungerClonesIds = (
-                await Cloning.find({
-                  where: { olderCloneId: childId },
-                  skip: 0,
-                  take: 100,
-                })
-              ).map((existingClone) => existingClone.youngerCloneId);
-
-              const existingClones = existingOlderClonesIds
-                .concat(existingYoungerClonesIds)
-                .concat([childId]);
-
-              const existingSentences = await Sentence.find({
-                where: {
-                  text: childText,
-                  id: Not(In(existingClones)),
-                },
-                skip: 0,
-                take: 100,
-              });
-
-              if (existingSentences) {
-                await Promise.all(
-                  existingSentences.map(async (existingSentence) => {
-                    await getConnection()
-                      .createQueryBuilder()
-                      .insert()
-                      .into(Cloning)
-                      .values({
-                        olderCloneId: existingSentence.id,
-                        youngerCloneId: childId,
-                      })
-                      .execute();
-                  })
                 );
               }
             }
@@ -627,64 +499,9 @@ export class SentenceResolver {
         .map((sentenceSubject) => sentenceSubject.subjectName)
         .forEach((subject) => subjectsToCheck.add(subject));
 
-      // Before deleting children, connect the child's clones
-      let olderCloneRelation = await Cloning.findOne({
-        where: { youngerCloneId: child!.id },
-      });
-      let youngerCloneRelation = await Cloning.findOne({
-        where: { olderCloneId: child!.id },
-      });
-
-      if (olderCloneRelation && youngerCloneRelation) {
-        let existingConnection = await Cloning.findOne({
-          where: {
-            olderCloneId: olderCloneRelation.olderCloneId,
-            youngerCloneId: youngerCloneRelation.youngerCloneId,
-          },
-        });
-        if (!existingConnection) {
-          await getConnection()
-            .createQueryBuilder()
-            .insert()
-            .into(Cloning)
-            .values({
-              olderCloneId: olderCloneRelation.olderCloneId,
-              youngerCloneId: youngerCloneRelation.youngerCloneId,
-            })
-            .execute();
-        }
-      }
       // Delete child
       await Sentence.delete({ id: child!.id, teacherId: req.session.userId });
     });
-
-    // Before deleting parent, connect the parent's clones
-    let olderCloneRelation = await Cloning.findOne({
-      where: { youngerCloneId: id },
-    });
-    let youngerCloneRelation = await Cloning.findOne({
-      where: { olderCloneId: id },
-    });
-
-    if (olderCloneRelation && youngerCloneRelation) {
-      let existingConnection = await Cloning.findOne({
-        where: {
-          olderCloneId: olderCloneRelation.olderCloneId,
-          youngerCloneId: youngerCloneRelation.youngerCloneId,
-        },
-      });
-      if (!existingConnection) {
-        await getConnection()
-          .createQueryBuilder()
-          .insert()
-          .into(Cloning)
-          .values({
-            olderCloneId: olderCloneRelation.olderCloneId,
-            youngerCloneId: youngerCloneRelation.youngerCloneId,
-          })
-          .execute();
-      }
-    }
 
     // Retrieve subjects
     (

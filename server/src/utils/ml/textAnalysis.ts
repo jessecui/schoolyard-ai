@@ -1,6 +1,6 @@
 import { createQueryBuilder, getConnection } from "typeorm";
 import w2v from "word2vec";
-import { Cloning } from "../../entities/Cloning";
+import { CloneType, Cloning } from "../../entities/Cloning";
 import { ParentChild } from "../../entities/ParentChild";
 import { Sentence } from "../../entities/Sentence";
 
@@ -49,13 +49,20 @@ export async function insertDistances(sentenceId: number) {
   // Loop through all sentences in the corpus
   let sentences: Sentence[] = await Sentence.find();
 
-  // Check that sentence is not a child or parent of the other sentence
+  // Make sure we do not clone parent to children or siblings
   let invalidIds: number[] = [];
   const parentRelationship = await ParentChild.findOne({
     where: { childId: sentenceId },
   });
   if (parentRelationship) {
     invalidIds.push(parentRelationship.parentId);
+
+    const siblingRelationships = await ParentChild.find({
+      where: { parentId: parentRelationship?.parentId },
+    });
+    siblingRelationships.forEach((relationship) => {
+      invalidIds.push(relationship.childId);
+    });
   }
   const childrenRelationships = await ParentChild.find({
     where: { parentId: sentenceId },
@@ -64,7 +71,7 @@ export async function insertDistances(sentenceId: number) {
     invalidIds.push(relationship.childId);
   });
   sentences = sentences.filter((sentence) => {
-    return !invalidIds.includes(sentence.id);
+    return !invalidIds.includes(sentence.id) && sentenceId != sentence.id;
   });
 
   // Insert or update the distance into the cloning table
@@ -77,7 +84,7 @@ export async function insertDistances(sentenceId: number) {
       where: { olderCloneId: sentenceId, youngerCloneId: otherSentence.id },
     });
     if (asOlderClone) {
-      if (asOlderClone.distance != -1) {
+      if (asOlderClone.cloneType == CloneType.AUTO) {
         await createQueryBuilder()
           .update(Cloning)
           .set({ distance })
@@ -95,7 +102,7 @@ export async function insertDistances(sentenceId: number) {
         where: { olderCloneId: otherSentence.id, youngerCloneId: sentenceId },
       });
       if (asYoungerClone) {
-        if (asYoungerClone.distance != -1) {
+        if (asYoungerClone.cloneType != CloneType.AUTO) {
           await createQueryBuilder()
             .update(Cloning)
             .set({ distance })
@@ -122,7 +129,12 @@ export async function insertDistances(sentenceId: number) {
           .createQueryBuilder()
           .insert()
           .into(Cloning)
-          .values({ olderCloneId, youngerCloneId, distance: distance })
+          .values({
+            olderCloneId,
+            youngerCloneId,
+            distance: distance,
+            cloneType: CloneType.AUTO,
+          })
           .execute();
       }
     }

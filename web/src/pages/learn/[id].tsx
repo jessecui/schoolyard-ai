@@ -697,34 +697,24 @@ const Learn: React.FC<{
                         href={
                           "/learn/" +
                           (child.clones &&
-                            (clonesWithChildren(child.clones)[
+                            clonesWithChildren(child.clones)[
                               activeChildrenCloneIndices[index]
                             ] &&
-                              clonesWithChildren(child.clones)[
-                                activeChildrenCloneIndices[index]
-                              ].id) +
-                              (activeChildrenCloneIndices[index] == 0 &&
-                              child.clones[0].id !=
-                                clonesWithChildren(child.clones)[0].id
-                                ? "?base=" + child.clones[0].id
-                                : ""))
+                            clonesWithChildren(child.clones)[
+                              activeChildrenCloneIndices[index]
+                            ].id)
                         }
                       >
                         <Link
                           href={
                             "/learn/" +
                             (child.clones &&
-                              (clonesWithChildren(child.clones)[
+                              clonesWithChildren(child.clones)[
                                 activeChildrenCloneIndices[index]
                               ] &&
-                                clonesWithChildren(child.clones)[
-                                  activeChildrenCloneIndices[index]
-                                ].id) +
-                                (activeChildrenCloneIndices[index] == 0 &&
-                                child.clones[0].id !=
-                                  clonesWithChildren(child.clones)[0].id
-                                  ? "?base=" + child.clones[0].id
-                                  : ""))
+                              clonesWithChildren(child.clones)[
+                                activeChildrenCloneIndices[index]
+                              ].id)
                           }
                         >
                           <Center>
