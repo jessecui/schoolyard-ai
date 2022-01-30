@@ -291,6 +291,7 @@ export class SentenceResolver {
     }
 
     // Create children sentences and add parent child relations
+    const childrenIds: number[] = [];
     await getConnection().transaction(async (manager) => {
       await Promise.all(
         paragraphInput.childrenText.map(async (childText, index) => {
@@ -325,10 +326,16 @@ export class SentenceResolver {
               orderNumber: index,
             })
             .execute();
+          childrenIds.push(newChild.id);
         })
       );
     });
-    insertDistances(newSummarySentence.id);
+    await insertDistances(newSummarySentence.id);
+    await Promise.all(
+      childrenIds.map(async (childId) => {
+        await insertDistances(childId);
+      })
+    );
     return newSummarySentence;
   }
 
@@ -379,7 +386,10 @@ export class SentenceResolver {
       .createQueryBuilder()
       .update(Sentence)
       .set({
-        ...(paragraphInput.text && { text: paragraphInput.text }),
+        ...(paragraphInput.text && {
+          text: paragraphInput.text,
+          embedding: getSentenceEmbedding(paragraphInput.text),
+        }),
       })
       .where("id = :id and teacherId = :teacherId", {
         id,
@@ -399,6 +409,7 @@ export class SentenceResolver {
       );
     }
 
+    const updatedChildrenIds: number[] = [];
     if (paragraphInput.childrenText) {
       // Get the number of children
       const childrenCount = await ParentChild.count({
@@ -426,6 +437,7 @@ export class SentenceResolver {
                 .update(Sentence)
                 .set({
                   text: childText,
+                  embedding: getSentenceEmbedding(childText),
                 })
                 .where("id = :childId and teacherId = :teacherId", {
                   childId,
@@ -437,18 +449,25 @@ export class SentenceResolver {
               const updatedChildSentence = updatedChild.raw[0] as Sentence;
 
               if (paragraphInput.subjects) {
-                insertSentenceSubjects(
+                await insertSentenceSubjects(
                   paragraphInput.subjects,
                   updatedChildSentence.id,
                   manager,
                   true
                 );
               }
+              updatedChildrenIds.push(childId);
             }
           })
         );
       });
     }
+    await insertDistances(updatedSummarySentence.id);
+    await Promise.all(
+      updatedChildrenIds.map(async (childId) => {
+        await insertDistances(childId);
+      })
+    );
     return updatedSummarySentence;
   }
 

@@ -8,7 +8,7 @@ var w2vModel: any;
 
 w2v.loadModel(__dirname + "/word2vec.txt", (error: any, model: any) => {
   if (error) {
-    console.log(error);
+    console.log("Word2Vec Loading Error: ", error);
   } else {
     w2vModel = model;
   }
@@ -102,7 +102,7 @@ export async function insertDistances(sentenceId: number) {
         where: { olderCloneId: otherSentence.id, youngerCloneId: sentenceId },
       });
       if (asYoungerClone) {
-        if (asYoungerClone.cloneType != CloneType.AUTO) {
+        if (asYoungerClone.cloneType == CloneType.AUTO) {
           await createQueryBuilder()
             .update(Cloning)
             .set({ distance })
@@ -124,7 +124,7 @@ export async function insertDistances(sentenceId: number) {
         } else {
           olderCloneId = otherSentence.id;
           youngerCloneId = sentenceId;
-        }
+        }        
         await getConnection()
           .createQueryBuilder()
           .insert()
