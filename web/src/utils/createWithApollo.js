@@ -3,7 +3,6 @@ import App from "next/app";
 import React from "react";
 
 // Helper file for Creating Apollo Clients
-// TODO: Change to TS File
 
 // On the client, we store the Apollo Client in the following variable.
 // This prevents the client from reinitializing between page transitions.

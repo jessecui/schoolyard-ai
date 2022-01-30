@@ -13,8 +13,8 @@ import {
 import { Form, Formik } from "formik";
 import router from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import { InputField } from "../components/InputField";
-import { ProfilePhotoUpload } from "../components/ProfilePhotoUpload";
+import { InputField } from "../components/form/InputField";
+import { ProfilePhotoUpload } from "../components/form/ProfilePhotoUpload";
 import {
   MeDocument,
   MeQuery,

@@ -4,7 +4,7 @@ import { Image, Text } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import LogoImage from "../../public/images/schoolyard_logo.png";
-import { InputField } from "../components/InputField";
+import { InputField } from "../components/form/InputField";
 import { useForgotPasswordMutation } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 

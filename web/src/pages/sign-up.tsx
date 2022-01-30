@@ -10,7 +10,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import LogoImage from "../../public/images/schoolyard_logo.png";
-import { InputField } from "../components/InputField";
+import { InputField } from "../components/form/InputField";
 import { MeDocument, MeQuery, useRegisterMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";

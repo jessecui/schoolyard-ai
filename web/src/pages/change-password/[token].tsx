@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { InputField } from "../../components/InputField";
+import { InputField } from "../../components/form/InputField";
 import {
   MeDocument,
   MeQuery,
