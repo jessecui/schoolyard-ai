@@ -24,7 +24,7 @@ import {
   useCreateQuestionReviewMutation,
   useMeQuery,
   User,
-} from "../generated/graphql";
+} from "../../generated/graphql";
 import { ChangedSubject } from "./SiteLayout";
 
 export const SideQuestions: React.FC<{

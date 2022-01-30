@@ -5,7 +5,7 @@ import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
 import LogoImage from "../../public/images/schoolyard_logo.png";
-import { InputField } from "../components/InputField";
+import { InputField } from "../components/form/InputField";
 import {
   MeDocument,
   MeQuery,

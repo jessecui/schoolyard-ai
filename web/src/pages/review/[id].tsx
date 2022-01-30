@@ -41,7 +41,7 @@ import {
   RiThumbUpFill,
   RiThumbUpLine,
 } from "react-icons/ri";
-import { ChangedSubject } from "../../components/SiteLayout";
+import { ChangedSubject } from "../../components/layout/SiteLayout";
 import {
   AddQuestionVoteMutation,
   AddSentenceVoteMutation,
