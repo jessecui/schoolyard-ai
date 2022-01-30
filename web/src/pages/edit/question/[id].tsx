@@ -37,7 +37,7 @@ import {
   useMeQuery,
   useQuestionQuery,
   useUpdateQuestionMutation,
-} from "../../../generated/graphql";
+} from "../../../graphql/generated/graphql";
 import { withApollo } from "../../../utils/withApollo";
 
 export const EditQuestion: React.FC<{}> = ({}) => {

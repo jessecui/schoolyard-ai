@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/layout";
 import { SkeletonCircle, SkeletonText, Stack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { QuestionReview, useMeQuery } from "../generated/graphql";
+import { QuestionReview, useMeQuery } from "../graphql/generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
 const Review: React.FC<{}> = ({}) => {

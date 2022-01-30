@@ -5,7 +5,7 @@ import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import LogoImage from "../../public/images/schoolyard_logo.png";
 import { InputField } from "../components/form/InputField";
-import { useForgotPasswordMutation } from "../generated/graphql";
+import { useForgotPasswordMutation } from "../graphql/generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
 export const ForgotPassword: React.FC<{}> = ({}) => {

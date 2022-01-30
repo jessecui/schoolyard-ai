@@ -1,4 +1,4 @@
-import { FieldError } from "../generated/graphql";
+import { FieldError } from "../graphql/generated/graphql";
 
 /**
  * Form functions expect a field map but response returns an array of 

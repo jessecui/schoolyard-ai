@@ -10,7 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { ReviewStatus, Score, useMeQuery } from "../../generated/graphql";
+import { ReviewStatus, Score, useMeQuery } from "../../graphql/generated/graphql";
 import { ChangedSubject } from "./SiteLayout";
 
 export const ScoreCard: React.FC<{

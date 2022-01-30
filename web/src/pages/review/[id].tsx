@@ -65,7 +65,7 @@ import {
   User,
   useUpdateQuestionReviewMutation,
   VoteType,
-} from "../../generated/graphql";
+} from "../../graphql/generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
 const Review: React.FC<{

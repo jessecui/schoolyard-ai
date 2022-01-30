@@ -33,7 +33,7 @@ import {
   useCreateQuestionMutation,
   useMeQuery,
   useSentenceQuery,
-} from "../generated/graphql";
+} from "../graphql/generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
 export const Create: React.FC<{}> = ({}) => {

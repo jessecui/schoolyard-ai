@@ -22,7 +22,7 @@ import {
   useChangeProfileMutation,
   useDeleteUserMutation,
   useMeQuery,
-} from "../generated/graphql";
+} from "../graphql/generated/graphql";
 import { isServer } from "../utils/isServer";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";
