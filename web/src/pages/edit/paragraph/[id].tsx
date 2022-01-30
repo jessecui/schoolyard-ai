@@ -27,7 +27,7 @@ import {
   useMeQuery,
   useSentenceQuery,
   useUpdateParagraphMutation
-} from "../../../generated/graphql";
+} from "../../../graphql/generated/graphql";
 import { withApollo } from "../../../utils/withApollo";
 
 export const EditParagraph: React.FC<{}> = ({}) => {

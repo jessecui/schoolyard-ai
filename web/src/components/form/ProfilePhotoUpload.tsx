@@ -11,7 +11,7 @@ import {
   useAddProfilePhotoMutation,
   useDeleteProfilePhotoMutation,
   useMeQuery
-} from "../../generated/graphql";
+} from "../../graphql/generated/graphql";
 
 export const ProfilePhotoUpload: React.FC<{
   imageHash: number;

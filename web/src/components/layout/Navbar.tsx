@@ -27,7 +27,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoListCircle, IoLogOut, IoSettings } from "react-icons/io5";
-import { MeQuery, useLogoutMutation, useMeQuery } from "../../generated/graphql";
+import { MeQuery, useLogoutMutation, useMeQuery } from "../../graphql/generated/graphql";
 
 interface NavbarProps {
   imageHash: number;

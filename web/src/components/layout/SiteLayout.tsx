@@ -11,7 +11,7 @@ import {
   Question,
   ReviewStatus,
   useMeQuery,
-} from "../../generated/graphql";
+} from "../../graphql/generated/graphql";
 import { Navbar } from "./Navbar";
 import { ScoreCard } from "./ScoreCard";
 import { SideQuestions } from "./SideQuestions";

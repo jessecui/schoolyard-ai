@@ -7,7 +7,7 @@ import {
   MeDocument,
   MeQuery,
   useChangePasswordWithTokenMutation,
-} from "../../generated/graphql";
+} from "../../graphql/generated/graphql";
 import { toErrorMap } from "../../utils/toErrorMap";
 import { withApollo } from "../../utils/withApollo";
 import { Box, Button, Flex, Link, Image, Center, Text } from "@chakra-ui/react";

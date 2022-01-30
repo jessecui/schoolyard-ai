@@ -11,7 +11,7 @@ import {
   MeQuery,
   useLoginMutation,
   useMeQuery,
-} from "../generated/graphql";
+} from "../graphql/generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";
 import NextLink from "next/link";

@@ -30,7 +30,7 @@ import {
   useMeQuery,
   useSentencesQuery,
   VoteType,
-} from "../generated/graphql";
+} from "../graphql/generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
 const Index: React.FC<{}> = ({}) => {

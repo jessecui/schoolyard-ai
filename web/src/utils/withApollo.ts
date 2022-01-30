@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
 import { NextPageContext } from "next";
-import { PaginatedSentences } from "../generated/graphql";
+import { PaginatedSentences } from "../graphql/generated/graphql";
 import { createWithApollo } from "./createWithApollo";
 
 const createClient = (ctx: NextPageContext) =>
