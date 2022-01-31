@@ -1,35 +1,22 @@
-import { ApolloCache, gql } from "@apollo/client";
 import { Box, Center, Circle, Flex, Link, Stack } from "@chakra-ui/layout";
 import {
   Alert,
   AlertIcon,
   Avatar,
   CloseButton,
-  Icon,
-  IconButton,
-  Text,
+  Icon, Text
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiZoomIn } from "react-icons/bi";
-import { IoPeople } from "react-icons/io5";
-import {
-  RiCalendarEventFill,
-  RiThumbDownFill,
-  RiThumbDownLine,
-  RiThumbUpFill,
-  RiThumbUpLine,
-} from "react-icons/ri";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Details } from "../components/content/Details";
 import {
-  AddSentenceVoteMutation,
   MeQuery,
-  SentencesQuery,
-  useAddSentenceVoteMutation,
-  useMeQuery,
-  useSentencesQuery,
-  VoteType,
+  Sentence,
+  SentencesQuery, useMeQuery,
+  useSentencesQuery
 } from "../graphql/generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
@@ -53,40 +40,12 @@ const Index: React.FC<{}> = ({}) => {
   const [userData, setUserData] = useState<MeQuery | undefined>();
   const [userDataLoading, setUserDataLoading] = useState<Boolean | undefined>();
 
-  useEffect(() => {    
+  useEffect(() => {
     setSentenceData(data);
     setSentenceDataLoading(loading);
     setUserData(meData);
     setUserDataLoading(meLoading);
   });
-
-  const [addVote] = useAddSentenceVoteMutation();
-
-  const updateAfterVote = (
-    cache: ApolloCache<AddSentenceVoteMutation>,
-    sentenceId: number,
-    newUserVoteType: VoteType | null,
-    newUpVoteCount: number,
-    newDownVoteCount: number
-  ) => {
-    if (data) {
-      cache.writeFragment({
-        id: "Sentence:" + sentenceId,
-        fragment: gql`
-          fragment __ on Sentence {
-            upVoteCount
-            downVoteCount
-            userVoteType
-          }
-        `,
-        data: {
-          upVoteCount: newUpVoteCount,
-          downVoteCount: newDownVoteCount,
-          userVoteType: newUserVoteType,
-        },
-      });
-    }
-  };
 
   let subjectToColors: Record<string, string> = {};
   if (meData?.me?.subjectColors) {
@@ -181,152 +140,10 @@ const Index: React.FC<{}> = ({}) => {
                   ? sentence.children.map((child) => child.text).join(" ")
                   : null}
               </Text>
-              <Flex wrap="wrap">
-                {!meLoading && meData?.me ? (
-                  <>
-                    <Text color="grayMain" fontSize="sm" mr={2}>
-                      <IconButton
-                        mr={0.5}
-                        minWidth="24px"
-                        height="24px"
-                        isRound={true}
-                        size="lg"
-                        bg="none"
-                        _focus={{
-                          boxShadow: "none",
-                        }}
-                        _hover={{
-                          bg: "grayLight",
-                        }}
-                        onClick={async () => {
-                          await addVote({
-                            variables: {
-                              sentenceId: sentence!.id,
-                              voteType: VoteType.Up,
-                            },
-                            update: (cache, { data: responseData }) => {
-                              const votedSentence =
-                                responseData?.addSentenceVote;
-                              updateAfterVote(
-                                cache,
-                                sentence!.id,
-                                votedSentence!.userVoteType as VoteType | null,
-                                votedSentence!.upVoteCount,
-                                votedSentence!.downVoteCount
-                              );
-                            },
-                          });
-                        }}
-                        aria-label="Up Vote Sentence"
-                        icon={
-                          sentence.userVoteType == VoteType.Up ? (
-                            <RiThumbUpFill />
-                          ) : (
-                            <RiThumbUpLine />
-                          )
-                        }
-                      />
-                      {sentence.upVoteCount}
-                    </Text>
-                    <Text color="grayMain" fontSize="sm" mr={2}>
-                      <IconButton
-                        mr={0.5}
-                        minWidth="24px"
-                        height="24px"
-                        isRound={true}
-                        size="lg"
-                        bg="none"
-                        _focus={{
-                          boxShadow: "none",
-                        }}
-                        _hover={{
-                          bg: "grayLight",
-                        }}
-                        onClick={async () => {
-                          await addVote({
-                            variables: {
-                              sentenceId: sentence!.id,
-                              voteType: VoteType.Down,
-                            },
-                            update: (cache, { data: responseData }) => {
-                              const votedSentence =
-                                responseData?.addSentenceVote;
-                              updateAfterVote(
-                                cache,
-                                sentence!.id,
-                                votedSentence!.userVoteType as VoteType | null,
-                                votedSentence!.upVoteCount,
-                                votedSentence!.downVoteCount
-                              );
-                            },
-                          });
-                        }}
-                        aria-label="Down Vote Sentence"
-                        icon={
-                          sentence.userVoteType == VoteType.Down ? (
-                            <RiThumbDownFill />
-                          ) : (
-                            <RiThumbDownLine />
-                          )
-                        }
-                      />
-                      {sentence.downVoteCount}
-                    </Text>
-                  </>
-                ) : (
-                  <>
-                    <Center mr={2}>
-                      <Icon
-                        mx="4px"
-                        height="24px"
-                        as={RiThumbUpLine}
-                        color="grayMain"
-                        h="18px"
-                        w="18px"
-                      />
-                      <Text color="grayMain" fontSize="sm">
-                        {sentence.upVoteCount}
-                      </Text>
-                    </Center>
-                    <Center mr={2}>
-                      <Icon
-                        mx="4px"
-                        as={RiThumbDownLine}
-                        color="grayMain"
-                        h="18px"
-                        w="18px"
-                      />
-                      <Text color="grayMain" fontSize="sm">
-                        {sentence.downVoteCount}
-                      </Text>
-                    </Center>
-                  </>
-                )}
-
-                <Center mr={2}>
-                  <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
-                  <Text color="grayMain" fontSize="sm">
-                    {sentence.viewCount +
-                      (sentence.viewCount == 1 ? " view" : " views")}
-                  </Text>
-                </Center>
-                <Center>
-                  <Icon
-                    as={RiCalendarEventFill}
-                    color="grayMain"
-                    mr={1}
-                    w={5}
-                    h={5}
-                  />
-                  <Text color="grayMain" fontSize="sm">
-                    {new Date(sentence.createdAt).toLocaleString("default", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </Text>
-                </Center>
-              </Flex>
+              <Details
+                content={sentence as Sentence}
+                userLoggedIn={Boolean(userData?.me)}
+              />
               <Box mt={3}>
                 <NextLink href={"/learn/" + sentence.id}>
                   <Link

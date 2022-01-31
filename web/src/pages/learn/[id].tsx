@@ -1,5 +1,3 @@
-import { gql } from "@apollo/client";
-import { ApolloCache } from "@apollo/client/cache";
 import {
   Avatar,
   Box,
@@ -12,35 +10,26 @@ import {
   Link,
   Spacer,
   Stack,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BiZoomIn } from "react-icons/bi";
-import { IoExpand, IoPeople } from "react-icons/io5";
+import { IoExpand } from "react-icons/io5";
 import { MdLibraryAdd } from "react-icons/md";
 import {
   RiArrowLeftSLine,
-  RiArrowRightSLine,
-  RiCalendarEventFill,
-  RiEditBoxLine,
-  RiThumbDownFill,
-  RiThumbDownLine,
-  RiThumbUpFill,
-  RiThumbUpLine,
+  RiArrowRightSLine, RiEditBoxLine
 } from "react-icons/ri";
+import { Details } from "../../components/content/Details";
 import {
-  AddSentenceVoteMutation,
   MeQuery,
   Question,
   Sentence,
   SentenceQuery,
-  useAddSentenceViewMutation,
-  useAddSentenceVoteMutation,
-  useMeQuery,
-  useSentenceQuery,
-  VoteType,
+  useAddSentenceViewMutation, useMeQuery,
+  useSentenceQuery
 } from "../../graphql/generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -51,7 +40,6 @@ const Learn: React.FC<{
   const { data, loading } = useSentenceQuery({
     variables: { id: Number(router.query.id) },
   });
-  const [addVote] = useAddSentenceVoteMutation();
   const [addView] = useAddSentenceViewMutation();
   const { data: meData, loading: meLoading } = useMeQuery();
 
@@ -119,32 +107,6 @@ const Learn: React.FC<{
         : Array(activeSentence ? activeSentence.children?.length : 0).fill(0)
     );
   }, [activeCloneIndex, sentenceData?.sentence?.id, router]);
-
-  const updateAfterVote = (
-    cache: ApolloCache<AddSentenceVoteMutation>,
-    sentenceId: number,
-    newUserVoteType: VoteType | null,
-    newUpVoteCount: number,
-    newDownVoteCount: number
-  ) => {
-    if (data) {
-      cache.writeFragment({
-        id: "Sentence:" + sentenceId,
-        fragment: gql`
-          fragment __ on Sentence {
-            upVoteCount
-            downVoteCount
-            userVoteType
-          }
-        `,
-        data: {
-          upVoteCount: newUpVoteCount,
-          downVoteCount: newDownVoteCount,
-          userVoteType: newUserVoteType,
-        },
-      });
-    }
-  };
 
   let sentenceList: any[] = [];
   let activeSentence: Sentence | undefined;
@@ -338,149 +300,10 @@ const Learn: React.FC<{
             ? activeSentence.children.map((child) => child.text).join(" ")
             : null}
         </Text>
-        <Flex wrap="wrap">
-          {!meLoading && meData?.me ? (
-            <>
-              <Text color="grayMain" fontSize="sm" mr={2}>
-                <IconButton
-                  mr={0.5}
-                  minWidth="24px"
-                  height="24px"
-                  isRound={true}
-                  size="lg"
-                  bg="none"
-                  _focus={{
-                    boxShadow: "none",
-                  }}
-                  _hover={{
-                    bg: "grayLight",
-                  }}
-                  onClick={async () => {
-                    await addVote({
-                      variables: {
-                        sentenceId: activeSentence!.id,
-                        voteType: VoteType.Up,
-                      },
-                      update: (cache, { data: responseData }) => {
-                        const votedSentence = responseData?.addSentenceVote;
-                        updateAfterVote(
-                          cache,
-                          activeSentence!.id,
-                          votedSentence!.userVoteType as VoteType | null,
-                          votedSentence!.upVoteCount,
-                          votedSentence!.downVoteCount
-                        );
-                      },
-                    });
-                  }}
-                  aria-label="Up Vote Sentence"
-                  icon={
-                    activeSentence.userVoteType == VoteType.Up ? (
-                      <RiThumbUpFill />
-                    ) : (
-                      <RiThumbUpLine />
-                    )
-                  }
-                />
-                {activeSentence.upVoteCount}
-              </Text>
-              <Text color="grayMain" fontSize="sm" mr={2}>
-                <IconButton
-                  mr={0.5}
-                  minWidth="24px"
-                  height="24px"
-                  isRound={true}
-                  size="lg"
-                  bg="none"
-                  _focus={{
-                    boxShadow: "none",
-                  }}
-                  _hover={{
-                    bg: "grayLight",
-                  }}
-                  onClick={async () => {
-                    await addVote({
-                      variables: {
-                        sentenceId: activeSentence!.id,
-                        voteType: VoteType.Down,
-                      },
-                      update: (cache, { data: responseData }) => {
-                        const votedSentence = responseData?.addSentenceVote;
-                        updateAfterVote(
-                          cache,
-                          activeSentence!.id,
-                          votedSentence!.userVoteType as VoteType | null,
-                          votedSentence!.upVoteCount,
-                          votedSentence!.downVoteCount
-                        );
-                      },
-                    });
-                  }}
-                  aria-label="Down Vote Sentence"
-                  icon={
-                    activeSentence.userVoteType == VoteType.Down ? (
-                      <RiThumbDownFill />
-                    ) : (
-                      <RiThumbDownLine />
-                    )
-                  }
-                />
-                {activeSentence.downVoteCount}
-              </Text>
-            </>
-          ) : (
-            <>
-              <Center mr={2}>
-                <Icon
-                  mx="4px"
-                  height="24px"
-                  as={RiThumbUpLine}
-                  color="grayMain"
-                  h="18px"
-                  w="18px"
-                />
-                <Text color="grayMain" fontSize="sm">
-                  {activeSentence.upVoteCount}
-                </Text>
-              </Center>
-              <Center mr={2}>
-                <Icon
-                  mx="4px"
-                  as={RiThumbDownLine}
-                  color="grayMain"
-                  h="18px"
-                  w="18px"
-                />
-                <Text color="grayMain" fontSize="sm">
-                  {activeSentence.downVoteCount}
-                </Text>
-              </Center>
-            </>
-          )}
-          <Center mr={2}>
-            <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
-            <Text color="grayMain" fontSize="sm">
-              {activeSentence.viewCount +
-                (activeSentence.viewCount == 1 ? " view" : " views")}
-            </Text>
-          </Center>
-          <Center>
-            <Icon
-              as={RiCalendarEventFill}
-              color="grayMain"
-              mr={1}
-              w={5}
-              h={5}
-            />
-            <Text color="grayMain" fontSize="sm">
-              {new Date(activeSentence.createdAt).toLocaleString("default", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </Text>
-          </Center>
-        </Flex>
+        <Details
+          content={activeSentence as Sentence}
+          userLoggedIn={Boolean(userData?.me)}
+        />
         <HStack mt={3} spacing={4}>
           {userData?.me && (
             <NextLink
