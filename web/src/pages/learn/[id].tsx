@@ -69,9 +69,6 @@ const Learn: React.FC<{
   const [viewedIds, setViewedIds] = useState<number[]>([]);
 
   const [activeCloneIndex, setActiveCloneIndex] = useState(0);
-  const [activeChildrenCloneIndices, setActiveChildrenCloneIndices] = useState<
-    number[]
-  >([]);
 
   useEffect(() => {
     setActiveCloneIndex(
@@ -101,14 +98,6 @@ const Learn: React.FC<{
       setViewedIds(newViewedIds);
     }
   }, [sentenceData?.sentence?.id, router]);
-
-  useEffect(() => {
-    setActiveChildrenCloneIndices(
-      router.query.childrenClones
-        ? JSON.parse(router.query.childrenClones as string)
-        : Array(activeSentence ? activeSentence.children?.length : 0).fill(0)
-    );
-  }, [activeCloneIndex, sentenceData?.sentence?.id, router]);
 
   let sentenceList: any[] = [];
   let activeSentence: Sentence | undefined;
@@ -383,14 +372,10 @@ const Learn: React.FC<{
                     {child.text}
                     &nbsp;
                     {child.clones &&
-                      clonesWithChildren(child.clones)[
-                        activeChildrenCloneIndices[index]
-                      ] &&
+                      clonesWithChildren(child.clones)[0] &&
                       (
                         child.clones &&
-                        clonesWithChildren(child.clones)[
-                          activeChildrenCloneIndices[index]
-                        ]
+                        clonesWithChildren(child.clones)[0]
                       ).children?.map((grandchild) => (
                         <Text
                           key={grandchild.id}
@@ -409,24 +394,16 @@ const Learn: React.FC<{
                     href={
                       "/learn/" +
                       (child.clones &&
-                        clonesWithChildren(child.clones)[
-                          activeChildrenCloneIndices[index]
-                        ] &&
-                        clonesWithChildren(child.clones)[
-                          activeChildrenCloneIndices[index]
-                        ].id)
+                        clonesWithChildren(child.clones)[0] &&
+                        clonesWithChildren(child.clones)[0].id)
                     }
                   >
                     <Link
                       href={
                         "/learn/" +
                         (child.clones &&
-                          clonesWithChildren(child.clones)[
-                            activeChildrenCloneIndices[index]
-                          ] &&
-                          clonesWithChildren(child.clones)[
-                            activeChildrenCloneIndices[index]
-                          ].id)
+                          clonesWithChildren(child.clones)[0] &&
+                          clonesWithChildren(child.clones)[0].id)
                       }
                     >
                       <Center>
