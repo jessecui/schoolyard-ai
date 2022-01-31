@@ -378,8 +378,8 @@ const Learn: React.FC<{
           <Stack spacing="20px">
             {activeSentence.children?.map((child, index) => (
               <Flex key={child.id}>
-                <Box width={"75%"}>
-                  <Text fontSize="sm">
+                <Box width={"90%"}>
+                  <Text fontSize="md">
                     {child.text}
                     &nbsp;
                     {child.clones &&
@@ -403,214 +403,43 @@ const Learn: React.FC<{
                       ))}
                   </Text>
                 </Box>
-                <Spacer borderRight="2px solid" borderColor="grayMain" />
-                <Flex width={"20%"} ml={2} flexDirection="column">
-                  <Center>
-                    {child.clones &&
-                    clonesWithChildren(child.clones)[
-                      activeChildrenCloneIndices[index]
-                    ] &&
-                    (
-                      child.clones &&
-                      clonesWithChildren(child.clones)[
-                        activeChildrenCloneIndices[index]
-                      ]
-                    ).creator.photoUrl ? (
-                      <Avatar
-                        size="xs"
-                        bg="white"
-                        name={`${
-                          (
-                            child.clones &&
-                            clonesWithChildren(child.clones)[
-                              activeChildrenCloneIndices[index]
-                            ]
-                          ).creator.firstName
-                        } ${
-                          (
-                            child.clones &&
-                            clonesWithChildren(child.clones)[
-                              activeChildrenCloneIndices[index]
-                            ]
-                          ).creator.lastName
-                        }`}
-                        src={`${
-                          (
-                            child.clones &&
-                            clonesWithChildren(child.clones)[
-                              activeChildrenCloneIndices[index]
-                            ]
-                          ).creator.photoUrl
-                        }`}
-                        color="white"
-                      />
-                    ) : (
-                      <Avatar size="xs" bg="iris" />
-                    )}
-                  </Center>
-                  <Center>
-                    <Text fontWeight="bold" color="grayMain" fontSize="xs">
-                      {child.clones &&
+                <Spacer/>
+                <Flex width={"10px"} mr={2} flexDirection="column">
+                  <NextLink
+                    href={
+                      "/learn/" +
+                      (child.clones &&
                         clonesWithChildren(child.clones)[
                           activeChildrenCloneIndices[index]
                         ] &&
-                        (
-                          child.clones &&
-                          clonesWithChildren(child.clones)[
-                            activeChildrenCloneIndices[index]
-                          ]
-                        ).creator.firstName[0]}
-                      {". "}
-                      {child.clones &&
                         clonesWithChildren(child.clones)[
                           activeChildrenCloneIndices[index]
-                        ] &&
-                        (
-                          child.clones &&
+                        ].id)
+                    }
+                  >
+                    <Link
+                      href={
+                        "/learn/" +
+                        (child.clones &&
                           clonesWithChildren(child.clones)[
                             activeChildrenCloneIndices[index]
-                          ]
-                        ).creator.lastName}
-                    </Text>
-                  </Center>
-                  <Center>
-                    <HStack spacing="2px">
-                      <IconButton
-                        aria-label="Previous Child Clone"
-                        minWidth="20px"
-                        height="20px"
-                        fontSize="18px"
-                        bg="grayMain"
-                        color="white"
-                        icon={<RiArrowLeftSLine />}
-                        isDisabled={
-                          activeSentence?.children &&
-                          activeSentence.children[index].clones
-                            ? clonesWithChildren(
-                                activeSentence.children[index].clones!
-                              ).length == 1
-                            : true
-                        }
-                        _disabled={{ visibility: "hidden" }}
-                        onClick={() => {
-                          let newActiveChildrenCloneIndices = [
-                            ...activeChildrenCloneIndices,
-                          ];
-                          newActiveChildrenCloneIndices[index] =
-                            newActiveChildrenCloneIndices[index] > 0
-                              ? newActiveChildrenCloneIndices[index] - 1
-                              : activeSentence?.children
-                              ? clonesWithChildren(
-                                  activeSentence.children[index].clones!
-                                ).length - 1
-                              : 0;
-                          setActiveChildrenCloneIndices(
-                            newActiveChildrenCloneIndices
-                          );
-                          router.push(
-                            "/learn/" +
-                              router.query.id +
-                              (router.query.clone
-                                ? "?clone=" + router.query.clone
-                                : "?") +
-                              (newActiveChildrenCloneIndices.some(
-                                (item) => item !== 0
-                              )
-                                ? "&childrenClones=" +
-                                  JSON.stringify(newActiveChildrenCloneIndices)
-                                : ""),
-                            undefined,
-                            { shallow: true }
-                          );
-                        }}
-                      />
-                      <NextLink
-                        href={
-                          "/learn/" +
-                          (child.clones &&
-                            clonesWithChildren(child.clones)[
-                              activeChildrenCloneIndices[index]
-                            ] &&
-                            clonesWithChildren(child.clones)[
-                              activeChildrenCloneIndices[index]
-                            ].id)
-                        }
-                      >
-                        <Link
-                          href={
-                            "/learn/" +
-                            (child.clones &&
-                              clonesWithChildren(child.clones)[
-                                activeChildrenCloneIndices[index]
-                              ] &&
-                              clonesWithChildren(child.clones)[
-                                activeChildrenCloneIndices[index]
-                              ].id)
-                          }
-                        >
-                          <Center>
-                            <Icon
-                              as={BiZoomIn}
-                              w="24px"
-                              height="24px"
-                              color="iris"
-                              _hover={{ color: "irisDark" }}
-                            />
-                          </Center>
-                        </Link>
-                      </NextLink>
-                      <IconButton
-                        aria-label="Next Child Clone"
-                        minWidth="20px"
-                        height="20px"
-                        fontSize="18px"
-                        bg="grayMain"
-                        color="white"
-                        icon={<RiArrowRightSLine />}
-                        isDisabled={
-                          activeSentence?.children &&
-                          activeSentence.children[index].clones
-                            ? clonesWithChildren(
-                                activeSentence.children[index].clones!
-                              ).length == 1
-                            : true
-                        }
-                        _disabled={{ visibility: "hidden" }}
-                        onClick={() => {
-                          let newActiveChildrenCloneIndices = [
-                            ...activeChildrenCloneIndices,
-                          ];
-                          newActiveChildrenCloneIndices[index] =
-                            newActiveChildrenCloneIndices[index] <
-                            (activeSentence?.children
-                              ? clonesWithChildren(
-                                  activeSentence.children[index].clones!
-                                ).length - 1
-                              : 0)
-                              ? newActiveChildrenCloneIndices[index] + 1
-                              : 0;
-                          setActiveChildrenCloneIndices(
-                            newActiveChildrenCloneIndices
-                          );
-                          router.push(
-                            "/learn/" +
-                              router.query.id +
-                              (router.query.clone
-                                ? "?clone=" + router.query.clone
-                                : "?") +
-                              (newActiveChildrenCloneIndices.some(
-                                (item) => item !== 0
-                              )
-                                ? "&childrenClones=" +
-                                  JSON.stringify(newActiveChildrenCloneIndices)
-                                : ""),
-                            undefined,
-                            { shallow: true }
-                          );
-                        }}
-                      />
-                    </HStack>
-                  </Center>
+                          ] &&
+                          clonesWithChildren(child.clones)[
+                            activeChildrenCloneIndices[index]
+                          ].id)
+                      }
+                    >
+                      <Center>
+                        <Icon
+                          as={BiZoomIn}
+                          w="24px"
+                          height="24px"
+                          color="iris"
+                          _hover={{ color: "irisDark" }}
+                        />
+                      </Center>
+                    </Link>
+                  </NextLink>
                 </Flex>
               </Flex>
             ))}
@@ -632,26 +461,7 @@ const Learn: React.FC<{
           <Stack spacing={4}>
             {allParents.map((p) => (
               <Box key={p.parent!.id}>
-                <Flex align="center" flexWrap="wrap">
-                  {p.parent?.creator.photoUrl ? (
-                    <Avatar
-                      size="xs"
-                      bg="white"
-                      name={`${p.parent?.creator.firstName} ${p.parent?.creator.lastName}`}
-                      src={`${p.parent?.creator.photoUrl}`}
-                      mr={2}
-                      color="white"
-                    />
-                  ) : (
-                    <Avatar size="xs" bg="iris" mr={2} />
-                  )}
-                  <Text fontWeight="bold" color="grayMain" fontSize="sm">
-                    {p.parent?.creator.firstName[0]}
-                    {". "}
-                    {p.parent?.creator.lastName}
-                  </Text>
-                </Flex>
-                <Text as="span" fontSize="sm">
+                <Text as="span" fontSize="md">
                   {p?.parent!.text}{" "}
                 </Text>
                 {p?.parent!.children?.map((c) => (
@@ -661,12 +471,12 @@ const Learn: React.FC<{
                       c.orderNumber == p.orderNumber ? "bold" : "normal"
                     }
                     as="span"
-                    fontSize="sm"
+                    fontSize="md"
                   >
                     {c.text}{" "}
                   </Text>
                 ))}
-                <Box mt={1}>
+                <Box mt={2}>
                   <NextLink href={"/learn/" + p.parent?.id}>
                     <Link
                       color="iris"
