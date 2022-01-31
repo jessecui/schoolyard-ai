@@ -4,7 +4,7 @@ query Sentences($limit: Int!, $cursor: String) {
       id      
       text
       subjects
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl

@@ -5,8 +5,8 @@ query Question($id: Int!) {
     questionType
     choices
     answer
-    teacherId
-    teacher {      
+    creatorId
+    creator {      
       firstName
       lastName
       photoUrl
@@ -15,8 +15,8 @@ query Question($id: Int!) {
       id
       text
       subjects
-      teacherId
-      teacher {
+      creatorId
+      creator {
         firstName
         lastName
         photoUrl

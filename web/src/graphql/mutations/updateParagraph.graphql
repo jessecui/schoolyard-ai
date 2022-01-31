@@ -2,7 +2,7 @@ mutation UpdateParagraph($id: Int!, $paragraphInput: ParagraphInput!) {
   updateParagraph(id: $id, paragraphInput: $paragraphInput) {
     id
     text
-    teacher {
+    creator {
       firstName
       lastName
       photoUrl

@@ -6,7 +6,7 @@ mutation CreateQuestion($questionInput: QuestionInput!) {
     question
     choices
     answer
-    teacher {
+    creator {
       firstName
       lastName
       photoUrl

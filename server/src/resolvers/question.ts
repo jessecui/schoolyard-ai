@@ -107,8 +107,8 @@ const checkSubjectsAndDelete = async (subjects: string[]) => {
 @Resolver(Question)
 export class QuestionResolver {
   @FieldResolver(() => User)
-  teacher(@Root() question: Question, @Ctx() { userLoader }: MyContext) {
-    return userLoader.load(question.teacherId);
+  creator(@Root() question: Question, @Ctx() { userLoader }: MyContext) {
+    return userLoader.load(question.creatorId);
   }
 
   @FieldResolver(() => Sentence)
@@ -172,7 +172,7 @@ export class QuestionResolver {
       .into(Question)
       .values({
         ...otherInputs,
-        teacherId: req.session.userId,
+        creatorId: req.session.userId,
       })
       .returning("*")
       .execute();
@@ -239,9 +239,9 @@ export class QuestionResolver {
       .createQueryBuilder()
       .update(Question)
       .set({ ...otherInputs })
-      .where("id = :id and teacherId = :teacherId", {
+      .where("id = :id and creatorId = :creatorId", {
         id,
-        teacherId: req.session.userId,
+        creatorId: req.session.userId,
       })
       .returning("*")
       .execute();
@@ -318,7 +318,7 @@ export class QuestionResolver {
     });
 
     // Delete the question and any subjects that depend on the question
-    await Question.delete({ id, teacherId: req.session.userId });
+    await Question.delete({ id, creatorId: req.session.userId });
     await checkSubjectsAndDelete(subjects);
 
     return true;

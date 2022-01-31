@@ -223,6 +223,8 @@ export type Question = {
   answer: Array<Scalars['String']>;
   choices?: Maybe<Array<Scalars['String']>>;
   createdAt: Scalars['DateTime'];
+  creator: User;
+  creatorId: Scalars['Float'];
   downVoteCount: Scalars['Float'];
   id: Scalars['Float'];
   question: Scalars['String'];
@@ -230,8 +232,6 @@ export type Question = {
   sentence?: Maybe<Sentence>;
   sentenceId?: Maybe<Scalars['Float']>;
   subjects: Array<Scalars['String']>;
-  teacher: User;
-  teacherId: Scalars['Float'];
   upVoteCount: Scalars['Float'];
   updatedAt: Scalars['DateTime'];
   userVoteType?: Maybe<VoteType>;
@@ -250,12 +250,12 @@ export type QuestionInput = {
 export type QuestionReview = {
   __typename?: 'QuestionReview';
   correctStreak: Scalars['Float'];
-  dateCreated: Scalars['DateTime'];
+  createdAt: Scalars['DateTime'];
   dateNextAvailable: Scalars['DateTime'];
-  dateUpdated: Scalars['DateTime'];
   question: Question;
   questionId: Scalars['Float'];
   reviewStatus: ReviewStatus;
+  updatedAt: Scalars['DateTime'];
   userId: Scalars['Float'];
 };
 
@@ -293,6 +293,8 @@ export type Sentence = {
   cloneQuality?: Maybe<Scalars['Float']>;
   clones?: Maybe<Array<Sentence>>;
   createdAt: Scalars['DateTime'];
+  creator: User;
+  creatorId: Scalars['Float'];
   downVoteCount: Scalars['Float'];
   embedding: Array<Scalars['Float']>;
   id: Scalars['Float'];
@@ -300,8 +302,6 @@ export type Sentence = {
   parent?: Maybe<Sentence>;
   questions: Array<Question>;
   subjects: Array<Scalars['String']>;
-  teacher: User;
-  teacherId: Scalars['Float'];
   text: Scalars['String'];
   upVoteCount: Scalars['Float'];
   updatedAt: Scalars['DateTime'];
@@ -345,9 +345,9 @@ export enum VoteType {
 
 export type ErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type UserFragment = { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> };
+export type UserFragment = { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> };
 
-export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
+export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
 
 export type AddProfilePhotoMutationVariables = Exact<{
   photo: Scalars['Upload'];
@@ -392,7 +392,7 @@ export type ChangePasswordMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type ChangePasswordWithTokenMutationVariables = Exact<{
   token: Scalars['String'];
@@ -400,7 +400,7 @@ export type ChangePasswordWithTokenMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordWithTokenMutation = { __typename?: 'Mutation', changePasswordWithToken: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type ChangePasswordWithTokenMutation = { __typename?: 'Mutation', changePasswordWithToken: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type ChangeProfileMutationVariables = Exact<{
   email: Scalars['String'];
@@ -409,7 +409,7 @@ export type ChangeProfileMutationVariables = Exact<{
 }>;
 
 
-export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type CreateParagraphMutationVariables = Exact<{
   paragraphInput: ParagraphInput;
@@ -417,14 +417,14 @@ export type CreateParagraphMutationVariables = Exact<{
 }>;
 
 
-export type CreateParagraphMutation = { __typename?: 'Mutation', createParagraph: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } };
+export type CreateParagraphMutation = { __typename?: 'Mutation', createParagraph: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } };
 
 export type CreateQuestionMutationVariables = Exact<{
   questionInput: QuestionInput;
 }>;
 
 
-export type CreateQuestionMutation = { __typename?: 'Mutation', createQuestion: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } };
+export type CreateQuestionMutation = { __typename?: 'Mutation', createQuestion: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } };
 
 export type CreateQuestionReviewMutationVariables = Exact<{
   questionId: Scalars['Int'];
@@ -432,7 +432,7 @@ export type CreateQuestionReviewMutationVariables = Exact<{
 }>;
 
 
-export type CreateQuestionReviewMutation = { __typename?: 'Mutation', createQuestionReview?: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } | null | undefined };
+export type CreateQuestionReviewMutation = { __typename?: 'Mutation', createQuestionReview?: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } | null | undefined };
 
 export type DeleteParagraphMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -478,7 +478,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -490,7 +490,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type UpdateParagraphMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -498,7 +498,7 @@ export type UpdateParagraphMutationVariables = Exact<{
 }>;
 
 
-export type UpdateParagraphMutation = { __typename?: 'Mutation', updateParagraph?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined };
+export type UpdateParagraphMutation = { __typename?: 'Mutation', updateParagraph?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined };
 
 export type UpdateQuestionMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -506,7 +506,7 @@ export type UpdateQuestionMutationVariables = Exact<{
 }>;
 
 
-export type UpdateQuestionMutation = { __typename?: 'Mutation', updateQuestion?: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } | null | undefined };
+export type UpdateQuestionMutation = { __typename?: 'Mutation', updateQuestion?: { __typename?: 'Question', id: number, createdAt: any, updatedAt: any, question: string, choices?: Array<string> | null | undefined, answer: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } | null | undefined };
 
 export type UpdateQuestionReviewMutationVariables = Exact<{
   questionId: Scalars['Int'];
@@ -514,31 +514,31 @@ export type UpdateQuestionReviewMutationVariables = Exact<{
 }>;
 
 
-export type UpdateQuestionReviewMutation = { __typename?: 'Mutation', updateQuestionReview?: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } | null | undefined };
+export type UpdateQuestionReviewMutation = { __typename?: 'Mutation', updateQuestionReview?: { __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } } | null | undefined };
 
 export type ActivityLogQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User', sentenceViews: Array<{ __typename?: 'SentenceView', lastViewed: any, sentence: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } }>, questionReviews: Array<{ __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateUpdated: any, question: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } }>, createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any }> } | null | undefined };
+export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User', sentenceViews: Array<{ __typename?: 'SentenceView', lastViewed: any, sentence: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } }>, questionReviews: Array<{ __typename?: 'QuestionReview', reviewStatus: ReviewStatus, updatedAt: any, question: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } } }>, createdParagraphs: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } }>, createdQuestions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any }> } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', question: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
 
 export type QuestionQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, teacherId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, userVoteType?: VoteType | null | undefined, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined } | null | undefined };
+export type QuestionQuery = { __typename?: 'Query', question?: { __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, creatorId: number, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, creatorId: number, userVoteType?: VoteType | null | undefined, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined } | null | undefined };
 
 export type QuestionReviewQueryVariables = Exact<{
   questionId: Scalars['Int'];
 }>;
 
 
-export type QuestionReviewQuery = { __typename?: 'Query', questionReview?: { __typename?: 'QuestionReview', reviewStatus: ReviewStatus, dateCreated: any, dateUpdated: any, dateNextAvailable: any } | null | undefined };
+export type QuestionReviewQuery = { __typename?: 'Query', questionReview?: { __typename?: 'QuestionReview', reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any } | null | undefined };
 
 export type QuestionsQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -546,14 +546,14 @@ export type QuestionsQueryVariables = Exact<{
 }>;
 
 
-export type QuestionsQuery = { __typename?: 'Query', questions: { __typename?: 'PaginatedQuestions', hasMore: boolean, questions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } }> } };
+export type QuestionsQuery = { __typename?: 'Query', questions: { __typename?: 'PaginatedQuestions', hasMore: boolean, questions: Array<{ __typename?: 'Question', id: number, question: string, questionType: QuestionType, choices?: Array<string> | null | undefined, answer: Array<string>, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined } }> } };
 
 export type SentenceQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type SentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, teacherId: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, upVoteCount: number, downVoteCount: number, orderNumber?: number | null | undefined, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, teacherId: number, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, orderNumber?: number | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }>, parent?: { __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', text: string, orderNumber?: number | null | undefined }> | null | undefined } | null | undefined, teacher: { __typename?: 'User', id: number, firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined }> | null | undefined }> | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }> } | null | undefined };
+export type SentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, updatedAt: any, creatorId: number, orderNumber?: number | null | undefined, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, upVoteCount: number, downVoteCount: number, orderNumber?: number | null | undefined, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined, parent?: { __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, viewCount: number, createdAt: any, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined } | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, creatorId: number, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, orderNumber?: number | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }>, parent?: { __typename?: 'Sentence', id: number, text: string, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', text: string, orderNumber?: number | null | undefined }> | null | undefined } | null | undefined, creator: { __typename?: 'User', id: number, firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined, clones?: Array<{ __typename?: 'Sentence', id: number, text: string, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', id: number, text: string }> | null | undefined }> | null | undefined }> | null | undefined }> | null | undefined, questions: Array<{ __typename?: 'Question', id: number, question: string, subjects: Array<string> }> } | null | undefined };
 
 export type SentencesQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -561,7 +561,7 @@ export type SentencesQueryVariables = Exact<{
 }>;
 
 
-export type SentencesQuery = { __typename?: 'Query', sentences: { __typename?: 'PaginatedSentences', hasMore: boolean, sentences: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, teacher: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined }> } };
+export type SentencesQuery = { __typename?: 'Query', sentences: { __typename?: 'PaginatedSentences', hasMore: boolean, sentences: Array<{ __typename?: 'Sentence', id: number, text: string, subjects: Array<string>, upVoteCount: number, downVoteCount: number, userVoteType?: VoteType | null | undefined, viewCount: number, createdAt: any, creator: { __typename?: 'User', firstName: string, lastName: string, photoUrl?: string | null | undefined }, children?: Array<{ __typename?: 'Sentence', text: string }> | null | undefined }> } };
 
 export const ErrorFragmentDoc = gql`
     fragment Error on FieldError {
@@ -579,8 +579,8 @@ export const UserFragmentDoc = gql`
   questionReviews {
     questionId
     reviewStatus
-    dateCreated
-    dateUpdated
+    createdAt
+    updatedAt
     dateNextAvailable
     question {
       question
@@ -887,7 +887,7 @@ export const CreateParagraphDocument = gql`
   ) {
     id
     text
-    teacher {
+    creator {
       firstName
       lastName
       photoUrl
@@ -936,7 +936,7 @@ export const CreateQuestionDocument = gql`
     question
     choices
     answer
-    teacher {
+    creator {
       firstName
       lastName
       photoUrl
@@ -978,8 +978,8 @@ export const CreateQuestionReviewDocument = gql`
   createQuestionReview(questionId: $questionId, reviewStatus: $reviewStatus) {
     questionId
     reviewStatus
-    dateCreated
-    dateUpdated
+    createdAt
+    updatedAt
     dateNextAvailable
     question {
       question
@@ -1301,7 +1301,7 @@ export const UpdateParagraphDocument = gql`
   updateParagraph(id: $id, paragraphInput: $paragraphInput) {
     id
     text
-    teacher {
+    creator {
       firstName
       lastName
       photoUrl
@@ -1350,7 +1350,7 @@ export const UpdateQuestionDocument = gql`
     question
     choices
     answer
-    teacher {
+    creator {
       firstName
       lastName
       photoUrl
@@ -1393,8 +1393,8 @@ export const UpdateQuestionReviewDocument = gql`
   updateQuestionReview(questionId: $questionId, reviewStatus: $reviewStatus) {
     questionId
     reviewStatus
-    dateCreated
-    dateUpdated
+    createdAt
+    updatedAt
     dateNextAvailable
     question {
       question
@@ -1446,7 +1446,7 @@ export const ActivityLogDocument = gql`
         userVoteType
         viewCount
         createdAt
-        teacher {
+        creator {
           firstName
           lastName
           photoUrl
@@ -1467,14 +1467,14 @@ export const ActivityLogDocument = gql`
         userVoteType
         viewCount
         createdAt
-        teacher {
+        creator {
           firstName
           lastName
           photoUrl
         }
       }
       reviewStatus
-      dateUpdated
+      updatedAt
     }
     createdParagraphs {
       id
@@ -1488,7 +1488,7 @@ export const ActivityLogDocument = gql`
       userVoteType
       viewCount
       createdAt
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl
@@ -1579,8 +1579,8 @@ export const QuestionDocument = gql`
     questionType
     choices
     answer
-    teacherId
-    teacher {
+    creatorId
+    creator {
       firstName
       lastName
       photoUrl
@@ -1589,8 +1589,8 @@ export const QuestionDocument = gql`
       id
       text
       subjects
-      teacherId
-      teacher {
+      creatorId
+      creator {
         firstName
         lastName
         photoUrl
@@ -1647,8 +1647,8 @@ export const QuestionReviewDocument = gql`
     query QuestionReview($questionId: Int!) {
   questionReview(questionId: $questionId) {
     reviewStatus
-    dateCreated
-    dateUpdated
+    createdAt
+    updatedAt
     dateNextAvailable
   }
 }
@@ -1691,7 +1691,7 @@ export const QuestionsDocument = gql`
       questionType
       choices
       answer
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl
@@ -1747,8 +1747,8 @@ export const SentenceDocument = gql`
     viewCount
     createdAt
     updatedAt
-    teacherId
-    teacher {
+    creatorId
+    creator {
       firstName
       lastName
       photoUrl
@@ -1756,7 +1756,7 @@ export const SentenceDocument = gql`
     children {
       id
       text
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl
@@ -1772,7 +1772,7 @@ export const SentenceDocument = gql`
     parent {
       id
       text
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl
@@ -1799,7 +1799,7 @@ export const SentenceDocument = gql`
       parent {
         id
         text
-        teacher {
+        creator {
           firstName
           lastName
           photoUrl
@@ -1810,8 +1810,8 @@ export const SentenceDocument = gql`
         }
       }
       subjects
-      teacherId
-      teacher {
+      creatorId
+      creator {
         id
         firstName
         lastName
@@ -1825,7 +1825,7 @@ export const SentenceDocument = gql`
       children {
         id
         text
-        teacher {
+        creator {
           firstName
           lastName
           photoUrl
@@ -1837,7 +1837,7 @@ export const SentenceDocument = gql`
         clones {
           id
           text
-          teacher {
+          creator {
             firstName
             lastName
             photoUrl
@@ -1893,7 +1893,7 @@ export const SentencesDocument = gql`
       id
       text
       subjects
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl

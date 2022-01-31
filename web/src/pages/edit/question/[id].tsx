@@ -48,8 +48,8 @@ export const EditQuestion: React.FC<{}> = ({}) => {
     if (
       !meLoading &&
       (!meData?.me ||
-        (questionData?.question?.teacherId &&
-          meData.me.id != questionData?.question?.teacherId))
+        (questionData?.question?.creatorId &&
+          meData.me.id != questionData?.question?.creatorId))
     ) {
       router.push("/");
     }

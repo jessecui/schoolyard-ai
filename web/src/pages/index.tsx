@@ -95,12 +95,12 @@ const Index: React.FC<{}> = ({}) => {
             >
               <Flex>
                 <Flex align="center" width="80%">
-                  {sentence.teacher.photoUrl ? (
+                  {sentence.creator.photoUrl ? (
                     <Avatar
                       size="md"
                       bg="white"
-                      name={`${sentence.teacher.firstName} ${sentence.teacher.lastName}`}
-                      src={`${sentence.teacher.photoUrl}`}
+                      name={`${sentence.creator.firstName} ${sentence.creator.lastName}`}
+                      src={`${sentence.creator.photoUrl}`}
                       mr={2}
                       color="white"
                     />
@@ -109,7 +109,7 @@ const Index: React.FC<{}> = ({}) => {
                   )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
-                      {sentence.teacher.firstName} {sentence.teacher.lastName}
+                      {sentence.creator.firstName} {sentence.creator.lastName}
                     </Text>
                     <Flex wrap="wrap">
                       {sentence.subjects.map((subject) => (

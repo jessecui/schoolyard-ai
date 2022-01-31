@@ -37,8 +37,8 @@ export const EditParagraph: React.FC<{}> = ({}) => {
     if (
       !meLoading &&
       (!meData?.me ||
-        (sentenceData?.sentence?.teacherId &&
-          meData.me.id != sentenceData.sentence.teacherId))
+        (sentenceData?.sentence?.creatorId &&
+          meData.me.id != sentenceData.sentence.creatorId))
     ) {
       router.push("/");
     }

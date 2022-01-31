@@ -7,8 +7,8 @@ fragment User on User {
   questionReviews {
     questionId    
     reviewStatus
-    dateCreated
-    dateUpdated
+    createdAt
+    updatedAt
     dateNextAvailable
     question {
       question

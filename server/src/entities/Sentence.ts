@@ -32,13 +32,13 @@ export class Sentence extends BaseEntity {
 
   @Field()
   @Column()
-  teacherId: number;
+  creatorId: number;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.createdParagraphs, {
     onDelete: "CASCADE",
   })
-  teacher: User;
+  creator: User;
 
   // Parent Child Lineage
   @OneToMany(() => ParentChild, (parentChild) => parentChild.parent)

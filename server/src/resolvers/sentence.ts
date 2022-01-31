@@ -214,9 +214,9 @@ export class SentenceResolver {
   }
 
   @FieldResolver(() => User)
-  async teacher(@Root() sentence: Sentence) {
-    const teacher = await User.findOne(sentence.teacherId);
-    return teacher;
+  async creator(@Root() sentence: Sentence) {
+    const creator = await User.findOne(sentence.creatorId);
+    return creator;
   }
 
   @FieldResolver(() => VoteType, { nullable: true })
@@ -261,7 +261,7 @@ export class SentenceResolver {
       .into(Sentence)
       .values({
         text: paragraphInput.text,
-        teacherId: req.session.userId,
+        creatorId: req.session.userId,
         embedding: getSentenceEmbedding(paragraphInput.text),
       })
       .returning("*")
@@ -302,7 +302,7 @@ export class SentenceResolver {
             .into(Sentence)
             .values({
               text: childText,
-              teacherId: req.session.userId,
+              creatorId: req.session.userId,
               embedding: getSentenceEmbedding(childText),
             })
             .returning("*")
@@ -391,9 +391,9 @@ export class SentenceResolver {
           embedding: getSentenceEmbedding(paragraphInput.text),
         }),
       })
-      .where("id = :id and teacherId = :teacherId", {
+      .where("id = :id and creatorId = :creatorId", {
         id,
-        teacherId: req.session.userId,
+        creatorId: req.session.userId,
       })
       .returning("*")
       .execute();
@@ -439,9 +439,9 @@ export class SentenceResolver {
                   text: childText,
                   embedding: getSentenceEmbedding(childText),
                 })
-                .where("id = :childId and teacherId = :teacherId", {
+                .where("id = :childId and creatorId = :creatorId", {
                   childId,
-                  teacherId: req.session.userId,
+                  creatorId: req.session.userId,
                 })
                 .returning("*")
                 .execute();
@@ -519,7 +519,7 @@ export class SentenceResolver {
         .forEach((subject) => subjectsToCheck.add(subject));
 
       // Delete child
-      await Sentence.delete({ id: child!.id, teacherId: req.session.userId });
+      await Sentence.delete({ id: child!.id, creatorId: req.session.userId });
     });
 
     // Retrieve subjects
@@ -534,7 +534,7 @@ export class SentenceResolver {
       .forEach((subject) => subjectsToCheck.add(subject));
 
     // Delete parent
-    await Sentence.delete({ id, teacherId: req.session.userId });
+    await Sentence.delete({ id, creatorId: req.session.userId });
 
     // Delete subjects if necessary
     await checkSubjectsAndDelete(Array.from(subjectsToCheck));

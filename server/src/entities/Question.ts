@@ -35,13 +35,13 @@ export class Question extends BaseEntity {
 
   @Field()
   @Column()
-  teacherId: number;
+  creatorId: number;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.createdQuestions, {
     onDelete: "CASCADE",
   })
-  teacher: User;
+  creator: User;
 
   @Field(() => [String])
   subjects: string[];

@@ -13,7 +13,7 @@ query ActivityLog {
         userVoteType
         viewCount
         createdAt
-        teacher {
+        creator {
           firstName
           lastName
           photoUrl
@@ -34,14 +34,14 @@ query ActivityLog {
         userVoteType
         viewCount
         createdAt
-        teacher {
+        creator {
           firstName
           lastName
           photoUrl
         }
       }
       reviewStatus
-      dateUpdated
+      updatedAt
     }
     createdParagraphs {
       id
@@ -55,7 +55,7 @@ query ActivityLog {
       userVoteType
       viewCount
       createdAt
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl

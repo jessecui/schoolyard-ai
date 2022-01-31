@@ -745,16 +745,16 @@ const Review: React.FC<{
       >
         <Flex>
           <Flex align="center" width="80%">
-            {data.question.teacher.photoUrl ? (
+            {data.question.creator.photoUrl ? (
               <Avatar
                 size="md"
                 bg="white"
                 name={
-                  data.question.teacher.firstName +
+                  data.question.creator.firstName +
                   " " +
-                  data.question.teacher.lastName
+                  data.question.creator.lastName
                 }
-                src={`${data.question.teacher.photoUrl}`}
+                src={`${data.question.creator.photoUrl}`}
                 mr={2}
                 color="white"
               />
@@ -763,8 +763,8 @@ const Review: React.FC<{
             )}
             <Box>
               <Text fontWeight="bold" fontSize="md">
-                {data.question.teacher.firstName}{" "}
-                {data.question.teacher.lastName}
+                {data.question.creator.firstName}{" "}
+                {data.question.creator.lastName}
               </Text>
               <Flex wrap="wrap">
                 {data.question.subjects.map((subject) => (
@@ -920,7 +920,7 @@ const Review: React.FC<{
                 ? "correctly"
                 : "incorrectly"}{" "}
               on{" "}
-              {new Date(reviewData.questionReview.dateUpdated).toLocaleString()}
+              {new Date(reviewData.questionReview.updatedAt).toLocaleString()}
               . It will be locked until{" "}
               {new Date(
                 reviewData.questionReview.dateNextAvailable
@@ -988,12 +988,12 @@ const Review: React.FC<{
           </Text>
           <Flex>
             <Flex align="center" width="80%">
-              {data.question.teacher.photoUrl ? (
+              {data.question.creator.photoUrl ? (
                 <Avatar
                   size="md"
                   bg="white"
-                  name={`${data.question.sentence.teacher.firstName} ${data.question.sentence.teacher.lastName}`}
-                  src={`${data.question.sentence.teacher.photoUrl}`}
+                  name={`${data.question.sentence.creator.firstName} ${data.question.sentence.creator.lastName}`}
+                  src={`${data.question.sentence.creator.photoUrl}`}
                   mr={2}
                   color="white"
                 />
@@ -1002,8 +1002,8 @@ const Review: React.FC<{
               )}
               <Box>
                 <Text fontWeight="bold" fontSize="md">
-                  {data.question.sentence.teacher.firstName}{" "}
-                  {data.question.sentence.teacher.lastName}
+                  {data.question.sentence.creator.firstName}{" "}
+                  {data.question.sentence.creator.lastName}
                 </Text>
                 <Flex wrap="wrap">
                   {data.question.sentence.subjects.map((subject) => (
