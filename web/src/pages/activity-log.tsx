@@ -216,7 +216,7 @@ const ActivityLog: React.FC<{}> = ({}) => {
       bg="White"
       p={4}
       my={2}
-      key={"ViewedQuestion: " + questionReview.questionId}
+      key={"ViewedQuestion: " + questionReview.question.id}
     >
       <Flex align="center">
         {meData?.me?.photoUrl ? (
