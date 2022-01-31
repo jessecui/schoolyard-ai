@@ -281,7 +281,7 @@ export const SideQuestions: React.FC<{
                   <StarIcon fontSize="sm" color="grayMain" mr={1.5} />
                   <Text fontSize="sm" color="grayMain" as="span">
                     {getTimeDifferenceString(
-                      new Date(questionReview.dateCreated),
+                      new Date(questionReview.createdAt),
                       new Date()
                     )}
                   </Text>

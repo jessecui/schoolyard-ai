@@ -61,7 +61,7 @@ export class UserResolver {
       take: 100,
       skip: 0,
       order: {
-        dateCreated: "DESC",
+        createdAt: "DESC",
       },
     });
   }
@@ -134,7 +134,7 @@ export class UserResolver {
   @FieldResolver(() => [Sentence])
   async createdParagraphs(@Root() _: User, @Ctx() { req }: MyContext) {
     const sentences = await Sentence.find({
-      where: { teacherId: req.session.userId },
+      where: { creatorId: req.session.userId },
       take: 100,
       skip: 0,
       order: {
@@ -154,7 +154,7 @@ export class UserResolver {
   @FieldResolver(() => [Question])
   async createdQuestions(@Root() _: User, @Ctx() { req }: MyContext) {
     return await Question.find({
-      where: { teacherId: req.session.userId },
+      where: { creatorId: req.session.userId },
       take: 100,
       skip: 0,
       order: {

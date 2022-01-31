@@ -9,8 +9,8 @@ query Sentence($id: Int!) {
     viewCount
     createdAt
     updatedAt
-    teacherId
-    teacher {
+    creatorId
+    creator {
       firstName
       lastName
       photoUrl
@@ -18,7 +18,7 @@ query Sentence($id: Int!) {
     children {
       id
       text
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl
@@ -34,7 +34,7 @@ query Sentence($id: Int!) {
     parent {
       id
       text
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl
@@ -61,7 +61,7 @@ query Sentence($id: Int!) {
       parent {
         id
         text
-        teacher {
+        creator {
           firstName
           lastName
           photoUrl
@@ -72,8 +72,8 @@ query Sentence($id: Int!) {
         }
       }
       subjects
-      teacherId
-      teacher {
+      creatorId
+      creator {
         id
         firstName
         lastName
@@ -87,7 +87,7 @@ query Sentence($id: Int!) {
       children {
         id
         text
-        teacher {
+        creator {
           firstName
           lastName
           photoUrl
@@ -99,7 +99,7 @@ query Sentence($id: Int!) {
         clones {
           id
           text
-          teacher {
+          creator {
             firstName
             lastName
             photoUrl

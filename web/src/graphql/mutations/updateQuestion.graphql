@@ -6,7 +6,7 @@ mutation UpdateQuestion($id: Int!, $questionInput: QuestionInput!) {
     question
     choices
     answer
-    teacher {
+    creator {
       firstName
       lastName
       photoUrl

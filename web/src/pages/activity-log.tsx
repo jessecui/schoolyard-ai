@@ -45,7 +45,7 @@ const ActivityLog: React.FC<{}> = ({}) => {
   const questionReviewsSortedByUpdate = createdData?.me?.questionReviews
     ? [...createdData?.me?.questionReviews].sort(
         (a, b) =>
-          new Date(b.dateUpdated).getTime() - new Date(a.dateUpdated).getTime()
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       )
     : [];
 
@@ -224,11 +224,11 @@ const ActivityLog: React.FC<{}> = ({}) => {
             size="md"
             bg="white"
             name={
-              questionReview.question.teacher.firstName +
+              questionReview.question.creator.firstName +
               " " +
-              questionReview.question.teacher.lastName
+              questionReview.question.creator.lastName
             }
-            src={`${questionReview.question.teacher.photoUrl}`}
+            src={`${questionReview.question.creator.photoUrl}`}
             mr={2}
             color="white"
           />
@@ -237,8 +237,8 @@ const ActivityLog: React.FC<{}> = ({}) => {
         )}
         <Box>
           <Text fontWeight="bold" fontSize="md">
-            {questionReview.question.teacher.firstName}{" "}
-            {questionReview.question.teacher.lastName}
+            {questionReview.question.creator.firstName}{" "}
+            {questionReview.question.creator.lastName}
           </Text>
           <Flex wrap="wrap">
             {questionReview.question.subjects
@@ -352,7 +352,7 @@ const ActivityLog: React.FC<{}> = ({}) => {
           ? "answered correctly"
           : ""}
         {" on "}
-        {new Date(questionReview.dateUpdated).toLocaleString()}
+        {new Date(questionReview.updatedAt).toLocaleString()}
       </Text>
     </Box>
   );
@@ -378,16 +378,16 @@ const ActivityLog: React.FC<{}> = ({}) => {
               >
                 <Flex>
                   <Flex align="center" width="80%">
-                    {sentenceView.sentence.teacher.photoUrl ? (
+                    {sentenceView.sentence.creator.photoUrl ? (
                       <Avatar
                         size="md"
                         bg="white"
                         name={
-                          sentenceView.sentence.teacher.firstName +
+                          sentenceView.sentence.creator.firstName +
                           " " +
-                          sentenceView.sentence.teacher.lastName
+                          sentenceView.sentence.creator.lastName
                         }
-                        src={`${sentenceView.sentence.teacher.photoUrl}`}
+                        src={`${sentenceView.sentence.creator.photoUrl}`}
                         mr={2}
                         color="white"
                       />
@@ -396,8 +396,8 @@ const ActivityLog: React.FC<{}> = ({}) => {
                     )}
                     <Box>
                       <Text fontWeight="bold" fontSize="md">
-                        {sentenceView.sentence.teacher.firstName}{" "}
-                        {sentenceView.sentence.teacher.lastName}
+                        {sentenceView.sentence.creator.firstName}{" "}
+                        {sentenceView.sentence.creator.lastName}
                       </Text>
                       <Flex wrap="wrap">
                         {sentenceView.sentence.subjects.map((subject) => (
@@ -520,7 +520,7 @@ const ActivityLog: React.FC<{}> = ({}) => {
                   )}
                   <Box>
                     <Text fontWeight="bold" fontSize="md">
-                      {sentence.teacher.firstName} {sentence.teacher.lastName}
+                      {sentence.creator.firstName} {sentence.creator.lastName}
                     </Text>
                     <Flex wrap="wrap">
                       {sentence.subjects.map((subject) => (

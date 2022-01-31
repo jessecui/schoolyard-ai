@@ -40,7 +40,7 @@ export class User extends BaseEntity {
   password!: string;
 
   @Field(() => [Sentence])
-  @OneToMany(() => Sentence, (sentence) => sentence.teacher)
+  @OneToMany(() => Sentence, (sentence) => sentence.creator)
   createdParagraphs: Sentence[];
 
   @OneToMany(() => SentenceVote, (vote) => vote.user)
@@ -51,7 +51,7 @@ export class User extends BaseEntity {
   sentenceViews: SentenceView[];
 
   @Field(() => [Question])
-  @OneToMany(() => Question, (question) => question.teacher)
+  @OneToMany(() => Question, (question) => question.creator)
   createdQuestions: Question[];
 
   @OneToMany(() => QuestionVote, (vote) => vote.user)

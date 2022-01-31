@@ -8,7 +8,7 @@ mutation createParagraph(
   ) {
     id
     text
-    teacher {
+    creator {
       firstName
       lastName
       photoUrl

@@ -56,9 +56,9 @@ export class QuestionReview extends BaseEntity {
 
   @Field(() => Date)
   @CreateDateColumn({type: "timestamptz"})
-  dateCreated: Date;
+  createdAt: Date;
 
   @Field(() => Date)
   @UpdateDateColumn({type: "timestamptz"})
-  dateUpdated: Date;
+  updatedAt: Date;
 }

@@ -2,8 +2,8 @@ mutation UpdateQuestionReview($questionId: Int!, $reviewStatus: ReviewStatus!) {
   updateQuestionReview(questionId: $questionId, reviewStatus: $reviewStatus) {   
     questionId    
     reviewStatus
-    dateCreated
-    dateUpdated
+    createdAt
+    updatedAt
     dateNextAvailable
     question {
       question

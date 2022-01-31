@@ -7,7 +7,7 @@ query Questions($limit: Int!, $cursor: String) {
       questionType
       choices
       answer
-      teacher {
+      creator {
         firstName
         lastName
         photoUrl

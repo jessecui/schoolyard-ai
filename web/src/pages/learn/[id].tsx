@@ -174,12 +174,12 @@ const Learn: React.FC<{
       >
         <Flex>
           <Flex align="center" width="80%">
-            {activeSentence.teacher.photoUrl ? (
+            {activeSentence.creator.photoUrl ? (
               <Avatar
                 size="md"
                 bg="white"
-                name={`${activeSentence.teacher.firstName} ${activeSentence.teacher.lastName}`}
-                src={`${activeSentence.teacher.photoUrl}`}
+                name={`${activeSentence.creator.firstName} ${activeSentence.creator.lastName}`}
+                src={`${activeSentence.creator.photoUrl}`}
                 mr={2}
                 color="white"
               />
@@ -188,8 +188,8 @@ const Learn: React.FC<{
             )}
             <Box>
               <Text fontWeight="bold" fontSize="md">
-                {activeSentence.teacher.firstName}{" "}
-                {activeSentence.teacher.lastName}
+                {activeSentence.creator.firstName}{" "}
+                {activeSentence.creator.lastName}
               </Text>
               <Flex wrap="wrap">
                 {activeSentence.subjects.map((subject) => (
@@ -335,7 +335,7 @@ const Learn: React.FC<{
               </Link>
             </NextLink>
           )}
-          {userData?.me?.id == activeSentence.teacherId && (
+          {userData?.me?.id == activeSentence.creatorId && (
             <NextLink href={"/edit/paragraph/" + activeSentence.id}>
               <Link
                 color="red.400"
@@ -409,7 +409,7 @@ const Learn: React.FC<{
                       clonesWithChildren(child.clones)[
                         activeChildrenCloneIndices[index]
                       ]
-                    ).teacher.photoUrl ? (
+                    ).creator.photoUrl ? (
                       <Avatar
                         size="xs"
                         bg="white"
@@ -419,14 +419,14 @@ const Learn: React.FC<{
                             clonesWithChildren(child.clones)[
                               activeChildrenCloneIndices[index]
                             ]
-                          ).teacher.firstName
+                          ).creator.firstName
                         } ${
                           (
                             child.clones &&
                             clonesWithChildren(child.clones)[
                               activeChildrenCloneIndices[index]
                             ]
-                          ).teacher.lastName
+                          ).creator.lastName
                         }`}
                         src={`${
                           (
@@ -434,7 +434,7 @@ const Learn: React.FC<{
                             clonesWithChildren(child.clones)[
                               activeChildrenCloneIndices[index]
                             ]
-                          ).teacher.photoUrl
+                          ).creator.photoUrl
                         }`}
                         color="white"
                       />
@@ -453,7 +453,7 @@ const Learn: React.FC<{
                           clonesWithChildren(child.clones)[
                             activeChildrenCloneIndices[index]
                           ]
-                        ).teacher.firstName[0]}
+                        ).creator.firstName[0]}
                       {". "}
                       {child.clones &&
                         clonesWithChildren(child.clones)[
@@ -464,7 +464,7 @@ const Learn: React.FC<{
                           clonesWithChildren(child.clones)[
                             activeChildrenCloneIndices[index]
                           ]
-                        ).teacher.lastName}
+                        ).creator.lastName}
                     </Text>
                   </Center>
                   <Center>
@@ -623,12 +623,12 @@ const Learn: React.FC<{
             {allParents.map((p) => (
               <Box key={p.parent!.id}>
                 <Flex align="center" flexWrap="wrap">
-                  {p.parent?.teacher.photoUrl ? (
+                  {p.parent?.creator.photoUrl ? (
                     <Avatar
                       size="xs"
                       bg="white"
-                      name={`${p.parent?.teacher.firstName} ${p.parent?.teacher.lastName}`}
-                      src={`${p.parent?.teacher.photoUrl}`}
+                      name={`${p.parent?.creator.firstName} ${p.parent?.creator.lastName}`}
+                      src={`${p.parent?.creator.photoUrl}`}
                       mr={2}
                       color="white"
                     />
@@ -636,9 +636,9 @@ const Learn: React.FC<{
                     <Avatar size="xs" bg="iris" mr={2} />
                   )}
                   <Text fontWeight="bold" color="grayMain" fontSize="sm">
-                    {p.parent?.teacher.firstName[0]}
+                    {p.parent?.creator.firstName[0]}
                     {". "}
-                    {p.parent?.teacher.lastName}
+                    {p.parent?.creator.lastName}
                   </Text>
                 </Flex>
                 <Text as="span" fontSize="sm">
