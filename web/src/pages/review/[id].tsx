@@ -33,6 +33,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { BiDotsHorizontalRounded, BiZoomIn } from "react-icons/bi";
+import { RiEditBoxLine } from "react-icons/ri";
 import { Details } from "../../components/content/Details";
 import { ChangedSubject } from "../../components/layout/SiteLayout";
 import {
@@ -899,7 +900,7 @@ const Review: React.FC<{
                   }
                 }}
               >
-                <Text fontSize="md">Delete Question</Text>
+                <Text fontSize="md">Delete Review Question</Text>
               </MenuItem>
             </MenuList>
           </Menu>
@@ -920,8 +921,8 @@ const Review: React.FC<{
                 ? "correctly"
                 : "incorrectly"}{" "}
               on{" "}
-              {new Date(reviewData.questionReview.updatedAt).toLocaleString()}
-              . It will be locked until{" "}
+              {new Date(reviewData.questionReview.updatedAt).toLocaleString()}.
+              It will be locked until{" "}
               {new Date(
                 reviewData.questionReview.dateNextAvailable
               ).toLocaleString()}
@@ -929,23 +930,46 @@ const Review: React.FC<{
             </Text>
           </Box>
         )}
-        {questionIsLocked && otherAvailableQuestions.length > 0 && (
-          <Button
-            onClick={() => {
-              router.push("/review/" + otherAvailableQuestions[0].questionId);
-            }}
-            bg="iris"
-            my={2}
-            color="white"
-            _hover={{
-              bg: "irisDark",
-            }}
-            size="sm"
-            type="submit"
-          >
-            Next Question
-          </Button>
-        )}
+        <HStack mt={4}>
+          {questionIsLocked && otherAvailableQuestions.length > 0 && (
+            <Button
+              onClick={() => {
+                router.push("/review/" + otherAvailableQuestions[0].questionId);
+              }}
+              bg="iris"
+              color="white"
+              _hover={{
+                bg: "irisDark",
+              }}
+              size="sm"
+              type="submit"
+            >
+              Next Question
+            </Button>
+          )}
+          {meData?.me?.id == data.question.creatorId && (
+            <NextLink href={"/edit/question/" + data.question.id}>
+              <Link
+                color="red.400"
+                _hover={{ color: "red.800" }}
+                href={"/edit/question/" + data.question.id}
+              >
+                <Center alignItems="left" justifyContent="left">
+                  <Icon as={RiEditBoxLine} w="24px" height="24px" />
+                  <Text
+                    textAlign="left"
+                    ml={1}
+                    as="span"
+                    fontWeight="bold"
+                    fontSize="md"
+                  >
+                    edit
+                  </Text>
+                </Center>
+              </Link>
+            </NextLink>
+          )}
+        </HStack>
       </Box>
       {!reviewData?.questionReview && (
         <Box
