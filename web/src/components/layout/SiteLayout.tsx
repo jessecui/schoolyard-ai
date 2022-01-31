@@ -4,12 +4,9 @@ import React, {
   cloneElement,
   isValidElement,
   useEffect,
-  useState
+  useState,
 } from "react";
-import {
-  Question,
-  ReviewStatus
-} from "../../graphql/generated/graphql";
+import { Question, ReviewStatus } from "../../graphql/generated/graphql";
 import { Navbar } from "./Navbar";
 import { ScoreCard } from "./ScoreCard";
 import { SideQuestions } from "./SideQuestions";
@@ -31,6 +28,12 @@ export const SiteLayout: React.FC<{}> = ({ children }) => {
   useEffect(() => {
     if (router.pathname !== "/learn/[id]") {
       setAvailableQuestions([]);
+    }
+    if (
+      !router.pathname.startsWith("/learn/") &&
+      !router.pathname.startsWith("/review/")
+    ) {
+      setActiveScoreSubjects([]);
     }
     setChangedSubjects([]);
   }, [router]);
