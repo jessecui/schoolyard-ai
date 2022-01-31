@@ -116,7 +116,7 @@ export const SideQuestions: React.FC<{
                   </Flex>
                 </Box>
                 <Text fontWeight="bold" fontSize="lg">
-                  {question.question}
+                  {question.text}
                 </Text>
                 <Button
                   mt={1}
@@ -248,7 +248,7 @@ export const SideQuestions: React.FC<{
                 </Flex>
               </Box>
               <Text fontWeight="bold" fontSize="md">
-                {questionReview.question.question}
+                {questionReview.question.text}
               </Text>
               <Flex mt={1} wrap="wrap">
                 <NextLink href={"/review/" + questionReview.questionId}>

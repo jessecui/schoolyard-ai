@@ -25,7 +25,7 @@ import {
   RadioGroup,
   Stack,
   Text,
-  Textarea,
+  Textarea
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
@@ -36,7 +36,7 @@ import {
   useDeleteQuestionMutation,
   useMeQuery,
   useQuestionQuery,
-  useUpdateQuestionMutation,
+  useUpdateQuestionMutation
 } from "../../../graphql/generated/graphql";
 import { withApollo } from "../../../utils/withApollo";
 
@@ -87,7 +87,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
   const answerBoxes = (
     props: FormikProps<{
       questionType: QuestionType;
-      question: string;
+      text: string;
       answerOptions: string[];
       correctAnswers: string[];
       subjects: string;
@@ -377,7 +377,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
       <Formik
         initialValues={{
           questionType: questionData.question.questionType,
-          question: questionData.question.question,
+          text: questionData.question.text,
           answerOptions: questionData.question.choices
             ? questionData.question.choices
             : ["", "", "", ""],
@@ -397,7 +397,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
             variables: {
               id: parseInt(router.query.id as string),
               questionInput: {
-                question: values.question,
+                text: values.text,
                 subjects: subjectsArray,
                 questionType:
                   values.questionType == QuestionType.Single
@@ -620,7 +620,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                 </Box>
               </Flex>
               <Text my={2} fontWeight="bold" fontSize="xl">
-                {props.values.question}
+                {props.values.text}
               </Text>
               <Text color="grayMain" fontSize="sm" mb={2}>
                 {props.values.questionType == QuestionType.Single &&

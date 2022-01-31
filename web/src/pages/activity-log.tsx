@@ -105,7 +105,7 @@ const ActivityLog: React.FC<{}> = ({}) => {
         </Box>
       </Flex>
       <Text my={2} fontWeight="bold" fontSize="xl">
-        {question.question}
+        {question.text}
       </Text>
       <Text color="grayMain" fontSize="sm" my={2}>
         {question.questionType == QuestionType.Single &&
@@ -264,7 +264,7 @@ const ActivityLog: React.FC<{}> = ({}) => {
         </Box>
       </Flex>
       <Text my={2} fontWeight="bold" fontSize="xl">
-        {questionReview.question.question}
+        {questionReview.question.text}
       </Text>
       <Text color="grayMain" fontSize="sm" my={2}>
         {questionReview.question.questionType == QuestionType.Single &&

@@ -906,7 +906,7 @@ const Review: React.FC<{
           </Menu>
         </Flex>
         <Text my={2} fontWeight="bold" fontSize="xl">
-          {data.question.question}
+          {data.question.text}
         </Text>
         <Details
           content={data.question as Question}

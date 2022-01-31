@@ -3,7 +3,7 @@ query Questions($limit: Int!, $cursor: String) {
     hasMore
     questions {
       id      
-      question
+      text
       questionType
       choices
       answer

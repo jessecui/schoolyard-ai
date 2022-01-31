@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsc && concurrently \"tsc -w\" \"nodemon dist/index.js\"",
     "copy": "cp -r ./src/utils/ml/word2vec.txt ./dist/utils/ml/word2vec.txt",
+    "build": "tsc",
     "start": "node dist/index.js"
   },
   "author": "Jesse Cui",
