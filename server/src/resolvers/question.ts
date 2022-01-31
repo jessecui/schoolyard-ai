@@ -123,8 +123,6 @@ export class QuestionResolver {
   async subjects(@Root() question: Sentence) {
     const subjects = await QuestionSubject.find({
       where: { questionId: question.id },
-      skip: 0,
-      take: 10,
       order: {
         order: "ASC",
       },
@@ -261,16 +259,12 @@ export class QuestionResolver {
     const subjects = (
       await QuestionSubject.find({
         where: { questionId: id },
-        skip: 0,
-        take: 10,
       })
     ).map((questionSubject) => questionSubject.subjectName);    
 
     // Check all users with question available in question reviews
     const questionReviewsToDelete = await QuestionReview.find({
       where: { questionId: id },
-      skip: 0,
-      take: 100,
     });
 
     questionReviewsToDelete.forEach(async (questionReview) => {
