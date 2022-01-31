@@ -58,8 +58,6 @@ export class UserResolver {
   async questionReviews(@Root() _: User, @Ctx() { req }: MyContext) {
     return await QuestionReview.find({
       where: { userId: req.session.userId },
-      take: 100,
-      skip: 0,
       order: {
         createdAt: "DESC",
       },
@@ -70,8 +68,6 @@ export class UserResolver {
   async sentenceViews(@Root() _: User, @Ctx() { req }: MyContext) {
     return await SentenceView.find({
       where: { userId: req.session.userId },
-      take: 100,
-      skip: 0,
       order: {
         lastViewed: "DESC",
       },
@@ -135,8 +131,6 @@ export class UserResolver {
   async createdParagraphs(@Root() _: User, @Ctx() { req }: MyContext) {
     const sentences = await Sentence.find({
       where: { creatorId: req.session.userId },
-      take: 100,
-      skip: 0,
       order: {
         createdAt: "DESC",
       },
@@ -155,8 +149,6 @@ export class UserResolver {
   async createdQuestions(@Root() _: User, @Ctx() { req }: MyContext) {
     return await Question.find({
       where: { creatorId: req.session.userId },
-      take: 100,
-      skip: 0,
       order: {
         createdAt: "DESC",
       },

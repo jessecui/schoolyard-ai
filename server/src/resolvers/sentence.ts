@@ -122,8 +122,6 @@ export class SentenceResolver {
   async children(@Root() sentence: Sentence) {
     const relationships = await ParentChild.find({
       where: { parentId: sentence.id },
-      skip: 0,
-      take: 100,
       order: {
         orderNumber: "ASC",
       },
@@ -154,8 +152,6 @@ export class SentenceResolver {
   async subjects(@Root() sentence: Sentence) {
     const subjects = await SentenceSubject.find({
       where: { sentenceId: sentence.id },
-      skip: 0,
-      take: 10,
       order: {
         order: "ASC",
       },
@@ -242,8 +238,6 @@ export class SentenceResolver {
       where: {
         sentenceId: sentence.id,
       },
-      skip: 0,
-      take: 100,
     });
   }
 
@@ -492,8 +486,6 @@ export class SentenceResolver {
     // Delete children
     const relationships = await ParentChild.find({
       where: { parentId: sentence.id },
-      skip: 0,
-      take: 100,
     });
     let children = await Promise.all(
       relationships.map(async (relationship) => {
@@ -511,8 +503,6 @@ export class SentenceResolver {
       (
         await SentenceSubject.find({
           where: { sentenceId: child!.id },
-          skip: 0,
-          take: 10,
         })
       )
         .map((sentenceSubject) => sentenceSubject.subjectName)
@@ -526,8 +516,6 @@ export class SentenceResolver {
     (
       await SentenceSubject.find({
         where: { sentenceId: id },
-        skip: 0,
-        take: 10,
       })
     )
       .map((sentenceSubject) => sentenceSubject.subjectName)

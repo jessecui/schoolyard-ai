@@ -87,8 +87,6 @@ export class QuestionReviewResolver {
 
       const questionSubjects = await QuestionSubject.find({
         where: { questionId },
-        skip: 0,
-        take: 10,
       });
       const subjects = questionSubjects.map((subject) => subject.subjectName);
       if (subjects) {
@@ -189,8 +187,6 @@ export class QuestionReviewResolver {
 
       const questionSubjects = await QuestionSubject.find({
         where: { questionId },
-        skip: 0,
-        take: 10,
       });
       const subjects = questionSubjects.map((subject) => subject.subjectName);
       if (subjects && existingReview.reviewStatus != reviewStatus) {
@@ -247,8 +243,6 @@ export class QuestionReviewResolver {
 
       const questionSubjects = await QuestionSubject.find({
         where: { questionId },
-        skip: 0,
-        take: 10,
       });
       const subjects = questionSubjects.map((subject) => subject.subjectName);
 
