@@ -54,7 +54,7 @@ export class Question extends BaseEntity {
 
   @Field()
   @Column()
-  question: string;
+  text: string;
 
   @Field(() => QuestionType)
   @Column({

@@ -35,7 +35,7 @@ import { Score } from "../entities/Score";
 @InputType()
 class QuestionInput {
   @Field({ nullable: true })
-  question: string;
+  text: string;
   @Field(() => [String], { nullable: true })
   subjects: string[];
   @Field(() => QuestionType, { nullable: true })

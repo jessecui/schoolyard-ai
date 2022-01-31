@@ -82,7 +82,7 @@ export const Create: React.FC<{}> = ({}) => {
   const answerBoxes = (
     props: FormikProps<{
       questionType: QuestionType;
-      question: string;
+      text: string;
       answerOptions: string[];
       correctAnswers: string[];
       subjects: string;
@@ -724,7 +724,7 @@ export const Create: React.FC<{}> = ({}) => {
       <Formik
         initialValues={{
           questionType: QuestionType.Single,
-          question: "",
+          text: "",
           answerOptions: ["", "", "", ""],
           correctAnswers: [] as string[],
           subjects:
@@ -742,7 +742,7 @@ export const Create: React.FC<{}> = ({}) => {
             variables: {
               questionInput: {
                 sentenceId: parentData?.sentence?.id,
-                question: values.question,
+                text: values.text,
                 subjects: subjectsArray,
                 questionType:
                   values.questionType == QuestionType.Single
@@ -978,7 +978,7 @@ export const Create: React.FC<{}> = ({}) => {
                   </Box>
                 </Flex>
                 <Text my={2} fontWeight="bold" fontSize="xl">
-                  {props.values.question}
+                  {props.values.text}
                 </Text>
                 <Text color="grayMain" fontSize="sm" mb={2}>
                   {props.values.questionType == QuestionType.Single &&

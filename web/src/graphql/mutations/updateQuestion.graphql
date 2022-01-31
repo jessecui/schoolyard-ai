@@ -3,7 +3,7 @@ mutation UpdateQuestion($id: Int!, $questionInput: QuestionInput!) {
     id
     createdAt
     updatedAt
-    question
+    text
     choices
     answer
     creator {

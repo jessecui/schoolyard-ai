@@ -6,7 +6,7 @@ mutation CreateQuestionReview($questionId: Int!, $reviewStatus: ReviewStatus!) {
     updatedAt
     dateNextAvailable
     question {
-      question
+      text
       subjects
     }
   }

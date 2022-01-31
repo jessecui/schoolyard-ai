@@ -24,7 +24,7 @@ query ActivityLog {
     questionReviews {
       question {
         id
-        question
+        text
         questionType
         choices
         answer
@@ -63,7 +63,7 @@ query ActivityLog {
     }
     createdQuestions {
       id
-      question
+      text
       questionType
       choices
       answer
