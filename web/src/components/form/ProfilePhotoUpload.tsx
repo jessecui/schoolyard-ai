@@ -82,7 +82,7 @@ export const ProfilePhotoUpload: React.FC<{
           <Text
             color="red.400"
             fontSize="sm"
-            fontWeight="bold"
+            fontWeight="normal"
             _hover={{ color: "red.800", cursor: "pointer" }}
             onClick={async () =>
               await deleteProfilePhoto({

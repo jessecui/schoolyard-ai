@@ -7,9 +7,9 @@ import {
   Select,
   Spacer,
   Stack,
-  Text,
+  Text
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
 import { ReviewStatus, Score, useMeQuery } from "../../graphql/generated/graphql";
 import { ChangedSubject } from "./SiteLayout";
 

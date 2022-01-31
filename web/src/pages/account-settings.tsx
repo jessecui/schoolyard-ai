@@ -208,7 +208,7 @@ const AccountSettings: React.FC<{
         borderColor="grayLight"
         borderRadius="md"
         bg="White"
-        mt={4}
+        my={4}
         p={4}
       >
         <Button
