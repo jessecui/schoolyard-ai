@@ -4,13 +4,11 @@ import React, {
   cloneElement,
   isValidElement,
   useEffect,
-  useState,
+  useState
 } from "react";
 import {
-  MeQuery,
   Question,
-  ReviewStatus,
-  useMeQuery,
+  ReviewStatus
 } from "../../graphql/generated/graphql";
 import { Navbar } from "./Navbar";
 import { ScoreCard } from "./ScoreCard";

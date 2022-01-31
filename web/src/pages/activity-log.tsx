@@ -27,7 +27,7 @@ import {
 } from "../graphql/generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
-const AccountSettings: React.FC<{}> = ({}) => {
+const ActivityLog: React.FC<{}> = ({}) => {
   const router = useRouter();
   const [contentType, setContentType] = useState("viewed paragraph");
   useEffect(() => {
@@ -216,7 +216,7 @@ const AccountSettings: React.FC<{}> = ({}) => {
       bg="White"
       p={4}
       my={2}
-      key={questionReview.questionId}
+      key={"ViewedQuestion: " + questionReview.questionId}
     >
       <Flex align="center">
         {meData?.me?.photoUrl ? (
@@ -718,4 +718,4 @@ const AccountSettings: React.FC<{}> = ({}) => {
   );
 };
 
-export default withApollo({ ssr: false })(AccountSettings);
+export default withApollo({ ssr: false })(ActivityLog);

@@ -4,12 +4,10 @@ import {
   Button,
   Center,
   Circle,
-  Flex,
-  HStack,
-  Icon,
+  Flex, Icon,
   Link,
   Stack,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React from "react";
@@ -23,7 +21,7 @@ import {
   Score,
   useCreateQuestionReviewMutation,
   useMeQuery,
-  User,
+  User
 } from "../../graphql/generated/graphql";
 import { ChangedSubject } from "./SiteLayout";
 
