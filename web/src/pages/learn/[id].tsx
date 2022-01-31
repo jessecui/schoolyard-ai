@@ -10,7 +10,7 @@ import {
   Link,
   Spacer,
   Stack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -20,7 +20,8 @@ import { IoExpand } from "react-icons/io5";
 import { MdLibraryAdd } from "react-icons/md";
 import {
   RiArrowLeftSLine,
-  RiArrowRightSLine, RiEditBoxLine
+  RiArrowRightSLine,
+  RiEditBoxLine,
 } from "react-icons/ri";
 import { Details } from "../../components/content/Details";
 import {
@@ -28,8 +29,9 @@ import {
   Question,
   Sentence,
   SentenceQuery,
-  useAddSentenceViewMutation, useMeQuery,
-  useSentenceQuery
+  useAddSentenceViewMutation,
+  useMeQuery,
+  useSentenceQuery,
 } from "../../graphql/generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -248,7 +250,9 @@ const Learn: React.FC<{
                         newActiveIndex +
                         "&cloneId=" +
                         activeSentence.id
-                      : "")
+                      : ""),
+                  undefined,
+                  { shallow: true }
                 );
               }}
             />
@@ -286,7 +290,9 @@ const Learn: React.FC<{
                         newActiveIndex +
                         "&cloneId=" +
                         activeSentence.id
-                      : "")
+                      : ""),
+                  undefined,
+                  { shallow: true }
                 );
               }}
             />
@@ -512,7 +518,9 @@ const Learn: React.FC<{
                               )
                                 ? "&childrenClones=" +
                                   JSON.stringify(newActiveChildrenCloneIndices)
-                                : "")
+                                : ""),
+                            undefined,
+                            { shallow: true }
                           );
                         }}
                       />
@@ -595,7 +603,9 @@ const Learn: React.FC<{
                               )
                                 ? "&childrenClones=" +
                                   JSON.stringify(newActiveChildrenCloneIndices)
-                                : "")
+                                : ""),
+                            undefined,
+                            { shallow: true }
                           );
                         }}
                       />
