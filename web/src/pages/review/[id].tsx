@@ -33,18 +33,9 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { BiDotsHorizontalRounded, BiZoomIn } from "react-icons/bi";
-import { IoPeople } from "react-icons/io5";
-import {
-  RiCalendarEventFill,
-  RiThumbDownFill,
-  RiThumbDownLine,
-  RiThumbUpFill,
-  RiThumbUpLine,
-} from "react-icons/ri";
+import { Details } from "../../components/content/Details";
 import { ChangedSubject } from "../../components/layout/SiteLayout";
 import {
-  AddQuestionVoteMutation,
-  AddSentenceVoteMutation,
   MeDocument,
   MeQuery,
   Question,
@@ -53,10 +44,9 @@ import {
   QuestionReviewQuery,
   ReviewStatus,
   Score,
+  Sentence,
   UpdateQuestionReviewMutation,
   useAddQuestionViewMutation,
-  useAddQuestionVoteMutation,
-  useAddSentenceVoteMutation,
   useCreateQuestionReviewMutation,
   useDeleteQuestionReviewMutation,
   useMeQuery,
@@ -64,7 +54,6 @@ import {
   useQuestionReviewQuery,
   User,
   useUpdateQuestionReviewMutation,
-  VoteType,
 } from "../../graphql/generated/graphql";
 import { withApollo } from "../../utils/withApollo";
 
@@ -77,9 +66,7 @@ const Review: React.FC<{
     variables: { id: router.query.id ? Number(router.query.id) : -1 },
   });
   const { data: meData, loading: meLoading } = useMeQuery();
-  const [addQuestionVote] = useAddQuestionVoteMutation();
   const [addQuestionView] = useAddQuestionViewMutation();
-  const [addSentenceVote] = useAddSentenceVoteMutation();
   const [createQuestionReview] = useCreateQuestionReviewMutation();
   const [updateQuestionReview] = useUpdateQuestionReviewMutation();
   const [deleteQuestionReview] = useDeleteQuestionReviewMutation();
@@ -220,58 +207,6 @@ const Review: React.FC<{
     ? new Date().getTime() <
       new Date(reviewData.questionReview.dateNextAvailable).getTime()
     : false;
-
-  const updateQuestionAfterVote = (
-    cache: ApolloCache<AddQuestionVoteMutation>,
-    questionId: number,
-    newUserVoteType: VoteType | null,
-    newUpVoteCount: number,
-    newDownVoteCount: number
-  ) => {
-    if (data) {
-      cache.writeFragment({
-        id: "Question:" + questionId,
-        fragment: gql`
-          fragment __ on Question {
-            upVoteCount
-            downVoteCount
-            userVoteType
-          }
-        `,
-        data: {
-          upVoteCount: newUpVoteCount,
-          downVoteCount: newDownVoteCount,
-          userVoteType: newUserVoteType,
-        },
-      });
-    }
-  };
-
-  const updateAfterVote = (
-    cache: ApolloCache<AddSentenceVoteMutation>,
-    sentenceId: number,
-    newUserVoteType: VoteType | null,
-    newUpVoteCount: number,
-    newDownVoteCount: number
-  ) => {
-    if (data) {
-      cache.writeFragment({
-        id: "Sentence:" + sentenceId,
-        fragment: gql`
-          fragment __ on Sentence {
-            upVoteCount
-            downVoteCount
-            userVoteType
-          }
-        `,
-        data: {
-          upVoteCount: newUpVoteCount,
-          downVoteCount: newDownVoteCount,
-          userVoteType: newUserVoteType,
-        },
-      });
-    }
-  };
 
   const updateQuestionReviewCache = (
     question: Question,
@@ -972,122 +907,10 @@ const Review: React.FC<{
         <Text my={2} fontWeight="bold" fontSize="xl">
           {data.question.question}
         </Text>
-        <Flex wrap="wrap">
-          {!meLoading && meData && (
-            <>
-              <Text color="grayMain" fontSize="sm" mr={2}>
-                <IconButton
-                  mr={0.5}
-                  minWidth="24px"
-                  height="24px"
-                  isRound={true}
-                  size="lg"
-                  bg="none"
-                  _focus={{
-                    boxShadow: "none",
-                  }}
-                  _hover={{
-                    bg: "grayLight",
-                  }}
-                  onClick={async () => {
-                    await addQuestionVote({
-                      variables: {
-                        questionId: data.question!.id,
-                        voteType: VoteType.Up,
-                      },
-                      update: (cache, { data: responseData }) => {
-                        const votedQuestion = responseData?.addQuestionVote;
-                        updateQuestionAfterVote(
-                          cache,
-                          data.question!.id,
-                          votedQuestion!.userVoteType as VoteType | null,
-                          votedQuestion!.upVoteCount,
-                          votedQuestion!.downVoteCount
-                        );
-                      },
-                    });
-                  }}
-                  aria-label="Up Vote Question"
-                  icon={
-                    data.question.userVoteType == VoteType.Up ? (
-                      <RiThumbUpFill />
-                    ) : (
-                      <RiThumbUpLine />
-                    )
-                  }
-                />
-                {data.question.upVoteCount}
-              </Text>
-              <Text color="grayMain" fontSize="sm" mr={2}>
-                <IconButton
-                  mr={0.5}
-                  minWidth="24px"
-                  height="24px"
-                  isRound={true}
-                  size="lg"
-                  bg="none"
-                  _focus={{
-                    boxShadow: "none",
-                  }}
-                  _hover={{
-                    bg: "grayLight",
-                  }}
-                  onClick={async () => {
-                    await addQuestionVote({
-                      variables: {
-                        questionId: data.question!.id,
-                        voteType: VoteType.Down,
-                      },
-                      update: (cache, { data: responseData }) => {
-                        const votedQuestion = responseData?.addQuestionVote;
-                        updateQuestionAfterVote(
-                          cache,
-                          data.question!.id,
-                          votedQuestion!.userVoteType as VoteType | null,
-                          votedQuestion!.upVoteCount,
-                          votedQuestion!.downVoteCount
-                        );
-                      },
-                    });
-                  }}
-                  aria-label="Down Vote Question"
-                  icon={
-                    data.question.userVoteType == VoteType.Down ? (
-                      <RiThumbDownFill />
-                    ) : (
-                      <RiThumbDownLine />
-                    )
-                  }
-                />
-                {data.question.downVoteCount}
-              </Text>
-            </>
-          )}
-
-          <Center mr={2}>
-            <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
-            <Text color="grayMain" fontSize="sm">
-              {data.question.viewCount +
-                (data.question.viewCount == 1 ? " view" : " views")}
-            </Text>
-          </Center>
-          <Center mr={2}>
-            <Icon
-              as={RiCalendarEventFill}
-              color="grayMain"
-              mr={1}
-              w={5}
-              h={5}
-            />
-            <Text color="grayMain" fontSize="sm">
-              {new Date(data.question.createdAt).toLocaleString("default", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </Text>
-          </Center>
-        </Flex>
+        <Details
+          content={data.question as Question}
+          userLoggedIn={Boolean(meData?.me)}
+        />
         <Box>{questionForm(data.question as Question)}</Box>
         {reviewData?.questionReview && questionIsLocked && (
           <Box my={2}>
@@ -1213,126 +1036,10 @@ const Review: React.FC<{
                   .join(" ")
               : null}
           </Text>
-          <Flex wrap="wrap">
-            {!meLoading && meData?.me && (
-              <>
-                <Text color="grayMain" fontSize="sm" mr={2}>
-                  <IconButton
-                    mr={0.5}
-                    minWidth="24px"
-                    height="24px"
-                    isRound={true}
-                    size="lg"
-                    bg="none"
-                    _focus={{
-                      boxShadow: "none",
-                    }}
-                    _hover={{
-                      bg: "grayLight",
-                    }}
-                    onClick={async () => {
-                      await addSentenceVote({
-                        variables: {
-                          sentenceId: data.question!.sentence!.id,
-                          voteType: VoteType.Up,
-                        },
-                        update: (cache, { data: responseData }) => {
-                          const votedSentence = responseData?.addSentenceVote;
-                          updateAfterVote(
-                            cache,
-                            data.question!.sentence!.id,
-                            votedSentence!.userVoteType as VoteType | null,
-                            votedSentence!.upVoteCount,
-                            votedSentence!.downVoteCount
-                          );
-                        },
-                      });
-                    }}
-                    aria-label="Up Vote Sentence"
-                    icon={
-                      data.question.sentence.userVoteType == VoteType.Up ? (
-                        <RiThumbUpFill />
-                      ) : (
-                        <RiThumbUpLine />
-                      )
-                    }
-                  />
-                  {data.question.sentence.upVoteCount}
-                </Text>
-                <Text color="grayMain" fontSize="sm" mr={2}>
-                  <IconButton
-                    mr={0.5}
-                    minWidth="24px"
-                    height="24px"
-                    isRound={true}
-                    size="lg"
-                    bg="none"
-                    _focus={{
-                      boxShadow: "none",
-                    }}
-                    _hover={{
-                      bg: "grayLight",
-                    }}
-                    onClick={async () => {
-                      await addSentenceVote({
-                        variables: {
-                          sentenceId: data.question!.sentence!.id,
-                          voteType: VoteType.Down,
-                        },
-                        update: (cache, { data: responseData }) => {
-                          const votedSentence = responseData?.addSentenceVote;
-                          updateAfterVote(
-                            cache,
-                            data.question!.sentence!.id,
-                            votedSentence!.userVoteType as VoteType | null,
-                            votedSentence!.upVoteCount,
-                            votedSentence!.downVoteCount
-                          );
-                        },
-                      });
-                    }}
-                    aria-label="Down Vote Sentence"
-                    icon={
-                      data.question.sentence.userVoteType == VoteType.Down ? (
-                        <RiThumbDownFill />
-                      ) : (
-                        <RiThumbDownLine />
-                      )
-                    }
-                  />
-                  {data.question.sentence.downVoteCount}
-                </Text>
-              </>
-            )}
-
-            <Center mr={2}>
-              <Icon as={IoPeople} color="grayMain" mr={1} w={5} h={5} />
-              <Text color="grayMain" fontSize="sm">
-                {data.question.sentence.viewCount +
-                  (data.question.sentence.viewCount == 1 ? " view" : " views")}
-              </Text>
-            </Center>
-
-            <Center mr={2}>
-              <Icon
-                as={RiCalendarEventFill}
-                color="grayMain"
-                mr={1}
-                w={5}
-                h={5}
-              />
-              <Text color="grayMain" fontSize="sm">
-                {new Date(data.question.sentence.createdAt).toLocaleString(
-                  "default",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  }
-                )}
-              </Text>
-            </Center>
-          </Flex>
+          <Details
+            content={data.question.sentence as Sentence}
+            userLoggedIn={Boolean(meData?.me)}
+          />
           <Box mt={3}>
             <NextLink href={"/learn/" + data.question.sentence.id}>
               <Link
