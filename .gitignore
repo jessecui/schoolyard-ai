@@ -3,4 +3,6 @@ node_modules
 .next
 dist
 yarn-error.log
-web/public/images/profile_photos/
+.env
+.env.production
+.env.local

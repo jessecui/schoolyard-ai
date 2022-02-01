@@ -367,7 +367,7 @@ export class UserResolver {
     );
 
     const emailHtml = `<p>Change your password here: \
-      <a href="http://localhost:3000/change-password/${token}">\
+      <a href="${process.env.CORS_ORIGIN}/change-password/${token}">\
         Reset password\
       </a>\
     </p>`;
