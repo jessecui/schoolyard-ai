@@ -25,6 +25,7 @@ import { SentenceView } from "./entities/SentenceView";
 import { SentenceVote } from "./entities/SentenceVote";
 import { Subject } from "./entities/Subject";
 import { User } from "./entities/User";
+import { Word } from "./entities/Word";
 import { ProfilePhotoResolver } from "./resolvers/profilePhoto";
 import { QuestionResolver } from "./resolvers/question";
 import { QuestionReviewResolver } from "./resolvers/questionReview";
@@ -52,6 +53,7 @@ const entities = [
   SentenceSubject,
   QuestionSubject,
   Score,
+  Word,
 ];
 const resolvers = [
   UserResolver,
@@ -82,7 +84,7 @@ const main = async () => {
   });
 
   // Set up initial migrations
-  await conn.runMigrations();  
+  await conn.runMigrations();
 
   // Set up a connection to Redis for user authentication cookie management
   const RedisStore = connectRedis(session);
@@ -138,7 +140,7 @@ const main = async () => {
   await apolloServer.start();
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.use(express.static(__dirname + "/public"));  
+  app.use(express.static(__dirname + "/public"));
 
   // Start the server on port 4000
   app.listen(parseInt(process.env.PORT), () => {
@@ -146,6 +148,6 @@ const main = async () => {
   });
 };
 
-main().catch((err) => {  
+main().catch((err) => {
   console.error(err);
 });
