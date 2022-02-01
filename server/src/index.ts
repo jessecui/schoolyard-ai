@@ -2,6 +2,7 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-co
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import "dotenv-safe/config";
 import express from "express";
 import session from "express-session";
 import { graphqlUploadExpress } from "graphql-upload";
@@ -70,34 +71,32 @@ const loaders = {
 };
 
 const main = async () => {
-  const database_name = "schoolyard_dev_v2";
-
   // Set up a connection to the database with TypeORM
   const conn = await createConnection({
     type: "postgres",
-    url: "postgresql://postgres:postgres@localhost:5432/" + database_name,
+    url: process.env.DATABASE_URL,
     logging: ["error", "schema", "warn", "info", "log"],
-    synchronize: true,
+    synchronize: false,
     migrations: [path.join(__dirname, "./migrations/*")],
     entities,
   });
 
   // Set up initial migrations
-  await conn.runMigrations();
+  await conn.runMigrations();  
+
+  // Set up a connection to Redis for user authentication cookie management
+  const RedisStore = connectRedis(session);
+  const redis = new Redis(process.env.REDIS_URL);
 
   // Set up express router with CORS handling
   const app = express();
   app.set("trust proxy", 1);
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
-
-  // Set up a connection to Redis for user authentication cookie management
-  const RedisStore = connectRedis(session);
-  const redis = new Redis("127.0.0.1:6379");
 
   app.use(
     session({
@@ -111,9 +110,10 @@ const main = async () => {
         httpOnly: true,
         sameSite: "lax", // CSRF prevention
         secure: IS_PROD, // Cookie only works in https
+        domain: IS_PROD ? ".goschoolyard.com" : undefined,
       },
       saveUninitialized: false,
-      secret: "dfsa12wer8gf45",
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
   );
@@ -141,8 +141,8 @@ const main = async () => {
   app.use(express.static(__dirname + "/public"));  
 
   // Start the server on port 4000
-  app.listen(4000, () => {
-    console.log("Server started on localhost:4000");
+  app.listen(parseInt(process.env.PORT), () => {
+    console.log("Server started on localhost:", process.env.PORT);
   });
 };
 
