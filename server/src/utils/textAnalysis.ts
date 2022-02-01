@@ -1,32 +1,27 @@
 import { createQueryBuilder, getConnection } from "typeorm";
-import w2v from "word2vec";
-import { CloneType, Cloning } from "../../entities/Cloning";
-import { ParentChild } from "../../entities/ParentChild";
-import { Sentence } from "../../entities/Sentence";
+// import w2v from "word2vec";
+import { CloneType, Cloning } from "../entities/Cloning";
+import { ParentChild } from "../entities/ParentChild";
+import { Sentence } from "../entities/Sentence";
+import { Word } from "../entities/Word";
 
-var w2vModel: any;
-
-w2v.loadModel(__dirname + "/word2vec.txt", (error: any, model: any) => {
-  if (error) {
-    console.log("Word2Vec Loading Error: ", error);
-  } else {
-    w2vModel = model;
-  }
-});
-
-export function getSentenceEmbedding(sentence: string) {
+export async function getSentenceEmbedding(sentence: string) {
   const words = sentence.split(/\W+/);
   let sumEmbedding = Array(100).fill(0);
-  words.forEach((word) => {
-    const embedding = w2vModel.getVector(word);
+  let numWordsWithEmbedding = 0;
+  for (const word of words) {
+    const word2Vec = await Word.findOne(word);
+    const embedding = word2Vec?.embedding;
     if (embedding) {
+      numWordsWithEmbedding += 1;
       sumEmbedding = sumEmbedding.map((num, idx) => {
-        return num + embedding.values[idx];
+        return num + embedding[idx];
       });
     }
-  });
-
-  return sumEmbedding.map((embedding) => embedding / words.length);
+  }
+  return sumEmbedding.map((element) =>
+    numWordsWithEmbedding ? element / numWordsWithEmbedding : 0
+  );
 }
 
 export function getDistance(a: number[], b: number[]) {
@@ -124,7 +119,7 @@ export async function insertDistances(sentenceId: number) {
         } else {
           olderCloneId = otherSentence.id;
           youngerCloneId = sentenceId;
-        }        
+        }
         await getConnection()
           .createQueryBuilder()
           .insert()

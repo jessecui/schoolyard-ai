@@ -33,7 +33,7 @@ import { isAuth } from "../utils/isAuth";
 import {
   getSentenceEmbedding,
   insertDistances,
-} from "../utils/ml/textAnalysis";
+} from "../utils/textAnalysis";
 
 @InputType()
 class ParagraphInput {
@@ -249,6 +249,7 @@ export class SentenceResolver {
     @Arg("cloningOriginId", () => Int, { nullable: true })
     cloningOriginId: number
   ): Promise<Sentence> {
+    const embedding = await getSentenceEmbedding(paragraphInput.text);
     const summarySentenceQuery = await getConnection()
       .createQueryBuilder()
       .insert()
@@ -256,7 +257,7 @@ export class SentenceResolver {
       .values({
         text: paragraphInput.text,
         creatorId: req.session.userId,
-        embedding: getSentenceEmbedding(paragraphInput.text),
+        embedding,
       })
       .returning("*")
       .execute();
@@ -290,6 +291,7 @@ export class SentenceResolver {
       await Promise.all(
         paragraphInput.childrenText.map(async (childText, index) => {
           let newChild: Sentence;
+          const childEmbedding = await getSentenceEmbedding(childText);
           const newChildQuery = await manager
             .createQueryBuilder()
             .insert()
@@ -297,7 +299,7 @@ export class SentenceResolver {
             .values({
               text: childText,
               creatorId: req.session.userId,
-              embedding: getSentenceEmbedding(childText),
+              embedding: childEmbedding,
             })
             .returning("*")
             .execute();
@@ -376,13 +378,14 @@ export class SentenceResolver {
     @Arg("paragraphInput", () => ParagraphInput) paragraphInput: ParagraphInput,
     @Ctx() { req }: MyContext
   ): Promise<Sentence | null> {
+    const embedding = await getSentenceEmbedding(paragraphInput.text);
     const summarySentenceUpdate = await getConnection()
       .createQueryBuilder()
       .update(Sentence)
       .set({
         ...(paragraphInput.text && {
           text: paragraphInput.text,
-          embedding: getSentenceEmbedding(paragraphInput.text),
+          embedding,
         }),
       })
       .where("id = :id and creatorId = :creatorId", {
@@ -426,12 +429,13 @@ export class SentenceResolver {
 
             if (childId) {
               // Update child sentence
+              const childEmbedding = await getSentenceEmbedding(childText);
               const updatedChild = await manager
                 .createQueryBuilder()
                 .update(Sentence)
                 .set({
                   text: childText,
-                  embedding: getSentenceEmbedding(childText),
+                  embedding: childEmbedding,
                 })
                 .where("id = :childId and creatorId = :creatorId", {
                   childId,
