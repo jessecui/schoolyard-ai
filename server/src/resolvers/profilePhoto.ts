@@ -5,6 +5,7 @@ import { getConnection } from "typeorm";
 import { User } from "../entities/User";
 import { isAuth } from "../utils/isAuth";
 import { MyContext } from "../types";
+import { IS_PROD } from "../constants";
 
 @Resolver()
 export class ProfilePhotoResolver {
@@ -17,9 +18,9 @@ export class ProfilePhotoResolver {
   ): Promise<string> {
     const { createReadStream } = await photo;
     const saveFilename = req.session.userId + "_profile.png";
-    const photoUrl = "http://localhost:4000/profile_photos/" +
-    req.session.userId +
-    "_profile.png";
+    const photoUrl = `${
+      IS_PROD ? "http://api.goschoolyard.com" : "http://localhost:4000"
+    }/profile_photos/${req.session.userId}_profile.png`;
 
     let imageDir = __dirname + "/../public/profile_photos";
     if (!fs.existsSync(imageDir)) {
@@ -30,7 +31,7 @@ export class ProfilePhotoResolver {
       .createQueryBuilder()
       .update(User)
       .set({
-        photoUrl
+        photoUrl,
       })
       .where({ id: req.session.userId })
       .execute();
