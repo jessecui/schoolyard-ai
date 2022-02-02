@@ -10,7 +10,7 @@ export async function getSentenceEmbedding(sentence: string) {
   let sumEmbedding = Array(100).fill(0);
   let numWordsWithEmbedding = 0;
   for (const word of words) {
-    const word2Vec = await Word.findOne(word);
+    const word2Vec = await Word.findOne(word.toLowerCase());
     const embedding = word2Vec?.embedding;
     if (embedding) {
       numWordsWithEmbedding += 1;
