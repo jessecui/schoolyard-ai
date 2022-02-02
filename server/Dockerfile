@@ -1,13 +1,13 @@
 FROM node:16
 
-WORKDIR /server
+WORKDIR /usr/src/app
 
-COPY package.json ./
-COPY lock ./
+COPY server/package.json ./
+COPY server/yarn.lock ./
 
 RUN yarn
 
-COPY . .
+COPY server/. .
 
 RUN yarn build
 
