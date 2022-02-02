@@ -27,7 +27,11 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoListCircle, IoLogOut, IoSettings } from "react-icons/io5";
-import { MeQuery, useLogoutMutation, useMeQuery } from "../../graphql/generated/graphql";
+import {
+  MeQuery,
+  useLogoutMutation,
+  useMeQuery,
+} from "../../graphql/generated/graphql";
 
 interface NavbarProps {
   imageHash: number;
@@ -436,33 +440,40 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-        <Flex
-          h="72px"
-          bg="white"
-          borderBottom="4px solid #ccc"
-          align="center"
-          position="sticky"
-          top={0}
-          zIndex={2}
-        >
-          <Container maxW="container.xl">
-            {navbarType == "full" && (
+      <Flex
+        h="72px"
+        bg="white"
+        borderBottom="4px solid #ccc"
+        align="center"
+        position="sticky"
+        top={0}
+        zIndex={2}
+      >
+        <Container maxW="container.xl">
+          {navbarType == "full" &&
+            (userData?.me ? (
               <Grid templateColumns="repeat(3, 1fr)" gap={6}>
                 {logo}
                 {menuBar}
                 {profileLinks}
               </Grid>
-            )}
-            {navbarType == "condensed" && (
+            ) : (
               <Flex>
                 {logo}
                 <Spacer />
-                {menuBarCondensed}
                 {profileLinks}
               </Flex>
-            )}
-          </Container>
-        </Flex>      
+            ))}
+          {navbarType == "condensed" && (
+            <Flex>
+              {logo}
+              <Spacer />
+              {userData?.me && menuBarCondensed}
+              {profileLinks}
+            </Flex>
+          )}
+        </Container>
+      </Flex>
     </>
   );
 };
