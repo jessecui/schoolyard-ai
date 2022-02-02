@@ -12,7 +12,6 @@ import { toErrorMap } from "../../utils/toErrorMap";
 import { withApollo } from "../../utils/withApollo";
 import { Box, Button, Flex, Link, Image, Center, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
-import LogoImage from "../../../public/images/schoolyard_logo.png";
 
 const ChangePassword: NextPage<{}> = () => {
   const router = useRouter();
@@ -25,7 +24,7 @@ const ChangePassword: NextPage<{}> = () => {
           my={30}
           alt="Schoolyard Logo"
           htmlWidth={250}
-          src={LogoImage.src}
+          src={"/schoolyard_logo.png"}
         />
       </Center>
       <Formik

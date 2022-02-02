@@ -3,7 +3,6 @@ import { Box, Center } from "@chakra-ui/layout";
 import { Image, Text } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
-import LogoImage from "../../public/images/schoolyard_logo.png";
 import { InputField } from "../components/form/InputField";
 import { useForgotPasswordMutation } from "../graphql/generated/graphql";
 import { withApollo } from "../utils/withApollo";
@@ -19,7 +18,7 @@ export const ForgotPassword: React.FC<{}> = ({}) => {
           my={30}
           alt="Schoolyard Logo"
           htmlWidth={250}
-          src={LogoImage.src}
+          src={"/schoolyard_logo.png"}
         />
       </Center>
       <Formik

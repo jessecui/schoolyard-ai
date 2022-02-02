@@ -9,7 +9,6 @@ import { Field, Form, Formik } from "formik";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import LogoImage from "../../public/images/schoolyard_logo.png";
 import { InputField } from "../components/form/InputField";
 import { MeDocument, MeQuery, useRegisterMutation } from "../graphql/generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
@@ -27,7 +26,7 @@ const SignUp: React.FC<registerProps> = ({}) => {
           my={30}
           alt="Schoolyard Logo"
           htmlWidth={250}
-          src={LogoImage.src}
+          src={"/schoolyard_logo.png"}
         />
       </Center>
       <Formik
