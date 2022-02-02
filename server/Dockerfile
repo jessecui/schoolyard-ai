@@ -1,11 +1,9 @@
 FROM node:16
 
-RUN pwd
+WORKDIR /server
 
-WORKDIR /usr/src/app
-
-COPY server/package.json ./
-COPY yarn.lock ./
+COPY package.json ./
+COPY lock ./
 
 RUN yarn
 
