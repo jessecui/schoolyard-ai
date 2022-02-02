@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class Initial1643673183091 implements MigrationInterface {
-    name = 'Initial1643673183091'
+export class Initial1643771578378 implements MigrationInterface {
+    name = 'Initial1643771578378'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "parent_child" ("parentId" integer NOT NULL, "childId" integer NOT NULL, "orderNumber" integer NOT NULL, CONSTRAINT "PK_a8a662b2f990d2fbccfc465b5d1" PRIMARY KEY ("parentId", "orderNumber"))`);
@@ -23,6 +23,7 @@ export class Initial1643673183091 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "sentence" ("id" SERIAL NOT NULL, "text" character varying NOT NULL, "creatorId" integer NOT NULL, "upVoteCount" integer NOT NULL DEFAULT '0', "downVoteCount" integer NOT NULL DEFAULT '0', "viewCount" integer NOT NULL DEFAULT '0', "embedding" double precision array NOT NULL DEFAULT '{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_eed8b400064f053f70c004b83e7" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."cloning_clonetype_enum" AS ENUM('creation', 'auto', 'manual')`);
         await queryRunner.query(`CREATE TABLE "cloning" ("olderCloneId" integer NOT NULL, "youngerCloneId" integer NOT NULL, "distance" double precision NOT NULL, "cloneType" "public"."cloning_clonetype_enum" NOT NULL, CONSTRAINT "PK_04b01d8c605f1c8f45582d1ddad" PRIMARY KEY ("olderCloneId", "youngerCloneId"))`);
+        await queryRunner.query(`CREATE TABLE "word" ("word" character varying NOT NULL, "embedding" double precision array NOT NULL, CONSTRAINT "PK_8355d962fea7fe9fef57d58ffff" PRIMARY KEY ("word"))`);
         await queryRunner.query(`ALTER TABLE "parent_child" ADD CONSTRAINT "FK_f150d62ed440a7615bec405dc65" FOREIGN KEY ("parentId") REFERENCES "sentence"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "question_review" ADD CONSTRAINT "FK_7633aa5d283d41854c1baab49b8" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "question_review" ADD CONSTRAINT "FK_d9d5fc170f69e73cc62b42ed082" FOREIGN KEY ("questionId") REFERENCES "question"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
@@ -70,6 +71,7 @@ export class Initial1643673183091 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "question_review" DROP CONSTRAINT "FK_d9d5fc170f69e73cc62b42ed082"`);
         await queryRunner.query(`ALTER TABLE "question_review" DROP CONSTRAINT "FK_7633aa5d283d41854c1baab49b8"`);
         await queryRunner.query(`ALTER TABLE "parent_child" DROP CONSTRAINT "FK_f150d62ed440a7615bec405dc65"`);
+        await queryRunner.query(`DROP TABLE "word"`);
         await queryRunner.query(`DROP TABLE "cloning"`);
         await queryRunner.query(`DROP TYPE "public"."cloning_clonetype_enum"`);
         await queryRunner.query(`DROP TABLE "sentence"`);
