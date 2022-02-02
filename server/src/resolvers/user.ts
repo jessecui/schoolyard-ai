@@ -17,7 +17,7 @@ import argon2 from "argon2";
 import { getConnection } from "typeorm";
 import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
 import { v4 } from "uuid";
-import { sendEmail } from "../utils/sendEmail";
+import { sendForgetPasswordEmail } from "../utils/sendEmail";
 import { isAuth } from "../utils/isAuth";
 import { QuestionReview } from "../entities/QuestionReview";
 import { Score } from "../entities/Score";
@@ -366,13 +366,7 @@ export class UserResolver {
       1000 * 60 * 60 // 1 Hour expiry time
     );
 
-    const emailHtml = `<p>Change your password here: \
-      <a href="${process.env.CORS_ORIGIN}/change-password/${token}">\
-        Reset password\
-      </a>\
-    </p>`;
-
-    await sendEmail(email, emailHtml);
+    await sendForgetPasswordEmail(email, user.firstName, token);
     return true;
   }
 
