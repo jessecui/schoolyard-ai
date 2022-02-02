@@ -19,9 +19,9 @@ export async function getSentenceEmbedding(sentence: string) {
       });
     }
   }
-  return sumEmbedding.map((element) =>
-    numWordsWithEmbedding ? element / numWordsWithEmbedding : 0
-  );
+  return numWordsWithEmbedding
+    ? sumEmbedding.map((element) => element / numWordsWithEmbedding)
+    : [];
 }
 
 export function getDistance(a: number[], b: number[]) {
@@ -41,8 +41,15 @@ export async function insertDistances(sentenceId: number) {
   }
   const sentenceEmbedding = sentence.embedding;
 
+  if (!sentenceEmbedding.length) {
+    return;
+  }
+
   // Loop through all sentences in the corpus
   let sentences: Sentence[] = await Sentence.find();
+
+  // Filter sentences for full length vectors
+  sentences = sentences.filter((sentence) => sentence.embedding.length);
 
   // Make sure we do not clone parent to children or siblings
   let invalidIds: number[] = [];
