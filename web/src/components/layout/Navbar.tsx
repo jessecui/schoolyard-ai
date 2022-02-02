@@ -226,7 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Image
             alt="Schoolyard Logo"
             htmlWidth={logoWidth}
-            src={"/images/schoolyard_logo.png"}
+            src={"/schoolyard_logo.png"}
           />
         </Link>
       </NextLink>
