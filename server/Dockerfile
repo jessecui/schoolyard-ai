@@ -6,14 +6,10 @@ COPY server/package.json ./
 COPY server/yarn.lock ./
 
 RUN yarn
-
 COPY server/. .
-
 RUN yarn build
 
 ENV NODE_ENV production
-
-RUN ls
 
 EXPOSE 8080
 CMD [ "node", "dist/index.js" ]
