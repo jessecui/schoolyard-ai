@@ -173,7 +173,7 @@ export class UserResolver {
         .insert()
         .into(User)
         .values({
-          email: options.email,
+          email: options.email.toLowerCase(),
           password: hashedPassword,
           firstName: options.firstName,
           lastName: options.lastName,
@@ -206,7 +206,7 @@ export class UserResolver {
     @Arg("password") password: string,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await User.findOne({ where: { email: email.toLowerCase() } });
     const validLogin = user && (await argon2.verify(user.password, password));
 
     if (!validLogin) {
@@ -350,7 +350,7 @@ export class UserResolver {
     @Arg("email") email: string,
     @Ctx() { redis }: MyContext
   ) {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email: email.toLowerCase() } });
     if (!user) {
       // The email is not in the DB
       // Return true regardless
@@ -366,7 +366,7 @@ export class UserResolver {
       1000 * 60 * 60 // 1 Hour expiry time
     );
 
-    await sendForgetPasswordEmail(email, user.firstName, token);
+    await sendForgetPasswordEmail(email.toLowerCase(), user.firstName, token);
     return true;
   }
 
@@ -401,7 +401,7 @@ export class UserResolver {
       const currentUser = await User.findOne({
         where: { id: req.session.userId },
       });
-      const userWithEmail = await User.findOne({ where: { email: email } });
+      const userWithEmail = await User.findOne({ where: { email: email.toLowerCase() } });
       if (userWithEmail && userWithEmail.email != currentUser!.email) {
         errors.push({
           field: "email",
@@ -429,7 +429,7 @@ export class UserResolver {
     await User.update(
       { id: req.session.userId },
       {
-        email: email,
+        email: email.toLowerCase(),
         firstName: firstName,
         lastName: lastName,
       }
