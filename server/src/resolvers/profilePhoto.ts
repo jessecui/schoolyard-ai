@@ -1,11 +1,49 @@
-import fs, { createWriteStream } from "fs";
+import S3 from "aws-sdk/clients/s3";
 import { FileUpload, GraphQLUpload } from "graphql-upload";
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
 import { getConnection } from "typeorm";
-import { User } from "../entities/User";
-import { isAuth } from "../utils/isAuth";
-import { MyContext } from "../types";
 import { IS_PROD } from "../constants";
+import { User } from "../entities/User";
+import { MyContext } from "../types";
+import { isAuth } from "../utils/isAuth";
+
+const s3 = new S3({
+  region: process.env.AWS_BUCKET_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+console.log("S3 client started");
+
+const uploadFile = async (fileUpload: FileUpload, key: string) => {
+  const file = await fileUpload;
+  const uploadParams = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Body: file.createReadStream(),
+    Key: `${!IS_PROD ? "test/" : "prod/"}${key}`,
+  };
+
+  return s3.upload(uploadParams).promise();
+};
+
+export const getFileStream = (key: string) => {
+  const downloadParams = {
+    Key: `${!IS_PROD ? "test/" : "prod/"}${key}`,
+    Bucket: process.env.AWS_BUCKET_NAME,
+  };
+
+  let file = s3.getObject(downloadParams).createReadStream();
+  return file;
+};
+
+const deleteFile = async (key: string) => {
+  const deleteParams = {
+    Key: `${!IS_PROD ? "test/" : "prod/"}${key}`,
+    Bucket: process.env.AWS_BUCKET_NAME,
+  };
+
+  s3.deleteObject(deleteParams);
+};
 
 @Resolver()
 export class ProfilePhotoResolver {
@@ -16,13 +54,11 @@ export class ProfilePhotoResolver {
     photo: FileUpload,
     @Ctx() { req }: MyContext
   ): Promise<string> {
-    const { createReadStream } = await photo;
-    const saveFilename = req.session.userId + "_profile.png";
+    const photoName = `${req.session.userId}_profile.png`;
+
     const photoUrl = `${
       IS_PROD ? "https://api.goschoolyard.com" : "http://localhost:4000"
-    }/profile_photos/${req.session.userId}_profile.png`;
-
-    let imageDir = __dirname + "/../public/profile_photos";    
+    }/images/${photoName}`;
 
     await getConnection()
       .createQueryBuilder()
@@ -33,16 +69,7 @@ export class ProfilePhotoResolver {
       .where({ id: req.session.userId })
       .execute();
 
-    await new Promise(async (resolve, reject) => {
-      createReadStream()
-        .pipe(createWriteStream(imageDir + `/${saveFilename}`))
-        .on("finish", () => resolve(true))
-        .on("error", (err) => {
-          console.log("Profile photo saving error: ", err);
-          reject(false);
-        });
-    });
-
+    await uploadFile(photo, photoName);
     return photoUrl;
   }
 
@@ -56,12 +83,10 @@ export class ProfilePhotoResolver {
       })
       .where({ id: req.session.userId })
       .execute();
-    const filePath =
-      __dirname +
-      "/../public/profile_photos/" +
-      req.session.userId +
-      "_profile.png";
-    fs.unlinkSync(filePath);
+
+    const photoName = `${req.session.userId}_profile.png`;
+    deleteFile(photoName);
+
     return true;
   }
 }

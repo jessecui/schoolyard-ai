@@ -26,7 +26,7 @@ import { SentenceVote } from "./entities/SentenceVote";
 import { Subject } from "./entities/Subject";
 import { User } from "./entities/User";
 import { Word } from "./entities/Word";
-import { ProfilePhotoResolver } from "./resolvers/profilePhoto";
+import { getFileStream, ProfilePhotoResolver } from "./resolvers/profilePhoto";
 import { QuestionResolver } from "./resolvers/question";
 import { QuestionReviewResolver } from "./resolvers/questionReview";
 import { SentenceResolver } from "./resolvers/sentence";
@@ -140,7 +140,12 @@ const main = async () => {
   await apolloServer.start();
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.use(express.static(__dirname + "/public"));
+  app.get("/images/:key", (req, res) => {
+    const readStream = getFileStream(req.params.key).on("error", () => {
+      res.status(404).send("Photo not found");
+    });
+    readStream.pipe(res);
+  });
 
   // Start the server on port 4000
   app.listen(parseInt(process.env.PORT), () => {
