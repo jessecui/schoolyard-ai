@@ -9,6 +9,8 @@ RUN yarn
 COPY server/. .
 RUN yarn build
 
+RUN chmod +w dist/public
+
 ENV NODE_ENV production
 
 EXPOSE 8080
