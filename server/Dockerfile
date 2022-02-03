@@ -9,8 +9,6 @@ RUN yarn
 COPY server/. .
 RUN yarn build
 
-VOLUME /usr/src/app/dist/public/profile_photos
-
 ENV NODE_ENV production
 
 EXPOSE 8080
