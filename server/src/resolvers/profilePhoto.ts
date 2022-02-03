@@ -22,10 +22,7 @@ export class ProfilePhotoResolver {
       IS_PROD ? "https://api.goschoolyard.com" : "http://localhost:4000"
     }/profile_photos/${req.session.userId}_profile.png`;
 
-    let imageDir = __dirname + "/../public/profile_photos";
-    if (!fs.existsSync(imageDir)) {
-      fs.mkdirSync(imageDir, { recursive: true });
-    }
+    let imageDir = __dirname + "/../public/profile_photos";    
 
     await getConnection()
       .createQueryBuilder()
