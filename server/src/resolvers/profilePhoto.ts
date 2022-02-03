@@ -19,7 +19,7 @@ export class ProfilePhotoResolver {
     const { createReadStream } = await photo;
     const saveFilename = req.session.userId + "_profile.png";
     const photoUrl = `${
-      IS_PROD ? "http://api.goschoolyard.com" : "http://localhost:4000"
+      IS_PROD ? "https://api.goschoolyard.com" : "http://localhost:4000"
     }/profile_photos/${req.session.userId}_profile.png`;
 
     let imageDir = __dirname + "/../public/profile_photos";
@@ -40,7 +40,10 @@ export class ProfilePhotoResolver {
       createReadStream()
         .pipe(createWriteStream(imageDir + `/${saveFilename}`))
         .on("finish", () => resolve(true))
-        .on("error", () => reject(false));
+        .on("error", (err) => {
+          console.log("Profile photo saving error: ", err);
+          reject(false);
+        });
     });
 
     return photoUrl;

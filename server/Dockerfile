@@ -9,8 +9,7 @@ RUN yarn
 COPY server/. .
 RUN yarn build
 
-RUN mkdir -p dist/public/profile_photos
-RUN chmod +w dist/public
+VOLUME dist/public/profile_photos
 
 ENV NODE_ENV production
 
