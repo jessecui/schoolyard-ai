@@ -132,12 +132,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {data?.me?.photoUrl ? (
                     <Avatar
                       size="sm"
-                      bg="iris"
+                      color="white"
+                      bg="white"
                       name={`${data.me.firstName} ${data.me.lastName}`}
                       src={`${data.me.photoUrl}?${imageHash}`}
                     />
                   ) : (
-                    <Avatar size="sm" bg="iris" />
+                    <Avatar size="sm" bg="iris" color="white" />
                   )}
                 </Center>
               }
