@@ -381,7 +381,7 @@ const Learn: React.FC<{
                           key={grandchild.id}
                           as="span"
                           color="black"
-                          fontSize="sm"
+                          fontSize="md"
                         >
                           {grandchild.text}&nbsp;
                         </Text>
