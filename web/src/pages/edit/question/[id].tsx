@@ -446,10 +446,10 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                   Question
                 </Text>
                 <Divider borderColor="grayLight" border="1px" mb={2} />
-                <Field name="question" validate={checkIfEmpty}>
+                <Field name="text" validate={checkIfEmpty}>
                   {({ field, form }: any) => (
                     <FormControl
-                      isInvalid={form.errors.question && form.touched.question}
+                      isInvalid={form.errors.text && form.touched.text}
                     >
                       <Textarea
                         {...field}
@@ -457,7 +457,7 @@ export const EditQuestion: React.FC<{}> = ({}) => {
                         borderColor="grayLight"
                       />
                       <FormErrorMessage>
-                        {form.errors.question}
+                        {form.errors.text}
                       </FormErrorMessage>
                     </FormControl>
                   )}
