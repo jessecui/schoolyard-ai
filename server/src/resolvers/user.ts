@@ -401,7 +401,9 @@ export class UserResolver {
       const currentUser = await User.findOne({
         where: { id: req.session.userId },
       });
-      const userWithEmail = await User.findOne({ where: { email: email.toLowerCase() } });
+      const userWithEmail = await User.findOne({
+        where: { email: email.toLowerCase() },
+      });
       if (userWithEmail && userWithEmail.email != currentUser!.email) {
         errors.push({
           field: "email",
@@ -443,6 +445,29 @@ export class UserResolver {
   @UseMiddleware(isAuth)
   async deleteUser(@Ctx() { req }: MyContext): Promise<boolean> {
     await User.delete(req.session.userId);
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async setUserCanCreate(
+    @Arg("password") password: string,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    const correctPassword = "Createonschoolyard!2022";
+    if (password !== correctPassword) {
+      return false;
+    }
+    await getConnection()
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        canCreate: true,
+      })
+      .where({
+        id: req.session.userId,
+      })
+      .execute();
     return true;
   }
 }
