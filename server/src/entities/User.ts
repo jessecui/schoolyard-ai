@@ -69,11 +69,15 @@ export class User extends BaseEntity {
   scores: Score[];
 
   @Field()
-  subjectColors: string
+  subjectColors: string;
 
-  @Field({nullable: true})
-  @Column({nullable: true})
-  photoUrl: string
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  photoUrl: string;
+
+  @Field()
+  @Column({ default: false })
+  canCreate: boolean;
 
   @Field(() => Date)
   @CreateDateColumn()

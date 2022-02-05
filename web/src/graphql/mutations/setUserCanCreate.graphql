@@ -1,0 +1,3 @@
+mutation SetUserCanCreate($password: String!) {
+  setUserCanCreate(password: $password)
+}

@@ -4,7 +4,7 @@ import {
   HStack, Text,
   VStack
 } from "@chakra-ui/react";
-import gql from "graphql-tag";
+import { gql } from "@apollo/client";
 import React from "react";
 import Dropzone from "react-dropzone";
 import {

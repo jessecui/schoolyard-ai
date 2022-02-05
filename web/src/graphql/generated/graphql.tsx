@@ -46,6 +46,7 @@ export type Mutation = {
   login: UserResponse;
   logout: Scalars['Boolean'];
   register: UserResponse;
+  setUserCanCreate: Scalars['Boolean'];
   updateParagraph?: Maybe<Sentence>;
   updateQuestion?: Maybe<Question>;
   updateQuestionReview?: Maybe<QuestionReview>;
@@ -143,6 +144,11 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   options: RegisterUserInputs;
+};
+
+
+export type MutationSetUserCanCreateArgs = {
+  password: Scalars['String'];
 };
 
 
@@ -317,6 +323,7 @@ export type SentenceView = {
 
 export type User = {
   __typename?: 'User';
+  canCreate: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   createdParagraphs: Array<Sentence>;
   createdQuestions: Array<Question>;
@@ -345,9 +352,9 @@ export enum VoteType {
 
 export type ErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type UserFragment = { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> };
+export type UserFragment = { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, canCreate: boolean, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> };
 
-export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
+export type UserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, canCreate: boolean, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
 
 export type AddProfilePhotoMutationVariables = Exact<{
   photo: Scalars['Upload'];
@@ -392,7 +399,7 @@ export type ChangePasswordMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, canCreate: boolean, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type ChangePasswordWithTokenMutationVariables = Exact<{
   token: Scalars['String'];
@@ -400,7 +407,7 @@ export type ChangePasswordWithTokenMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordWithTokenMutation = { __typename?: 'Mutation', changePasswordWithToken: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type ChangePasswordWithTokenMutation = { __typename?: 'Mutation', changePasswordWithToken: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, canCreate: boolean, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type ChangeProfileMutationVariables = Exact<{
   email: Scalars['String'];
@@ -409,7 +416,7 @@ export type ChangeProfileMutationVariables = Exact<{
 }>;
 
 
-export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type ChangeProfileMutation = { __typename?: 'Mutation', changeProfile: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, canCreate: boolean, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type CreateParagraphMutationVariables = Exact<{
   paragraphInput: ParagraphInput;
@@ -478,7 +485,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, canCreate: boolean, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -490,7 +497,14 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, canCreate: boolean, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined } };
+
+export type SetUserCanCreateMutationVariables = Exact<{
+  password: Scalars['String'];
+}>;
+
+
+export type SetUserCanCreateMutation = { __typename?: 'Mutation', setUserCanCreate: boolean };
 
 export type UpdateParagraphMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -524,7 +538,7 @@ export type ActivityLogQuery = { __typename?: 'Query', me?: { __typename?: 'User
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, photoUrl?: string | null | undefined, firstName: string, lastName: string, canCreate: boolean, subjectColors: string, questionReviews: Array<{ __typename?: 'QuestionReview', questionId: number, reviewStatus: ReviewStatus, createdAt: any, updatedAt: any, dateNextAvailable: any, question: { __typename?: 'Question', text: string, subjects: Array<string> } }>, scores: Array<{ __typename?: 'Score', subjectName: string, queued: number, correct: number, incorrect: number }> } | null | undefined };
 
 export type QuestionQueryVariables = Exact<{
   id: Scalars['Int'];
@@ -587,6 +601,7 @@ export const UserFragmentDoc = gql`
       subjects
     }
   }
+  canCreate
   scores {
     subjectName
     queued
@@ -1296,6 +1311,37 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const SetUserCanCreateDocument = gql`
+    mutation SetUserCanCreate($password: String!) {
+  setUserCanCreate(password: $password)
+}
+    `;
+export type SetUserCanCreateMutationFn = Apollo.MutationFunction<SetUserCanCreateMutation, SetUserCanCreateMutationVariables>;
+
+/**
+ * __useSetUserCanCreateMutation__
+ *
+ * To run a mutation, you first call `useSetUserCanCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetUserCanCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setUserCanCreateMutation, { data, loading, error }] = useSetUserCanCreateMutation({
+ *   variables: {
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useSetUserCanCreateMutation(baseOptions?: Apollo.MutationHookOptions<SetUserCanCreateMutation, SetUserCanCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetUserCanCreateMutation, SetUserCanCreateMutationVariables>(SetUserCanCreateDocument, options);
+      }
+export type SetUserCanCreateMutationHookResult = ReturnType<typeof useSetUserCanCreateMutation>;
+export type SetUserCanCreateMutationResult = Apollo.MutationResult<SetUserCanCreateMutation>;
+export type SetUserCanCreateMutationOptions = Apollo.BaseMutationOptions<SetUserCanCreateMutation, SetUserCanCreateMutationVariables>;
 export const UpdateParagraphDocument = gql`
     mutation UpdateParagraph($id: Int!, $paragraphInput: ParagraphInput!) {
   updateParagraph(id: $id, paragraphInput: $paragraphInput) {

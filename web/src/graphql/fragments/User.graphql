@@ -14,12 +14,13 @@ fragment User on User {
       text
       subjects
     }
-  }  
+  }
+  canCreate
   scores {
     subjectName
     queued
     correct
     incorrect
   }
-  subjectColors
+  subjectColors  
 }
