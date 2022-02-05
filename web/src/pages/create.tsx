@@ -368,7 +368,11 @@ export const Create: React.FC<{}> = ({}) => {
         {({ isSubmitting }) => (
           <Box>
             <Form>
-              <InputField name="password" label="Create Content Password" />
+              <InputField
+                name="password"
+                label="Create Content Password"
+                type="password"
+              />
               <Button
                 mt={4}
                 type="submit"
