@@ -1,6 +1,6 @@
 # Schoolyard Website Repository
 
-Schoolyard is a curiosity-driven short-form learning education technology (edtech) platform that redefines how users learn online and grow their careers.
+Schoolyard is a curiosity-driven short-form learning edtech platform that leverages intelligent content similarity to help users learn online.
 
 ## Technical Stack
 
