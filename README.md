@@ -1,6 +1,6 @@
 # Schoolyard Website Repository
 
-Schoolyard is a curiosity-driven short-form learning education technology (edtech) platform that redefines how users learn online, explore the internet, and grow their careers. The platform addresses the rising need for fast online skill-specific training required due to post-pandemic societal changes surrounding education and work.
+Schoolyard is a curiosity-driven short-form learning education technology (edtech) platform that redefines how users learn online and grow their careers. The platform addresses the rising need for fast online skill-specific training required due to post-pandemic societal changes surrounding education and work.
 
 ## Technical Stack
 
@@ -25,30 +25,24 @@ Schoolyard is a curiosity-driven short-form learning education technology (edtec
 ## AI/ML Implementation
 
 ### Word2Vec Integration
-The platform implements a sophisticated text analysis system using Word2Vec embeddings for semantic understanding and content relationships:
+The platform implements a text analysis system using Word2Vec embeddings for semantic understanding and content relationships:
 
 1. **Sentence Embedding Generation**
    - Converts sentences into 100-dimensional vector representations
-   - Aggregates word-level embeddings to create sentence-level meaning
-   - Handles unknown words gracefully
+   - Aggregates word-level embeddings to create sentence-level meaning   
 
 2. **Semantic Distance Calculation**
-   - Implements Euclidean distance calculation between sentence embeddings
    - Used to measure semantic similarity between different content pieces
    - Supports automatic content relationship discovery
 
 3. **Content Relationship Management**
    - Maintains a graph of semantic relationships between content
-   - Supports both manual and automatic relationship creation
-   - Prevents circular references and maintains content hierarchy
-   - Tracks temporal relationships between content versions
+   - Supports both manual and automatic relationship creation   
 
 ### Key Features
 - Automatic content similarity detection
 - Intelligent content linking
-- Semantic search capabilities
 - Content relationship visualization
-- Learning path optimization
 
 ## Getting Started
 
